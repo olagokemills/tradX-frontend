@@ -1,0 +1,28 @@
+label {
+  color: #181818;
+  font-size: 14px;
+}
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.15s ease-in-out;
+  &:focus {
+    border-color: #80bdff;
+    outline: 0;
+  }
+
+  &.is-invalid {
+    border-color: #dc3545;
+    font-size: 12px;
+  }
+
+  &:disabled {
+    background-color: #e9ecef;
+    opacity: 1;
+  }
+  .feedback-text {
+    font-size: 12px;
+    margin-top: 0.25rem;
+  }
+}

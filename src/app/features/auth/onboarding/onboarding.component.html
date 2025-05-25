@@ -1,0 +1,97 @@
+<!-- Main Content -->
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center py-3">
+    <img src="assets/images/brand/logo.svg" alt="Trusted Advisor" height="30" />
+    <button class="btn btn-outline-dark logout-btn">
+      Logout
+      <span>
+        <img src="assets/images/utils/logout.svg" alt="Logout" />
+      </span>
+    </button>
+  </div>
+  <div class="row mt-4 gap-5">
+    <!-- Sidebar -->
+    <div class="col-md-4">
+      <p class="text-muted mb-1">Welcome Layar Pan</p>
+      <h5 class="fw-bold">Complete account setup</h5>
+
+      <div class="step-list mt-4">
+        <div class="step-item active">
+          <div class="step-item__title current">
+            <strong>1. Organization Details</strong>
+
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <p class="step-item__description">
+            To create an account for your organization kindly fill the
+            information
+          </p>
+        </div>
+        <div class="step-item">
+          <div class="step-item__title current">
+            <strong>2. Contact Information</strong>
+
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <p class="step-item__description">
+            To create an account for your organization kindly fill the
+            information
+          </p>
+        </div>
+        <div class="step-item">
+          <div class="step-item__title current">
+            <strong>3. Account Customization</strong>
+
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <p class="step-item__description">
+            To create an account for your organization kindly fill the
+            information
+          </p>
+        </div>
+        <div class="step-item">
+          <div class="step-item__title current">
+            <strong>4. Subscription Plan</strong>
+
+            <i class="bi bi-check-circle"></i>
+          </div>
+          <p class="step-item__description">
+            To create an account for your organization kindly fill the
+            information
+          </p>
+        </div>
+        <img
+          src="assets/images/utils/signup-logo.svg"
+          alt="Illustration"
+          class="img-fluid mt-5"
+        />
+      </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="col-md-7">
+      <ng-container *ngIf="pageName == '1'">
+        <app-organization-details
+          (formSubmit)="handleOrganizationDetails($event)"
+          [OrganizationDetails]="organizationDetails"
+        ></app-organization-details>
+      </ng-container>
+      <ng-container *ngIf="pageName == '2'">
+        <app-contact-info
+          (formSubmit)="handleContactInfo($event)"
+          [ContactInfo]="contactInfo"
+        ></app-contact-info>
+      </ng-container>
+      <ng-container *ngIf="pageName == '3'">
+        <app-rating-info
+          (formSubmit)="handleRatingInfo($event)"
+          [RatingInfo]="ratingInfo"
+        >
+        </app-rating-info>
+      </ng-container>
+      <!-- <div class="footer-btn-area">
+        <button class="btn btn-primary mt-4">Continue</button>
+      </div> -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,27 @@
+@import "./../../../../variables";
+.card {
+  background-color: $card-bg-color;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.btn-primary {
+  background-color: #2563eb;
+  border: none;
+
+  &:hover {
+    background-color: #1d4ed8;
+  }
+}
+
+input::placeholder {
+  color: #9ca3af;
+}
+
+.text-decoration-none {
+  text-decoration: none;
+}
+a {
+  color: $black-001;
+}

@@ -1,0 +1,14 @@
+<div [formGroup]="formGroup" class="form-group">
+  <label for="{{ controlName }}">{{ placeholder }}</label>
+
+  <input
+    [id]="controlName"
+    [formControlName]="controlName"
+    [placeholder]="placeholder"
+    [type]="type"
+    class="form-control"
+  />
+  <div *ngIf="shouldDisplayError()" class="text-danger feedback-text">
+    <small> {{ getErrorMessage() }}</small>
+  </div>
+</div>

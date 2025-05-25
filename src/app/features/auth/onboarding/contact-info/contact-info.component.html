@@ -1,0 +1,38 @@
+<h5 class="fw-bold mb-4">Organization Details</h5>
+<form [formGroup]="ContactForm">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <app-text-input
+        [controlName]="'fullName'"
+        [placeholder]="'Full Name'"
+        [type]="'text'"
+        [formGroup]="ContactForm"
+      ></app-text-input>
+    </div>
+
+    <div class="col-md-6">
+      <app-text-input
+        [controlName]="'emailAddress'"
+        [placeholder]="'Email Address'"
+        [type]="'email'"
+        [formGroup]="ContactForm"
+      ></app-text-input>
+    </div>
+
+    <div class="col-md-6">
+      <app-text-input
+        [controlName]="'phoneNumber'"
+        [placeholder]="'Phone Number'"
+        [type]="'tel'"
+        [formGroup]="ContactForm"
+      ></app-text-input>
+    </div>
+
+    <div class="col-md-6">
+      <label class="form-label">Role in Organization</label>
+      <select class="form-select">
+        <option selected disabled>Select Option</option>
+      </select>
+    </div>
+  </div>
+</form>

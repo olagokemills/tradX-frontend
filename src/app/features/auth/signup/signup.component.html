@@ -1,0 +1,63 @@
+<!-- Trusted Advisor Login Page -->
+<div class="position-absolute top-0 start-0 p-4">
+  <img src="assets/images/brand/logo.svg" alt="Trusted Advisor" height="30" />
+</div>
+
+<div
+  class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light"
+>
+  <div class="card p-5 shadow-sm border-0">
+    <div class="text-start mb-4">
+      <h2 class="fw-bold mb-2">Register</h2>
+      <p class="text-muted mb-0">
+        Hey, Fill your details to get started with account creation
+      </p>
+    </div>
+
+    <form [formGroup]="SignUpForm">
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'fullName'"
+          [placeholder]="'Firstname Lastname'"
+          [type]="'text'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'businessName'"
+          [placeholder]="'Company Name'"
+          [type]="'text'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
+
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'email'"
+          [placeholder]="'Email Address'"
+          [type]="'email'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
+
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'password'"
+          [placeholder]="'Password'"
+          [type]="'password'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary">Create Account</button>
+      </div>
+    </form>
+
+    <div class="text-center">
+      <small class="text-muted">Already have an account ?</small>
+      <a [routerLink]="'/auth/login'" class="fw-bold ms-1">Login</a>
+    </div>
+  </div>
+</div>
