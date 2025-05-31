@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-between w-100">
+  <h3>User Management</h3>
+  <button class="btn btn-neutral">Add User <i class="bi bi-plus"></i></button>
+</div>
+
+<app-reusable-table [tableData]="UsersList">
+  <ng-template #headers>
+    <th><span>Invoice Number</span></th>
+    <th>
+      <span>Name</span>
+    </th>
+    <th>
+      <span>Virtual Account Number</span>
+    </th>
+    <th>
+      <span>Code</span>
+    </th>
+    <th>
+      <span>Number of Students</span>
+    </th>
+    <th>
+      <span>Amount</span>
+    </th>
+    <th>
+      <span>Total Amount</span>
+    </th>
+    <th>
+      <span>Created On</span>
+    </th>
+    <th>
+      <span>Action</span>
+    </th>
+  </ng-template>
+
+  <ng-template #rows let-tableRow>
+    <td>
+      {{ tableRow.invoiceNumber }}
+    </td>
+    <td>
+      {{ tableRow.name }}
+    </td>
+    <td>
+      {{ tableRow.virtualAccountNo }}
+    </td>
+    <td>
+      {{ tableRow.code }}
+    </td>
+    <td>
+      {{ tableRow.numberStudentPay }}
+    </td>
+    <td>
+      {{ tableRow.amount }}
+    </td>
+    <td>
+      {{ tableRow.totalAmount }}
+    </td>
+    <td>
+      {{ tableRow.createdDate | date }}
+    </td>
+    <td>
+      <div class="dropdown">
+        <a
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <i class="bi bi-three-dots-vertical"></i>
+        </a>
+
+        <ul class="dropdown-menu">
+          <li></li>
+          <li>
+            <a
+              class="dropdown-item"
+              (click)="OpenModal()"
+              href="javascript:void(0)"
+            >
+              <small> View </small>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </td>
+  </ng-template>
+</app-reusable-table>
