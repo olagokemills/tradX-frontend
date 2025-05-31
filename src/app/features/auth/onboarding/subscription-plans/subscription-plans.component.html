@@ -1,0 +1,115 @@
+<form
+  [formGroup]="subscriptionForm"
+  (ngSubmit)="handleSubmit(subscriptionForm.value)"
+>
+  <div class="main">
+    <div class="susbcription-plans">
+      <h5 class="fw-bold mb-4">Subscription Plans</h5>
+      <div class="row g-3">
+        <div class="col-12 col-md-4" *ngFor="let plan of subscriptionPlans">
+          <div
+            class="card plan-card p-3"
+            [class.active]="selectedPlan === plan.id"
+            (click)="
+              subscriptionForm.get('selectedPlan')?.setValue(plan.id);
+              selectedPlan = plan.id
+            "
+          >
+            <div class="plan-label mb-3">
+              <div class="d-flex gap-2">
+                <img
+                  [src]="plan.icon"
+                  alt="{{ plan.name }} icon"
+                  width="24"
+                  height="24"
+                />
+                <h6 class="mb-1">
+                  {{ plan.name }}
+                </h6>
+              </div>
+              <img
+                *ngIf="selectedPlan === plan.id"
+                src="assets/images/utils/tick-circle.svg"
+                width="24"
+                height="24"
+                alt="Checked"
+              />
+              <span *ngIf="selectedPlan !== plan.id" class="unchecked-icon">
+              </span>
+            </div>
+            <div class="d-flex align-items-end">
+              <h4 class="fw-bold mb-0">${{ plan.price }}</h4>
+              <span class="text-muted small ms-2">Per month</span>
+            </div>
+            <div class="mt-2 plan-users fw-medium">
+              Includes up to {{ plan.users }} users
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="fw-bold mb-3">
+        <mat-slide-toggle
+          color="primary"
+          formControlName="autoRenew"
+          labelPosition="before"
+        >
+          Auto Renew
+        </mat-slide-toggle>
+      </div>
+      <small>
+        This option, if checked, will renew your productive subscription when
+        the current plan expires. However, this might prevent you from...
+      </small>
+    </div>
+
+    <div class="date-div">
+      <h6 class="fw-bold mb-2">Billing Details</h6>
+      <div class="col-md-6">
+        <app-text-input
+          [formGroup]="subscriptionForm"
+          [controlName]="'cardName'"
+          [placeholder]="'Card Name'"
+          [type]="'text'"
+        ></app-text-input>
+      </div>
+
+      <div class="row g-3 align-items-end">
+        <div class="col-md-6">
+          <app-text-input
+            [formGroup]="subscriptionForm"
+            [controlName]="'cardNumber'"
+            [placeholder]="'Card Number'"
+            [type]="'text'"
+          ></app-text-input>
+        </div>
+
+        <div class="col-md-3">
+          <app-text-input
+            [formGroup]="subscriptionForm"
+            [controlName]="'expireDate'"
+            [placeholder]="'MM/YYYY'"
+            [type]="'text'"
+          ></app-text-input>
+        </div>
+
+        <div class="col-md-3">
+          <app-text-input
+            [formGroup]="subscriptionForm"
+            [controlName]="'cvv'"
+            [placeholder]="'CVV'"
+            [type]="'password'"
+          ></app-text-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-btn-area mb-3 justify-content-between">
+      <button class="btn mt-4" type="submit">Previous</button>
+
+      <button class="btn btn-primary mt-4" type="submit">Next</button>
+    </div>
+  </div>
+</form>

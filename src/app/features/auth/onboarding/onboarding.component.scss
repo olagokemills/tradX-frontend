@@ -24,6 +24,7 @@
       border-radius: 10px;
     }
     &__description {
+      display: none;
       margin-top: 0.5rem;
       font-size: 12px;
       color: #6b7280;
@@ -31,6 +32,10 @@
       padding-right: 0.75rem;
       margin-bottom: 0;
       font-weight: 400;
+      &.active {
+        display: flex;
+        color: #fff;
+      }
     }
   }
 }

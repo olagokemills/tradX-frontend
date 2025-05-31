@@ -9,6 +9,10 @@ import { OrganizationDetailsComponent } from './onboarding/organization-details/
 import { RatingInfoComponent } from './onboarding/rating-info/rating-info.component';
 import { ContactInfoComponent } from './onboarding/contact-info/contact-info.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { SubscriptionPlansComponent } from './onboarding/subscription-plans/subscription-plans.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 const routes: Routes = [
   {
@@ -33,12 +37,16 @@ const routes: Routes = [
     OrganizationDetailsComponent,
     RatingInfoComponent,
     ContactInfoComponent,
+    SubscriptionPlansComponent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule,
     ReactiveFormsModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
 })
 export class AuthModule {}

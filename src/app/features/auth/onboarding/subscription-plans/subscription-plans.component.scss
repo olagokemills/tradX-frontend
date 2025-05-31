@@ -1,0 +1,52 @@
+.main {
+  gap: 25px;
+  display: flex;
+  flex-direction: column;
+  .plan-card {
+    display: flex;
+    cursor: pointer;
+    flex-direction: column;
+    gap: 10px;
+    &.active {
+      border: 1px solid #111858;
+    }
+    .plan-label {
+      display: flex;
+      justify-content: space-between;
+      h6 {
+        font-size: 14px;
+        color: #045633;
+      }
+    }
+    .plan-users {
+      color: #111858;
+      font-size: 13px;
+    }
+  }
+  .input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .date-div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  .footer-btn-area {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 3rem;
+    .btn {
+      min-width: 200px;
+      margin-left: 1rem;
+    }
+  }
+  .unchecked-icon {
+    color: #fff;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    border: 2px solid #cdcdcd;
+  }
+}
