@@ -35,14 +35,14 @@ export class ContactInfoComponent implements OnInit {
         [Validators.minLength(6), Validators.required],
       ],
     });
-    // if (this.ContactInfo) {
-    //   this.ContactForm.patchValue({
-    //     businessName: this.ContactInfo?.businessName || '',
-    //     businessType: this.ContactInfo?.businessType || '',
-    //     businessAddress: this.ContactInfo?.businessAddress || '',
-    //     businessPhone: this.ContactInfo?.businessPhone || '',
-    //   });
-    // }
+    if (this.ContactInfo) {
+      this.ContactForm.patchValue({
+        businessName: this.ContactInfo?.businessName || '',
+        businessType: this.ContactInfo?.businessType || '',
+        businessAddress: this.ContactInfo?.businessAddress || '',
+        businessPhone: this.ContactInfo?.businessPhone || '',
+      });
+    }
   }
   handleSubmit(data: any) {
     this.formSubmit.emit(this.ContactInfo);
