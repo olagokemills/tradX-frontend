@@ -1,0 +1,108 @@
+<div class="p-4 main">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h5 class="fw-bold">Add User</h5>
+      <p class="text-muted m-0">Invite a staff to join your company account</p>
+    </div>
+    <button
+      type="button"
+      class="btn-close"
+      (click)="onClose()"
+    ></button>
+  </div>
+
+  <form
+    class="add-user-form"
+    [formGroup]="addUserForm"
+    (ngSubmit)="onSubmit(addUserForm)"
+  >
+    <app-text-input
+      controlName="name"
+      placeholder="Full Name"
+      type="text"
+      [formGroup]="addUserForm"
+    ></app-text-input>
+
+    <app-text-input
+      controlName="email"
+      placeholder="Email Address"
+      type="email"
+      [formGroup]="addUserForm"
+    ></app-text-input>
+
+    <app-text-input
+      controlName="password"
+      placeholder="Password"
+      type="password"
+      [formGroup]="addUserForm"
+    ></app-text-input>
+
+    <div>
+      <label class="form-label mb-0">Role</label>
+      <select class="form-select" formControlName="role">
+        <option value="" disabled selected>Select Role</option>
+        <option value="Head Of Account">Head Of Account</option>
+        <option value="CEO">Chief Executive Officer</option>
+        <option value="Auditor">Auditor</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="form-label mb-0">Department</label>
+      <select class="form-select mb-3" formControlName="department">
+        <option value="" disabled selected>Select Department</option>
+        <option value="Finance">Finance</option>
+        <option value="Human Resources">Human Resources</option>
+        <option value="IT">IT</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="form-label">Permissions</label>
+      <div class="form-check mb-3">
+        <input type="checkbox" id="selectAll" class="form-check-input" />
+        <label for="selectAll" class="form-check-label form-label fw-medium">
+          Select all permissions
+        </label>
+      </div>
+      <div class="ms-3 mb-3">
+        <div class="d-flex align-items-center mb-1">
+          <input
+            type="checkbox"
+            id="selectAllReports"
+            class="form-check-input me-2"
+          />
+          <label for="selectAllReports" class="fw-medium form-label mb-0">
+            Reports
+          </label>
+        </div>
+
+        <div *ngFor="let item of reportPermissions" class="form-check ms-4">
+          <input type="checkbox" class="form-check-input" />
+          <label class="form-check-label form-label" [for]="item.key">{{
+            item.label
+          }}</label>
+        </div>
+      </div>
+      <div class="ms-3">
+        <div class="d-flex align-items-center mb-1">
+          <input type="checkbox" class="form-check-input me-2" />
+          <label class="fw-medium form-label mb-0"> Users </label>
+        </div>
+
+        <div *ngFor="let item of userPermissions" class="form-check ms-4">
+          <input type="checkbox" class="form-check-input" />
+          <label class="form-check-label form-label">{{ item.label }}</label>
+        </div>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      class="btn btn-primary mt-3"
+      [disabled]="addUserForm.invalid"
+    >
+      Invite User
+    </button>
+  </form>
+</div>

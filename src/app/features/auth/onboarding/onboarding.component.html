@@ -16,7 +16,11 @@
       <h5 class="fw-bold">Complete account setup</h5>
 
       <div class="step-list mt-4">
-        <div class="step-item active">
+        <div
+          [class.active]="pageName === '1'"
+          (click)="handlePageChange('1')"
+          class="step-item"
+        >
           <div class="step-item__title current">
             <strong>1. Organization Details</strong>
             <i class="bi bi-check-circle"></i>
@@ -26,7 +30,11 @@
             information
           </p>
         </div>
-        <div class="step-item">
+        <div
+          [class.active]="pageName === '2'"
+          (click)="handlePageChange('2')"
+          class="step-item"
+        >
           <div class="step-item__title current">
             <strong>2. Contact Information</strong>
 
@@ -52,7 +60,7 @@
             information
           </p>
         </div>
-        <div class="step-item">
+        <!-- <div class="step-item">
           <div class="step-item__title current">
             <strong>4. Subscription Plan</strong>
 
@@ -62,7 +70,7 @@
             To create an account for your organization kindly fill the
             information
           </p>
-        </div> 
+        </div> -->
         <img
           src="assets/images/utils/signup-logo.svg"
           alt="Illustration"
@@ -92,12 +100,12 @@
         >
         </app-rating-info>
       </ng-container>
-      <ng-container *ngIf="pageName == '4'">
+      <!-- <ng-container *ngIf="pageName == '4'">
         <app-subscription-plans
           (formSubmit)="handleSubscriptionDetails($event)"
           [SubscriptionDetails]="SubscriptionDetails"
         ></app-subscription-plans>
-      </ng-container>
+      </ng-container> -->
       <!-- <div class="footer-btn-area">
         <button class="btn btn-primary mt-4">Continue</button>
       </div> -->
