@@ -12,14 +12,16 @@
   </div>
 
   <nav class="nav-links d-none d-md-flex gap-4">
-    <div
-      *ngFor="let item of navItems"
-      class="nav-item gap-3"
-      [ngClass]="{ active: item.label === 'Users' }"
-    >
-      <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
-      {{ item.label }}
-    </div>
+    <a
+    *ngFor="let item of navItems"
+    class="nav-item gap-3"
+    [routerLink]="item.route"
+    routerLinkActive="active"
+  >
+    <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
+    {{ item.label }}
+  </a>
+  
   </nav>
 
   <div class="d-flex align-items-center gap-3">

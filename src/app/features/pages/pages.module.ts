@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { AuditPlanComponent } from './audit-plan/audit-plan.component';
 
 const routes: Routes = [
   {
@@ -22,9 +23,13 @@ const routes: Routes = [
         (m) => m.UserManagementModule
       ),
   },
+  {
+    path: 'audit-plan',
+    component: AuditPlanComponent,
+  },
 ];
 @NgModule({
-  declarations: [UserManagementComponent],
+  declarations: [UserManagementComponent, AuditPlanComponent],
   imports: [
     CommonModule,
     SharedModule,
