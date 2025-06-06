@@ -1,6 +1,35 @@
 .main {
-    padding-top: 25px;
+  padding-top: 25px;
   h5 {
     font-size: 18px;
+  }
+  h6 {
+    font-size: 14px;
+  }
+  .add-btn {
+    border: 1px #d6d6d6 solid;
+  }
+  th {
+    color: #757171;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  td {
+    color: #757171;
+    font-weight: 400;
+    font-size: 14px;
+    padding: 10px;
+  }
+  .bg-gray {
+    background-color: #f5f5f5;
+    color: #757171;
+    font-size: 12px !important;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
   }
 }

@@ -9,11 +9,8 @@ import { AuditPlanComponent } from './audit-plan/audit-plan.component';
 const routes: Routes = [
   {
     path: '',
-    component: UserManagementComponent,
-    loadChildren: () =>
-      import('./user-management/user-management.module').then(
-        (m) => m.UserManagementModule
-      ),
+    redirectTo: 'user-management',
+    pathMatch: 'full',
   },
   {
     path: 'user-management',
