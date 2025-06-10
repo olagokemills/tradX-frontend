@@ -10,6 +10,14 @@ export class OrganizationDetailsComponent {
   @Output() formSubmit = new EventEmitter<any>();
   @Input() OrganizationDetails: any | null = null;
   OrganizationForm!: FormGroup;
+  toppingList: string[] = [
+    'Extra cheese',
+    'Mushroom',
+    'Onion',
+    'Pepperoni',
+    'Sausage',
+    'Tomato',
+  ];
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
@@ -22,6 +30,7 @@ export class OrganizationDetailsComponent {
         this.OrganizationDetails?.companyName || '',
         [Validators.minLength(6), Validators.required],
       ],
+      toppings: [],
       psuedoName: [
         this.OrganizationDetails?.psuedoName || '',
         [Validators.minLength(6), Validators.required],

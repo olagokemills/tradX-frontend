@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./onboarding.component.scss'],
 })
 export class OnboardingComponent {
-  pageName: string = '2';
+  pageName: string = '3';
   ratingInfo: any | null = null;
   organizationDetails: any | null = null;
   contactInfo: any | null = null;
