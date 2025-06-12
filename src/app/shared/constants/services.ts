@@ -1,0 +1,18 @@
+export const AuthPoints = {
+  login: 'auth/login',
+  register: 'auth/register',
+  AmOTP: 'AccVal',
+  metaVideo: 'identities',
+  metaToken: 'Auth',
+  submitAM: 'AccountMaintenance',
+  checkNIN: 'checkNIN',
+  fetchBranches: 'getbranch',
+  submitAO: 'openAccountIndividual',
+  checkBVN: 'checkBVN',
+  getStates: 'getStates',
+  getLga: 'getLga',
+  getCity: 'getCity',
+  verifyBusiness: 'CACheck',
+  getFses: 'getFses',
+  getAmb: 'getAmbassadors',
+};

@@ -14,7 +14,7 @@
       </p>
     </div>
 
-    <form [formGroup]="SignUpForm">
+    <form [formGroup]="SignUpForm" (ngSubmit)="Register(SignUpForm.value)">
       <div class="mb-3">
         <app-text-input
           [controlName]="'fullName'"
@@ -49,10 +49,25 @@
           [formGroup]="SignUpForm"
         ></app-text-input>
       </div>
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'confirmPassword'"
+          [placeholder]="'Confirm Password'"
+          [type]="'password'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
 
       <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-primary submit-btn">
-          Create Account
+        <button
+          type="submit"
+          class="btn btn-primary submit-btn"
+          [disabled]="SignUpForm.invalid"
+        >
+          <div class="spinner-border" role="status" *ngIf="loading">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <ng-container *ngIf="!loading"> Create Account</ng-container>
         </button>
       </div>
     </form>
