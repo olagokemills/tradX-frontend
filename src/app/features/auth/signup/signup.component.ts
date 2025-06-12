@@ -21,9 +21,19 @@ export class SignupComponent implements OnInit {
       confirmPassword: ['', [Validators.minLength(6)]],
     });
   }
-  Register(data: RegisterPayload) {
+  Register(data:any) {
     this.loading = true;
-    this.loginService.Register(data).subscribe(
+    const [firstName, ...rest] = data.fullName.trim().split(' ');
+    const lastName = rest.join(' ');
+    const payload: RegisterPayload = {
+      emailAddress: data.email,
+      password: data.password,
+      confirmPassword: data.confirmPassword,
+      businessName: data.businessName,
+      firstName,
+      lastName,
+    };
+    this.loginService.Register(payload).subscribe(
       (res) => {
         this.loading = false;
         console.log(res);
