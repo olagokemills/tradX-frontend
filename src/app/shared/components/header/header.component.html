@@ -11,30 +11,29 @@
     </div>
   </div>
 
-  <nav class="nav-links d-none d-md-flex gap-4">
+  <nav class="nav-links d-none d-lg-flex gap-3">
     <a
-    *ngFor="let item of navItems"
-    class="nav-item gap-3"
-    [routerLink]="item.route"
-    routerLinkActive="active"
-  >
-    <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
-    {{ item.label }}
-  </a>
-  
+      *ngFor="let item of navItems"
+      class="nav-item gap-3"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+    >
+      <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
+      {{ item.label }}
+    </a>
   </nav>
 
   <div class="d-flex align-items-center gap-3">
-    <div class="search-box d-none d-md-flex">
+    <div class="search-box d-none d-lg-flex">
       <img src="assets/images/utils/search.svg" alt="search" />
       <input type="text" placeholder="Search" />
     </div>
     <img src="assets/images/utils/notification.svg" alt="notification" />
     <img src="assets/images/utils/setting.svg" alt="setting" />
-    <div class="profile d-none d-md-flex">L P</div>
+    <div class="profile d-none d-lg-flex">L P</div>
 
     <button
-      class="btn d-md-none p-0"
+      class="btn d-lg-none p-0"
       type="button"
       data-bs-toggle="offcanvas"
       data-bs-target="#mobileMenu"
@@ -61,9 +60,15 @@
     ></button>
   </div>
   <div class="offcanvas-body">
-    <div class="mobile-link" *ngFor="let item of navItems">
+    <a
+    data-bs-dismiss="offcanvas"
+      [routerLink]="item.route"
+      routerLinkActive="active"
+      class="mobile-link"
+      *ngFor="let item of navItems"
+    >
       <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
       {{ item.label }}
-    </div>
+    </a>
   </div>
 </div>

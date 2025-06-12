@@ -20,3 +20,23 @@ input {
   padding: 10px;
   font-size: 14px;
 }
+mat-form-field {
+  width: 100%;
+  height: 43px;
+}
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.5em;
+}
+.small-height-input {
+  max-height: 46px;
+  font-size: 12px !important; // decrease the font size  to set height
+  .mat-input-element {
+    font-size: 16px !important; //increase the size of input font
+  }
+}
+
+// .form-container-section {
+//   height: 100vh;
+//   overflow-y: scroll;
+//   overflow-x: hidden;
+// }

@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AddPlanComponent } from 'src/app/shared/components/modals/audit-plan-modals/add-plan/add-plan.component';
 import { RemoveAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/remove-audit/remove-audit.component';
+import { UpdateStatusComponent } from 'src/app/shared/components/modals/audit-plan-modals/update-status/update-status.component';
 
 @Component({
   selector: 'app-audit-plan',
@@ -8,7 +10,7 @@ import { RemoveAuditComponent } from 'src/app/shared/components/modals/audit-pla
   styleUrls: ['./audit-plan.component.scss'],
 })
 export class AuditPlanComponent {
-    dialog = inject(MatDialog);
+  dialog = inject(MatDialog);
   Actions = [
     { label: 'Delete 2022 Audit Plan', value: 'delete' },
     { label: 'Add New Audit Plan', value: 'add' },
@@ -77,15 +79,34 @@ export class AuditPlanComponent {
     },
   ];
 
+
+
   handleActionClick(action: any) {
-    alert(`you clicked: ${action}`);
-    console.log('you licked: ', action);
-  }
-  viewAudit() { }
-    removeAudit() {
-      const dialogRef = this.dialog.open(RemoveAuditComponent, {
-        width: '500px',
-      });
-      dialogRef.afterClosed().subscribe((result) => {});
+    if (action === 'delete') {
+      this.viewAudit();
+    } else if (action === 'add') {
+      this.addplan();
     }
+  }
+  addplan() {
+    const dialogRef = this.dialog.open(AddPlanComponent, {
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {});
+}
+  viewAudit() {}
+  removeAudit() {
+    const dialogRef = this.dialog.open(RemoveAuditComponent, {
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {});
+  }
+  updateAudit() {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, {
+      width: '500px',
+    });
+    dialogRef.afterClosed().subscribe((result) => {});
+  }
+
+
 }

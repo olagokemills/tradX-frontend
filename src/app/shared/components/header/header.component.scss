@@ -24,7 +24,7 @@ input {
 
 .nav-links .nav-item {
   color:black;
-  font-size: 15px;
+  font-size: 14px;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -87,7 +87,10 @@ input {
   font-weight: 500;
   cursor: pointer;
 }
-
+a {
+  color: black !important;
+  text-decoration: none !important;
+}
 @keyframes pop {
   from {
     transform: scale(0.8);

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
+import { RemoveAuditComponent } from '../remove-audit/remove-audit.component';
 
 @Component({
   selector: 'app-update-status',
@@ -6,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./update-status.component.scss']
 })
 export class UpdateStatusComponent {
+ constructor(
+    public dialogRef: MatDialogRef<UpdateStatusComponent>
+  ) {}
 
+  onClose() {
+    this.dialogRef.close();
+  }
 }

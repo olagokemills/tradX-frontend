@@ -1,19 +1,163 @@
 <h5 class="fw-bold mb-4">Account Customization</h5>
-<form [formGroup]="RatingForm">
-  <div class="row g-4">
-    <div class="col-md-6">
-      <label class="form-label">Internal Audit report rating scale</label>
-      <select class="form-select">
-        <option selected disabled>Select Option</option>
+<div>
+  <div class="audit-rating-container">
+    <div class="form-group">
+      <label for="ratingScale">Select Report Rating Scale:</label>
+      <select
+        id="ratingScale"
+        [(ngModel)]="selectedReportScale"
+        (change)="onReportScaleChange()"
+        class="form-control"
+      >
+        <option value="">-- Select Rating Scale --</option>
+        <option
+          *ngFor="let scale of auditReportRatingScale"
+          [value]="scale.points"
+        >
+          {{ scale.name }}
+        </option>
       </select>
     </div>
 
-    <hr />
-    <div class="col-md-6">
-      <label class="form-label">Internal Audit finding rating scale</label>
-      <select class="form-select">
-        <option selected disabled>Select Option</option>
-      </select>
+    <div
+      *ngIf="
+        currentAuditReportRatingOptions &&
+        currentAuditReportRatingOptions.length > 0
+      "
+      class="rating-options"
+    >
+      <h3>Configure Rating Colors</h3>
+      <div
+        *ngFor="
+          let option of currentAuditReportRatingOptions;
+          trackBy: trackByRating
+        "
+        class="rating-item"
+      >
+        <div class="rating-header">
+          <span class="rating-number">{{ option.rating }}</span>
+          <span class="rating-description">{{ option.description }}</span>
+        </div>
+        <div class="color-picker-container">
+          <label>Color:</label>
+          <input type="color" [(ngModel)]="option.color" class="color-picker" />
+          <span
+            class="color-preview"
+            [style.background-color]="option.color"
+          ></span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="currentAuditReportRatingOptions.length > 0"
+      class="preview-section"
+    >
+      <h3>Preview</h3>
+      <div class="preview-items">
+        <div
+          *ngFor="let option of currentAuditReportRatingOptions"
+          class="preview-item"
+          [style.background-color]="option.color"
+        >
+          <strong
+            >{{ option.rating }} -
+            {{ getShortDescription(option.description) }}</strong
+          >
+        </div>
+      </div>
     </div>
   </div>
-</form>
+  <hr />
+  <div class="audit-rating-container">
+    <div class="form-group">
+      <label for="ratingScale">Select Finding Rating Scale:</label>
+      <select
+        id="ratingScale"
+        [(ngModel)]="selectedFindingScale"
+        (change)="onFindingScaleChange()"
+        class="form-control"
+      >
+        <option value="">-- Select Finding Rating Scale --</option>
+        <option
+          *ngFor="let scale of auditFindingRatingScale"
+          [value]="scale.points"
+        >
+          {{ scale.name }}
+        </option>
+      </select>
+    </div>
+
+    <div
+      *ngIf="
+        currentAuditFindingRatingOptions &&
+        currentAuditFindingRatingOptions.length > 0
+      "
+      class="rating-options"
+    >
+      <h3>Configure Rating Colors</h3>
+      <div
+        *ngFor="
+          let option of currentAuditFindingRatingOptions;
+          trackBy: trackByRating
+        "
+        class="rating-item"
+      >
+        <div class="rating-header">
+          <span class="rating-number">{{ option.rating }}</span>
+          <span class="rating-description">{{ option.description }}</span>
+        </div>
+        <div class="color-picker-container">
+          <label>Color:</label>
+          <input type="color" [(ngModel)]="option.color" class="color-picker" />
+          <span
+            class="color-preview"
+            [style.background-color]="option.color"
+          ></span>
+        </div>
+      </div>
+    </div>
+
+    <div
+      *ngIf="currentAuditFindingRatingOptions.length > 0"
+      class="preview-section"
+    >
+      <h3>Preview</h3>
+      <div class="preview-items">
+        <div
+          *ngFor="let option of currentAuditFindingRatingOptions"
+          class="preview-item"
+          [style.background-color]="option.color"
+        >
+          <strong
+            >{{ option.rating }} -
+            {{ getShortDescription(option.description) }}</strong
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="
+      currentAuditReportRatingOptions &&
+      currentAuditReportRatingOptions.length > 0
+    "
+    class="submit-section"
+  >
+    <button
+      (click)="logCurrentConfig()"
+      type="button"
+      class="btn btn-secondary"
+    >
+      Previous Page
+    </button>
+    <button
+      type="submit"
+      (click)="submitConfiguration()"
+      class="btn btn-primary"
+    >
+      Submit Configuration
+    </button>
+  </div>
+</div>
