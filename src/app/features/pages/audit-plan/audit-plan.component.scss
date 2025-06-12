@@ -1,5 +1,6 @@
 .main {
   padding-top: 25px;
+  padding-bottom: 100px;
   h5 {
     font-size: 18px;
   }
@@ -31,5 +32,11 @@
     border-radius: 50%;
     display: inline-block;
     margin-right: 5px;
+  }
+
+  .second-table{
+    margin-top: 40px;
+    background-color: white;
+    border-radius: 10px;
   }
 }

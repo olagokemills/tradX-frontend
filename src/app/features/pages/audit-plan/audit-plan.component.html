@@ -1,4 +1,5 @@
-<div class="main px-2 px-md-5">
+<div class="main">
+<div class=" px-2 px-md-5">
   <div class="d-flex justify-content-between align-items-center w-100">
     <h5 class="mb-0">Audit Plan 2022</h5>
     <div class="d-flex gap-3">
@@ -115,4 +116,144 @@
       </td>
     </ng-template>
   </app-reusable-table>
+</div>
+
+
+<div class="second-table py-3  px-2 px-md-5">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="mb-0">Audits added during the year</h5>
+    <div class="">
+      <app-search-input></app-search-input>
+  </div>
+</div>
+<div class="mt-5">
+  <app-reusable-table [tableData]="auditData">
+    <ng-template #headers>
+      <th>
+        <span>Department</span>
+      </th>
+      <th>
+        <span>Audit Title</span>
+      </th>
+      <th>
+        <span>Proposed Timing</span>
+      </th>
+      <th>
+        <span>Date Added</span>
+      </th>
+      <th>
+        <span>Status</span>
+      </th>
+      <th>
+        <span>Action</span>
+      </th>
+    </ng-template>
+
+    <ng-template #rows let-tableRow>
+      <td>
+        {{ tableRow.department }}
+      </td>
+      <td>
+        {{ tableRow.title }}
+      </td>
+      <td>
+        {{ tableRow.proposedTiming }}
+      </td>
+      <td>
+        {{ tableRow.changesToPT }}
+      </td>
+      <td>
+        <span class="badge bg-gray px-2 py-1 rounded-pill">
+          <span
+          class="rounded-circle d-inline-block mr-2 dot"
+          [ngClass]="{
+            'bg-primary': tableRow.status === 'Planning',
+            'bg-success': tableRow.status === 'Fieldwork',
+            'bg-danger': tableRow.status === 'Not started'
+          }"
+        ></span>
+          {{ tableRow.status }}
+        </span>
+      </td>
+      <td>
+        <div class="dropdown">
+          <a
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-three-dots-vertical"></i>
+          </a>
+
+          <ul class="dropdown-menu">
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="viewAudit()"
+                href="javascript:void(0)"
+              >
+                <small> Edit Audit </small>
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="removeAudit()"
+                href="javascript:void(0)"
+              >
+                <small> Remove  Audit </small>
+              </a>
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                (click)="viewAudit()"
+                href="javascript:void(0)"
+              >
+                <small> Update Status </small>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </ng-template>
+  </app-reusable-table>
+</div>
+</div>
+<div class="second-table py-3  px-2 px-md-5">
+  <div class="d-flex justify-content-between align-items-center w-100">
+    <h5 class="mb-0">Audits removed during the year</h5>
+    <div class="">
+      <app-search-input></app-search-input>
+  </div>
+</div>
+<div class="mt-5">
+  <app-reusable-table [tableData]="auditData">
+    <ng-template #headers>
+      <th>
+        <span>Department</span>
+      </th>
+      <th>
+        <span>Audit Title</span>
+      </th>
+      <th>
+        <span>Date Removed</span>
+      </th>
+    </ng-template>
+
+    <ng-template #rows let-tableRow>
+      <td>
+        {{ tableRow.department }}
+      </td>
+      <td>
+        {{ tableRow.title }}
+      </td>
+      <td>
+        {{ tableRow.proposedTiming }}
+      </td>
+
+    </ng-template>
+  </app-reusable-table>
+</div>
 </div>
