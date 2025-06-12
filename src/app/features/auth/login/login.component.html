@@ -14,10 +14,10 @@
       </p>
     </div>
 
-    <form [formGroup]="LoginForm">
+    <form [formGroup]="LoginForm" (ngSubmit)="Login(LoginForm.value)">
       <div class="mb-3">
         <app-text-input
-          [controlName]="'email'"
+          [controlName]="'emailAddress'"
           [placeholder]="'Email Address'"
           [type]="'email'"
           [formGroup]="LoginForm"
@@ -40,7 +40,16 @@
       </div>
 
       <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-primary submit-btn">Login</button>
+        <button
+          type="submit"
+          class="btn btn-primary submit-btn"
+          [disabled]="LoginForm.invalid"
+        >
+          <div class="spinner-border" role="status" *ngIf="loading">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <ng-container *ngIf="!loading">Login</ng-container>
+        </button>
       </div>
     </form>
 
