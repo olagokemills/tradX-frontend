@@ -17,8 +17,16 @@
     <form [formGroup]="SignUpForm" (ngSubmit)="Register(SignUpForm.value)">
       <div class="mb-3">
         <app-text-input
-          [controlName]="'fullName'"
-          [placeholder]="'Full Name'"
+          [controlName]="'firstName'"
+          [placeholder]="'First Name'"
+          [type]="'text'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'lastName'"
+          [placeholder]="'Last Name'"
           [type]="'text'"
           [formGroup]="SignUpForm"
         ></app-text-input>
@@ -34,7 +42,7 @@
 
       <div class="mb-3">
         <app-text-input
-          [controlName]="'email'"
+          [controlName]="'emailAddress'"
           [placeholder]="'Email Address'"
           [type]="'email'"
           [formGroup]="SignUpForm"

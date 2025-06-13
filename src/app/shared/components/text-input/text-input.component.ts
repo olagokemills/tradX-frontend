@@ -12,6 +12,7 @@ export class TextInputComponent {
   @Input() type: string = 'text';
   @Input() formGroup!: FormGroup;
   @Input() iconSrc: string = '';
+  isPasswordVisible: boolean = false;
   constructor() {}
   ngOnInit(): void {}
 
@@ -31,8 +32,16 @@ export class TextInputComponent {
         return 'This field is required.';
       } else if (control.errors?.['pattern']) {
         return 'Invalid format.';
-      } // Add more error checks as needed
+      } else if (control.errors?.['passwordStrength']) {
+        return 'Password must contain at least 8 characters, including uppercase, lowercase, numbers, and special characters.';
+        // const requiredLength =
+        //   control.errors['passwordStrength'].requiredLength;
+        // return `Minimum length is ${requiredLength} characters.`;
+      }
     }
     return 'Invalid input.';
+  }
+  togglePasswordVisibility() {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 }

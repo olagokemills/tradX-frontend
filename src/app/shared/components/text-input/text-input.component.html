@@ -1,13 +1,29 @@
 <div [formGroup]="formGroup" class="form-group">
   <label for="{{ controlName }}">{{ placeholder }}</label>
+  <ng-container [ngSwitch]="type">
+    <ng-container *ngSwitchCase="'password'">
+      <input
+        [id]="controlName"
+        [formControlName]="controlName"
+        [placeholder]="placeholder"
+        [type]="isPasswordVisible ? 'text' : 'password'"
+        class="form-control mb-2"
+      />
+      <a class="link-text" (click)="togglePasswordVisibility()">
+        {{ isPasswordVisible ? "Hide" : "Show" }}
+      </a>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+      <input
+        [id]="controlName"
+        [formControlName]="controlName"
+        [placeholder]="placeholder"
+        [type]="type"
+        class="form-control"
+      />
+    </ng-container>
+  </ng-container>
 
-  <input
-    [id]="controlName"
-    [formControlName]="controlName"
-    [placeholder]="placeholder"
-    [type]="type"
-    class="form-control"
-  />
   <div *ngIf="shouldDisplayError()" class="text-danger feedback-text">
     <small> {{ getErrorMessage() }}</small>
   </div>

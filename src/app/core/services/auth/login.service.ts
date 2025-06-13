@@ -5,6 +5,8 @@ import { AuthPoints } from 'src/app/shared/constants/services';
 import {
   LoginPayload,
   LoginResponse,
+  OrganizationPayload,
+  OrganizationPayloadResponse,
   RegisterPayload,
   RegisterResponse,
 } from 'src/app/shared/models/appData.model';
@@ -26,6 +28,20 @@ export class LoginService {
     return this.http.post<RegisterResponse>(
       `${this.baseUrl}${AuthPoints.register}`,
       body
+    );
+  }
+
+  GetCountries(): Observable<any> {
+    return this.http.get<RegisterResponse>(
+      `${this.baseUrl}${AuthPoints.getCountries}`
+    );
+  }
+  SaveCompanyOnboardingInfo(
+    data: OrganizationPayload
+  ): Observable<OrganizationPayloadResponse> {
+    return this.http.post<OrganizationPayloadResponse>(
+      `${this.baseUrl}${AuthPoints.organization}`,
+      data
     );
   }
 }

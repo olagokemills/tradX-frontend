@@ -82,3 +82,33 @@ export interface RegisterData {
   expiration: string;
   refreshToken: string;
 }
+
+export interface OrganizationPayload {
+  companyId: string;
+  companyName: string;
+  preferredName: string;
+  exchangeListed: boolean;
+  exchangeName: string;
+  primaryDomain: string;
+  countryId: number;
+  address: string;
+  numberOfEmployees: string;
+  annualTurnOver: string;
+  zipCode: string;
+  industry: string;
+  groupMember: boolean;
+  groupOrganizationName: string;
+  individualCompany: boolean;
+}
+export interface OrganizationResponse {
+  data: OrganizationPayloadResponse;
+  errorMessage: string;
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
+}
+
+export interface OrganizationPayloadResponse {
+  organizationId: string;
+  message: string;
+}

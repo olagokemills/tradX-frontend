@@ -49,7 +49,7 @@ export class ErrorHandlerService implements HttpInterceptor {
           break;
         case 401: // Unauthorized
           this.showNotification('You are not authorized. Please log in again.');
-          this.router.navigate(['/login']);
+          this.router.navigate(['/auth/login']);
           break;
         case 403: // Forbidden
           this.showNotification(
