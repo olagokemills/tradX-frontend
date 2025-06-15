@@ -79,7 +79,7 @@ export class AuditPlanComponent {
     },
   ];
 
-
+  constructor(private auditServices: AuditServices) {}
 
   handleActionClick(action: any) {
     if (action === 'delete') {
@@ -93,7 +93,7 @@ export class AuditPlanComponent {
       width: '500px',
     });
     dialogRef.afterClosed().subscribe((result) => {});
-}
+  }
   viewAudit() {}
   removeAudit() {
     const dialogRef = this.dialog.open(RemoveAuditComponent, {
@@ -108,5 +108,5 @@ export class AuditPlanComponent {
     dialogRef.afterClosed().subscribe((result) => {});
   }
 
-
+  fetchAuditPlans() {}
 }

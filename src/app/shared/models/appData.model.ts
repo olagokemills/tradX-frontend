@@ -112,3 +112,16 @@ export interface OrganizationPayloadResponse {
   organizationId: string;
   message: string;
 }
+
+export interface CreaeteAuditPlanReponse extends GenericApiResponse {
+  data: {
+    message: string;
+  };
+}
+
+export interface GenericApiResponse {
+  errorMessage: string;
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
+}
