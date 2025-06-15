@@ -4,28 +4,36 @@
       <h5 class="fw-bold">Add User</h5>
       <p class="text-muted m-0">Invite a staff to join your company account</p>
     </div>
-    <button
-      type="button"
-      class="btn-close"
-      (click)="onClose()"
-    ></button>
+    <button type="button" class="btn-close" (click)="onClose()"></button>
   </div>
 
   <form
     class="add-user-form"
     [formGroup]="addUserForm"
-    (ngSubmit)="onSubmit(addUserForm)"
+    (ngSubmit)="onSubmit(addUserForm.value)"
   >
     <app-text-input
-      controlName="name"
-      placeholder="Full Name"
+      controlName="firstName"
+      placeholder="First Name"
+      type="text"
+      [formGroup]="addUserForm"
+    ></app-text-input>
+    <app-text-input
+      controlName="lastName"
+      placeholder="Last Name"
       type="text"
       [formGroup]="addUserForm"
     ></app-text-input>
 
     <app-text-input
-      controlName="email"
+      controlName="emailAddress"
       placeholder="Email Address"
+      type="email"
+      [formGroup]="addUserForm"
+    ></app-text-input>
+    <app-text-input
+      controlName="phoneNumber"
+      placeholder="Phone Number"
       type="email"
       [formGroup]="addUserForm"
     ></app-text-input>
@@ -39,11 +47,21 @@
 
     <div>
       <label class="form-label mb-0">Role</label>
-      <select class="form-select" formControlName="role">
+      <select class="form-select" formControlName="organizationRoleId">
         <option value="" disabled selected>Select Role</option>
-        <option value="Head Of Account">Head Of Account</option>
-        <option value="CEO">Chief Executive Officer</option>
-        <option value="Auditor">Auditor</option>
+        <option *ngFor="let item of roles" value="{{ item.id }}">
+          {{ item.roleName }}
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label class="form-label mb-0">Permissions</label>
+      <select class="form-select" formControlName="roleId">
+        <option value="" disabled selected>Select Role</option>
+        <option *ngFor="let item of OrgRoles" [value]="item.roleId">
+          {{ item.roleName }}
+        </option>
       </select>
     </div>
 
@@ -51,13 +69,13 @@
       <label class="form-label mb-0">Department</label>
       <select class="form-select mb-3" formControlName="department">
         <option value="" disabled selected>Select Department</option>
-        <option value="Finance">Finance</option>
-        <option value="Human Resources">Human Resources</option>
-        <option value="IT">IT</option>
+        <option *ngFor="let item of Departments" value="{{ item.id }}">
+          {{ item.name }}
+        </option>
       </select>
     </div>
 
-    <div>
+    <!-- <div>
       <label class="form-label">Permissions</label>
       <div class="form-check mb-3">
         <input type="checkbox" id="selectAll" class="form-check-input" />
@@ -95,14 +113,17 @@
           <label class="form-check-label form-label">{{ item.label }}</label>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <button
+      [disabled]="addUserForm.invalid"
       type="submit"
       class="btn btn-primary mt-3"
-      [disabled]="addUserForm.invalid"
     >
-      Invite User
+      <div class="spinner-border" role="status" *ngIf="loading">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <ng-container *ngIf="!loading"> Invite User</ng-container>
     </button>
   </form>
 </div>

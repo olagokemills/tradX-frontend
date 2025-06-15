@@ -31,3 +31,12 @@ label {
     margin-top: 0.25rem;
   }
 }
+.icon-style{
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: #6c757d;
+}

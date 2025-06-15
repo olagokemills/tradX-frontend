@@ -112,3 +112,68 @@ export interface OrganizationPayloadResponse {
   organizationId: string;
   message: string;
 }
+
+export interface UserData {
+  userId: string;
+  username: string;
+  fullname: string;
+  email: string;
+  permission: string;
+  organizationRole: string;
+  department: string | null;
+  defaultLanguage: string;
+  userStatus: string;
+}
+export interface UserResponse {
+  data: UserData[];
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
+  totalCount: number;
+  totalPages: number;
+  pageSize: number;
+  pageNumber: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+export interface UserPayload {
+  pageNumber: number;
+  pageSize: number;
+  searchQuery: string;
+}
+export interface Role {
+  id: number;
+  roleName: string;
+}
+
+export interface RoleResponse {
+  data: Role[];
+  errorMessage: string;
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
+}
+export interface Department {
+  id: number;
+  name: string;
+}
+
+export interface DepartmentResponse {
+  data: Department[];
+  errorMessage: string;
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
+}
+export interface CreateUserPayload {
+  organizationId: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  countryId: number;
+  phoneNumber: string;
+  roleId: string;
+  organizationRoleId: number;
+  department: string;
+}
+

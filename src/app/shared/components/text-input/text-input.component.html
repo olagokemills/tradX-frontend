@@ -2,17 +2,23 @@
   <label for="{{ controlName }}">{{ placeholder }}</label>
   <ng-container [ngSwitch]="type">
     <ng-container *ngSwitchCase="'password'">
-      <input
-        [id]="controlName"
-        [formControlName]="controlName"
-        [placeholder]="placeholder"
-        [type]="isPasswordVisible ? 'text' : 'password'"
-        class="form-control mb-2"
-      />
-      <a class="link-text" (click)="togglePasswordVisibility()">
-        {{ isPasswordVisible ? "Hide" : "Show" }}
-      </a>
+      <div class="position-relative">
+        <input
+          [id]="controlName"
+          [formControlName]="controlName"
+          [placeholder]="placeholder"
+          [type]="isPasswordVisible ? 'text' : 'password'"
+          class="form-control pe-5" 
+        />
+        <i
+          class="bi"
+          [ngClass]="isPasswordVisible ? 'bi-eye-slash' : 'bi-eye'"
+          (click)="togglePasswordVisibility()"
+    class="icon-style"
+        ></i>
+      </div>
     </ng-container>
+    
     <ng-container *ngSwitchDefault>
       <input
         [id]="controlName"

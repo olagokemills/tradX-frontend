@@ -23,9 +23,9 @@ export class LoginComponent implements OnInit {
     private store: Store,
     private actions$: Actions
   ) {
-    this.actions$.subscribe(action => {
-    console.log('Dispatched Action:', action);
-  });
+    this.actions$.subscribe((action) => {
+      console.log('Dispatched Action:', action);
+    });
   }
   ngOnInit(): void {
     this.LoginForm = this.fb.group({
@@ -47,6 +47,7 @@ export class LoginComponent implements OnInit {
               user: res,
             })
           );
+          this.gVars.router.navigate(['/auth/onboarding']);
         } else {
           this.gVars.toastr.error(res.responseMessage);
         }
