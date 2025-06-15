@@ -1,6 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { LoginService } from 'src/app/core/services/auth/login.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { EncryptionService } from 'src/app/core/utils/encryption.service';
+import { first } from 'rxjs';
+import { Role } from 'src/app/shared/models/appData.model';
+import { UserService } from 'src/app/core/services/users.service';
 @Component({
   selector: 'app-contact-info',
   templateUrl: './contact-info.component.html',
@@ -9,13 +13,51 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class ContactInfoComponent implements OnInit {
   @Output() formSubmit = new EventEmitter<any>();
   @Input() ContactInfo: any | null = null;
+  Details!: any;
   ContactForm!: FormGroup;
-  constructor(private fb: FormBuilder) {}
+  fullName: string = '';
+  roles!: Role[];
+  OrgRoles!: any;
+
+  constructor(
+    private fb: FormBuilder,
+    private api: LoginService,
+    private helper: EncryptionService,
+    private user: UserService
+  ) {
+    this.GetDetails();
+  }
 
   ngOnInit(): void {
     this.populateForm();
+    this.GetOrgRoles();
+    this.GetRoles();
+  }
+  GetDetails() {
+    const details = this.helper.GetItem('user').data;
+    this.fullName = details?.user.fullname;
+    this.Details = details.user;
+    console.log(this.Details, 'details hre');
   }
 
+  GetRoles() {
+    this.user.GetOrgRoles().subscribe({
+      next: (res: any) => {
+        this.roles = res.data;
+        console.log(res, 'roles here');
+      },
+      error: (err) => {},
+    });
+  }
+  GetOrgRoles() {
+    this.user.GetUserRoles().subscribe({
+      next: (res: any) => {
+        this.OrgRoles = res.data;
+        console.log(res, 'roles here');
+      },
+      error: (err) => {},
+    });
+  }
   populateForm() {
     this.ContactForm = this.fb.group({
       fullName: [
@@ -30,21 +72,46 @@ export class ContactInfoComponent implements OnInit {
         this.ContactInfo?.phoneNumber || '',
         [Validators.minLength(6), Validators.required],
       ],
-      role: [
+      roleId: [
         this.ContactInfo?.role || '',
         [Validators.minLength(6), Validators.required],
       ],
+      organizationRoleId: [0, [Validators.minLength(6), Validators.required]],
     });
-    if (this.ContactInfo) {
+
+    if (this.Details?.fullname) {
+      console.log(this.Details, 'details heer');
       this.ContactForm.patchValue({
-        businessName: this.ContactInfo?.businessName || '',
-        businessType: this.ContactInfo?.businessType || '',
-        businessAddress: this.ContactInfo?.businessAddress || '',
-        businessPhone: this.ContactInfo?.businessPhone || '',
+        fullName: this.Details.fullname,
+
+        emailAddress: this.Details.email || '',
+        countryId: 1,
       });
     }
   }
   handleSubmit(data: any) {
+    const payload = {
+      ...data,
+
+      countryId: 1,
+      organizationId: this.Details.organizationId,
+      firstName: this.Details.fullname || '',
+      lastName: this.Details.fullname || '',
+      organizationRoleId: Number(data.organizationRoleId),
+    };
+    //     {
+    //   "organizationId": "string",
+    //   "firstName": "iKvqx.DID.28eMJFkgSvx0O8T2FWuC",
+    //   "lastName": "yCLqh03,fb8GKBpWeJHYosSxbtpbdXyI4BhQ6X3Mecmde",
+    //   "emailAddress": "hDLsX5Sbe@jM:s!FdtoL%II2^c9&OqEdXQ<*[5)8$,W*=^muWD8\\#*|JR%;CM<~dy7FK\\>x.r~xv2vCfLfPwe87yy]Z.v1s-=7=,4r8GPS`Xgb/~U",
+    //   "countryId": 0,
+    //   "phoneNumber": "74289065220",
+    //   "roleId": "string",
+    //   "organizationRoleId": 0
+    // }
+    this.api.saveContactInformation(payload).subscribe((res) => {
+      console.log(res, 'res from contact');
+    });
     this.formSubmit.emit(this.ContactInfo);
   }
 }

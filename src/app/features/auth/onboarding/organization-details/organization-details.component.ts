@@ -13,20 +13,12 @@ export class OrganizationDetailsComponent {
   @Input() OrganizationDetails: any | null = null;
   OrganizationForm!: FormGroup;
   Countries: any;
-  toppingList: string[] = [
-    'NYSE',
-    'NASDAQ',
-    'Tokyo Stock Exchange',
-    'Shanghai Stock Exchange',
-    'Hong Kong Stock Exchange',
-    'London Stock Exchange',
-    'Euronext',
-    'Shenzhen Stock Exchange',
-  ];
+  toppingList: Array<any> = [];
+  OrgId: string = '';
 
   numberOfEmployees: string[] = ['1 - 50', '50 - 100', '101 - 200'];
   annualTurnOver: string[] = ['50m', '100m', '200m'];
-  industry: string[] = ['Banking', 'Agriculture'];
+  industry: Array<any> = [];
   constructor(
     private fb: FormBuilder,
     private helper: EncryptionService,
@@ -36,7 +28,10 @@ export class OrganizationDetailsComponent {
   ngOnInit(): void {
     this.populateForm();
     this.GetCountries();
+    this.GetExchanges();
+    this.GetIndustries();
     console.log(this.helper.GetItem('user'));
+    this.GetDetails();
   }
 
   populateForm() {
@@ -45,8 +40,8 @@ export class OrganizationDetailsComponent {
         this.OrganizationDetails?.companyName || '',
         [Validators.minLength(6), Validators.required],
       ],
-      exchangeName: [],
-      psuedoName: [
+      exchangeList: [],
+      preferredName: [
         this.OrganizationDetails?.psuedoName || '',
         [Validators.minLength(6), Validators.required],
       ],
@@ -58,18 +53,19 @@ export class OrganizationDetailsComponent {
         this.OrganizationDetails?.country || '',
         [Validators.minLength(6), Validators.required],
       ],
-      companyAddress: [
+      address: [
         this.OrganizationDetails?.companyAddress || '',
         [Validators.minLength(6), Validators.required],
       ],
-      postCode: [
+      zipCode: [
         this.OrganizationDetails?.postCode || '',
         [Validators.minLength(6), Validators.required],
       ],
       exchangeListed: [],
+      companyId: this.OrgId,
       numberOfEmployees: [''],
       annualTurnOver: [''],
-      groupMember: [true],
+      groupMember: [false],
       individualCompany: [true],
       industry: [],
     });
@@ -86,18 +82,41 @@ export class OrganizationDetailsComponent {
   get orgForm() {
     return this.OrganizationForm?.controls;
   }
+  GetDetails() {
+    const details = this.helper.GetItem('user').data;
+    this.OrgId = details?.user.organizationId;
+  }
   handleSubmit(data: any) {
     const body = {
       ...this.OrganizationForm.value,
       countryId: Number(this.OrganizationForm.value.countryId),
-      exchangeName: this.OrganizationForm.value.exchangeName.join(', '),
+      companyId: this.OrgId,
+      groupOrganizationName: '',
     };
+    this.api.SaveCompanyOnboardingInfo(body).subscribe((res) => {
+      console.log(res);
+      if (res.isSuccess) {
+        this.formSubmit.emit('success');
+      } else {
+      }
+    });
     this.formSubmit.emit(body);
   }
 
   GetCountries() {
     this.api.GetCountries().subscribe((res) => {
       this.Countries = res.data;
+    });
+  }
+  GetExchanges() {
+    this.api.GetExchanges().subscribe((res) => {
+      this.toppingList = res.data;
+    });
+  }
+
+  GetIndustries() {
+    this.api.GetIndustries().subscribe((res) => {
+      this.industry = res.data;
     });
   }
 }

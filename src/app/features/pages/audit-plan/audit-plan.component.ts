@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { AuditService } from 'src/app/core/services/audit/audit-services.service';
+import { EncryptionService } from 'src/app/core/utils/encryption.service';
 import { AddPlanComponent } from 'src/app/shared/components/modals/audit-plan-modals/add-plan/add-plan.component';
 import { RemoveAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/remove-audit/remove-audit.component';
 import { UpdateStatusComponent } from 'src/app/shared/components/modals/audit-plan-modals/update-status/update-status.component';
@@ -9,77 +11,24 @@ import { UpdateStatusComponent } from 'src/app/shared/components/modals/audit-pl
   templateUrl: './audit-plan.component.html',
   styleUrls: ['./audit-plan.component.scss'],
 })
-export class AuditPlanComponent {
+export class AuditPlanComponent implements OnInit {
   dialog = inject(MatDialog);
+  OrgId: string = '';
   Actions = [
     { label: 'Delete 2022 Audit Plan', value: 'delete' },
     { label: 'Add New Audit Plan', value: 'add' },
   ];
-  Years = [
-    { label: 'Year 2022', value: '2022' },
-    { label: 'Year 2023', value: '2023' },
-    { label: 'Year 2024', value: '2024' },
-  ];
-  auditData = [
-    {
-      department: 'Finance',
-      title: 'Reconciliation',
-      proposedTiming: '25 March',
-      changesToPT: 'N/A',
-      status: 'Planning',
-    },
-    {
-      department: 'HR',
-      title: 'Pay roll',
-      proposedTiming: '18 August',
-      changesToPT: 'N/A',
-      status: 'Fieldwork',
-    },
-    {
-      department: 'Admin',
-      title: 'Property Management',
-      proposedTiming: '18 August',
-      changesToPT: 'N/A',
-      status: 'Not started',
-    },
-    {
-      department: 'Finance',
-      title: 'Fleet Management',
-      proposedTiming: '12 February',
-      changesToPT: '20 May',
-      status: 'Not started',
-    },
-    {
-      department: 'HR',
-      title: 'Fixed Asset Management',
-      proposedTiming: '01 July',
-      changesToPT: 'N/A',
-      status: 'Not started',
-    },
-    {
-      department: 'Finance',
-      title: 'Bank Reconciliation',
-      proposedTiming: '08 June',
-      changesToPT: 'N/A',
-      status: 'Not started',
-    },
-    {
-      department: 'HR',
-      title: 'Pay roll',
-      proposedTiming: '28 November',
-      changesToPT: 'N/A',
-      status: 'Planning',
-    },
-    {
-      department: 'Admin',
-      title: 'Property Management',
-      proposedTiming: '12 May',
-      changesToPT: '1 June',
-      status: 'Not started',
-    },
-  ];
-
-
+  auditYearList: Array<any> = [];
+  selectedAuditYear: { yearName: string; yearId: string } | null = null;
+  auditData = [];
+  currentYearAudit = []
+selectedItem:any;
+  constructor(private api: AuditService, private helper: EncryptionService) {}
+  ngOnInit(): void {
+    this.GetDetails();
+    this.fetchAuditYear();
+    this.fetchYearRelatedAudits();
+  }
 
   handleActionClick(action: any) {
     if (action === 'delete') {
@@ -88,12 +37,17 @@ export class AuditPlanComponent {
       this.addplan();
     }
   }
+
+  GetDetails() {
+    const details = this.helper.GetItem('user').data;
+    this.OrgId = details?.user.organizationId;
+  }
   addplan() {
     const dialogRef = this.dialog.open(AddPlanComponent, {
       width: '500px',
     });
     dialogRef.afterClosed().subscribe((result) => {});
-}
+  }
   viewAudit() {}
   removeAudit() {
     const dialogRef = this.dialog.open(RemoveAuditComponent, {
@@ -108,5 +62,53 @@ export class AuditPlanComponent {
     dialogRef.afterClosed().subscribe((result) => {});
   }
 
-
+  fetchAuditPlans(yearId: string) {
+    this.api.FetchAuditPlans(yearId, this.OrgId).subscribe((res) => {
+      this.auditData = res.data;
+    });
+  }
+  fetchAuditYear() {
+    this.api.GetAudityear().subscribe((res) => {
+      console.log(res);
+      this.auditYearList = res.data;
+      if (res.data.length >= 1) {
+        this.selectedAuditYear = {
+          yearId: res.data[0].yearId,
+          yearName: `${res.data[0].yearName}`,
+        };
+        this.fetchAuditPlans(res.data[0].yearId);
+      }
+    });
+  }
+  handleYearClick(data: any) {
+    this.selectedAuditYear = {
+      yearId: data,
+      yearName: `Year ${data}`,
+    };
+    this.fetchAuditPlans(data);
+  }
+  returnMappedValues(data: Array<any>) {
+    if (data.length) {
+      return [
+        ...data.map((item) => {
+          return {
+            label: item.yearName,
+            value: item.yearId,
+          };
+        }),
+      ];
+    }
+    return [];
+  }
+  fetchYearRelatedAudits() {
+    this.api.FetchCurrentYearAudit(this.OrgId).subscribe((res) => {
+      if (res.isSuccess) {
+      this.currentYearAudit = res.data
+    }
+    });
+  }
+  selectAuditItem(data:any){
+    this.selectedItem = data
+    console.log(data, 'got vsllrf? d')
+  }
 }

@@ -1,81 +1,80 @@
 <div class="p-4 main">
   <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
-      <h5 class="fw-bold">Add User</h5>
-      <p class="text-muted m-0">Invite a staff to join your company account</p>
+      <h5 class="fw-bold">{{ pageName }}</h5>
+      <p class="text-muted m-0">
+        {{
+          pageName == "Edit User"
+            ? "Edit user details"
+            : "Invite a staff to join your company account"
+        }}
+      </p>
     </div>
     <button type="button" class="btn-close" (click)="onClose()"></button>
   </div>
-
-  <form
-    class="add-user-form"
-    [formGroup]="addUserForm"
-    (ngSubmit)="onSubmit(addUserForm.value)"
-  >
-    <app-text-input
-      controlName="firstName"
-      placeholder="First Name"
-      type="text"
+  <ng-container *ngIf="pageName !== 'Toggle User'; else ToggleUser">
+    <form
+      class="add-user-form"
       [formGroup]="addUserForm"
-    ></app-text-input>
-    <app-text-input
-      controlName="lastName"
-      placeholder="Last Name"
-      type="text"
-      [formGroup]="addUserForm"
-    ></app-text-input>
+      (ngSubmit)="onSubmit(addUserForm.value)"
+    >
+      <app-text-input
+        controlName="firstName"
+        placeholder="First Name"
+        type="text"
+        [formGroup]="addUserForm"
+      ></app-text-input>
+      <app-text-input
+        controlName="lastName"
+        placeholder="Last Name"
+        type="text"
+        [formGroup]="addUserForm"
+      ></app-text-input>
 
-    <app-text-input
-      controlName="emailAddress"
-      placeholder="Email Address"
-      type="email"
-      [formGroup]="addUserForm"
-    ></app-text-input>
-    <app-text-input
-      controlName="phoneNumber"
-      placeholder="Phone Number"
-      type="email"
-      [formGroup]="addUserForm"
-    ></app-text-input>
+      <app-text-input
+        controlName="emailAddress"
+        placeholder="Email Address"
+        type="email"
+        [formGroup]="addUserForm"
+      ></app-text-input>
+      <app-text-input
+        controlName="phoneNumber"
+        placeholder="Phone Number"
+        type="email"
+        [formGroup]="addUserForm"
+      ></app-text-input>
 
-    <app-text-input
-      controlName="password"
-      placeholder="Password"
-      type="password"
-      [formGroup]="addUserForm"
-    ></app-text-input>
+      <div>
+        <label class="form-label mb-0">Role</label>
+        <select class="form-select" formControlName="organizationRoleId">
+          <option value="" disabled selected>Select Role</option>
+          <option *ngFor="let item of roles" value="{{ item.id }}">
+            {{ item.roleName }}
+          </option>
+        </select>
+      </div>
 
-    <div>
-      <label class="form-label mb-0">Role</label>
-      <select class="form-select" formControlName="organizationRoleId">
-        <option value="" disabled selected>Select Role</option>
-        <option *ngFor="let item of roles" value="{{ item.id }}">
-          {{ item.roleName }}
-        </option>
-      </select>
-    </div>
+      <div>
+        <label class="form-label mb-0">Permissions</label>
+        <select class="form-select" formControlName="roleId">
+          <option value="" disabled selected>Select Role</option>
+          <option *ngFor="let item of OrgRoles" [value]="item.roleId">
+            {{ item.roleName }}
+          </option>
+        </select>
+      </div>
 
-    <div>
-      <label class="form-label mb-0">Permissions</label>
-      <select class="form-select" formControlName="roleId">
-        <option value="" disabled selected>Select Role</option>
-        <option *ngFor="let item of OrgRoles" [value]="item.roleId">
-          {{ item.roleName }}
-        </option>
-      </select>
-    </div>
+      <div>
+        <label class="form-label mb-0">Department</label>
+        <select class="form-select mb-3" formControlName="department">
+          <option value="" disabled selected>Select Department</option>
+          <option *ngFor="let item of Departments" value="{{ item.id }}">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
 
-    <div>
-      <label class="form-label mb-0">Department</label>
-      <select class="form-select mb-3" formControlName="department">
-        <option value="" disabled selected>Select Department</option>
-        <option *ngFor="let item of Departments" value="{{ item.id }}">
-          {{ item.name }}
-        </option>
-      </select>
-    </div>
-
-    <!-- <div>
+      <!-- <div>
       <label class="form-label">Permissions</label>
       <div class="form-check mb-3">
         <input type="checkbox" id="selectAll" class="form-check-input" />
@@ -115,15 +114,33 @@
       </div>
     </div> -->
 
-    <button
-      [disabled]="addUserForm.invalid"
-      type="submit"
-      class="btn btn-primary mt-3"
-    >
-      <div class="spinner-border" role="status" *ngIf="loading">
-        <span class="visually-hidden">Loading...</span>
+      <button
+        [disabled]="addUserForm.invalid"
+        type="submit"
+        class="btn btn-primary mt-3"
+      >
+        <div class="spinner-border" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <ng-container *ngIf="!loading">
+          {{
+            pageName === "Edit User" ? "Edit User" : "Invite User"
+          }}</ng-container
+        >
+      </button>
+    </form>
+  </ng-container>
+
+  <ng-template #ToggleUser>
+    <div class="d-flex flex-column align-items-center justify-content-center">
+      <i class="bi img-icon text-danger h1 bi-exclamation-circle"> </i>
+      <h6 class="mb-4 text-muted text-center">
+        Are you sure you want to disable this user?
+      </h6>
+      <div class="d-flex gap-3 w-100">
+        <button class="btn btn-primary p-2 flex-fill">Continue</button>
+        <button class="btn btn-outline-danger p-2 flex-fill">Cancel</button>
       </div>
-      <ng-container *ngIf="!loading"> Invite User</ng-container>
-    </button>
-  </form>
+    </div>
+  </ng-template>
 </div>

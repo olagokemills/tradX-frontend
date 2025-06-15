@@ -8,17 +8,17 @@
           [formControlName]="controlName"
           [placeholder]="placeholder"
           [type]="isPasswordVisible ? 'text' : 'password'"
-          class="form-control pe-5" 
+          class="form-control pe-5"
         />
         <i
           class="bi"
           [ngClass]="isPasswordVisible ? 'bi-eye-slash' : 'bi-eye'"
           (click)="togglePasswordVisibility()"
-    class="icon-style"
+          class="icon-style"
         ></i>
       </div>
     </ng-container>
-    
+
     <ng-container *ngSwitchDefault>
       <input
         [id]="controlName"
@@ -26,6 +26,7 @@
         [placeholder]="placeholder"
         [type]="type"
         class="form-control"
+        [disabled]="disabled"
       />
     </ng-container>
   </ng-container>

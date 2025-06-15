@@ -14,8 +14,8 @@
 
       <div class="col-md-6">
         <app-text-input
-          [controlName]="'psuedoName'"
-          [placeholder]="'Pseudo Name'"
+          [controlName]="'preferredName'"
+          [placeholder]="'Preferred Name'"
           [type]="'text'"
           [formGroup]="OrganizationForm"
         ></app-text-input>
@@ -41,8 +41,18 @@
       </div>
 
       <div class="col-md-6">
+        <label class="form-label">Role</label>
+        <select class="form-select" formControlName="countryId">
+          <option selected disabled>Select Option</option>
+          <option *ngFor="let item of Countries" [value]="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
         <app-text-input
-          [controlName]="'companyAddress'"
+          [controlName]="'address'"
           [placeholder]="'Company Address'"
           [type]="'text'"
           [formGroup]="OrganizationForm"
@@ -51,7 +61,7 @@
 
       <div class="col-md-6">
         <app-text-input
-          [controlName]="'postCode'"
+          [controlName]="'zipCode'"
           [placeholder]="'Zip code or Postcode'"
           [type]="'text'"
           [formGroup]="OrganizationForm"
@@ -117,9 +127,9 @@
         >
         <mat-form-field appearance="outline" class="small-height-input">
           <mat-label>Select Stock Exchange</mat-label>
-          <mat-select [formControlName]="'exchangeName'" multiple>
-            <mat-option *ngFor="let topping of toppingList" [value]="topping">{{
-              topping
+          <mat-select [formControlName]="'exchangeList'" multiple>
+            <mat-option *ngFor="let topping of toppingList" [value]="topping.id">{{
+              topping.name
             }}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -159,8 +169,8 @@
         <label class="form-label">Industry</label>
         <select class="form-select" formControlName="industry">
           <option selected disabled>Select Option</option>
-          <option *ngFor="let item of industry" [value]="item">
-            {{ item }}
+          <option *ngFor="let item of industry" [value]="item.id">
+            {{ item.name}}
           </option>
         </select>
       </div>

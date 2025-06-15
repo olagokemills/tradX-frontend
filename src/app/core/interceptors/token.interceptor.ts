@@ -17,7 +17,10 @@ export class TokenInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     console.log('can you see this adeee');
     if (req.method)
-      if (req.url.includes('http://ip-api.com/json') || req.url.includes('https://lab386.com.ng/api/v1/auth/login')) {
+      if (
+        req.url.includes('http://ip-api.com/json') ||
+        req.url.includes('https://lab386.com.ng/api/v1/auth/login')
+      ) {
         // Pass the request as is without any modifications
         return next.handle(req);
       }

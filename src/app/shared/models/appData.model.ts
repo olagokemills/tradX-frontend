@@ -88,7 +88,7 @@ export interface OrganizationPayload {
   companyName: string;
   preferredName: string;
   exchangeListed: boolean;
-  exchangeName: string;
+  exchangeName: [string];
   primaryDomain: string;
   countryId: number;
   address: string;
@@ -109,8 +109,14 @@ export interface OrganizationResponse {
 }
 
 export interface OrganizationPayloadResponse {
-  organizationId: string;
-  message: string;
+  data: {
+    organizationId:string,
+    message: string;
+  },
+  errorMessage: string;
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
 }
 
 export interface UserData {
@@ -148,6 +154,14 @@ export interface Role {
 
 export interface RoleResponse {
   data: Role[];
+}
+export interface CreaeteAuditPlanReponse extends GenericApiResponse {
+  data: {
+    message: string;
+  };
+}
+
+export interface GenericApiResponse {
   errorMessage: string;
   responseMessage: string;
   responseCode: number;
@@ -177,3 +191,23 @@ export interface CreateUserPayload {
   department: string;
 }
 
+export interface ModifyStatusPayload {
+  userId: string;
+  userStatus: string;
+}
+export interface CreateAuditPayload {
+  organizationId: string;
+  departmentId: number;
+  auditTitle: string;
+  proposedTiming: string;
+}
+export  interface UserModel {
+  organizationId: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  countryId: number;
+  phoneNumber: string;
+  roleId: string;
+  organizationRoleId: number;
+}

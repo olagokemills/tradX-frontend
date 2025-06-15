@@ -36,10 +36,23 @@ export class LoginService {
       `${this.baseUrl}${AuthPoints.getCountries}`
     );
   }
+  GetExchanges(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}reference-data/stock-exchanges`);
+  }
+
+  GetIndustries(): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}reference-data/industries`);
+  }
   SaveCompanyOnboardingInfo(
     data: OrganizationPayload
   ): Observable<OrganizationPayloadResponse> {
     return this.http.post<OrganizationPayloadResponse>(
+      `${this.baseUrl}${AuthPoints.organization}`,
+      data
+    );
+  }
+  saveContactInformation(data: any): Observable<any> {
+    return this.http.post<any>(
       `${this.baseUrl}${AuthPoints.organization}`,
       data
     );

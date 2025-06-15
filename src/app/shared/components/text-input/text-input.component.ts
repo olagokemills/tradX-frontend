@@ -12,6 +12,7 @@ export class TextInputComponent {
   @Input() type: string = 'text';
   @Input() formGroup!: FormGroup;
   @Input() iconSrc: string = '';
+  @Input() disabled: boolean = false;
   isPasswordVisible: boolean = false;
   constructor() {}
   ngOnInit(): void {}

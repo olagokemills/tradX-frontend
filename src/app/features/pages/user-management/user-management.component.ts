@@ -3,7 +3,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, Subject, debounceTime, switchMap } from 'rxjs';
 import { UserService } from 'src/app/core/services/users.service';
 import { AddUserModalComponent } from 'src/app/shared/components/modals/add-user-modal/add-user-modal.component';
-import { Role, UserData, UserPayload } from 'src/app/shared/models/appData.model';
+import {
+  Role,
+  UserData,
+  UserPayload,
+} from 'src/app/shared/models/appData.model';
 
 @Component({
   selector: 'app-user-management',
@@ -15,7 +19,6 @@ export class UserManagementComponent implements OnInit {
   searchQuery: string = '';
   UsersList!: UserData[];
   searchSubject: Subject<string> = new Subject();
-
 
   constructor(private api: UserService) {}
   ngOnInit(): void {
@@ -64,13 +67,23 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-
-
-  OpenModal() {
+  OpenModal(item?: any) {
     const dialogRef = this.dialog.open(AddUserModalComponent, {
       width: '500px',
+      data: {
+        userData: item?.body,
+        action: item?.action,
+      },
     });
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      this.GetUsers();
+    });
   }
-  viewUser() {}
+
+  modifyUser(data: UserData) {
+    this.OpenModal({ body: data, action: 'Toggle' });
+  }
+  editUser(data: UserData) {
+    this.OpenModal({ body: data, action: 'Edit' });
+  }
 }

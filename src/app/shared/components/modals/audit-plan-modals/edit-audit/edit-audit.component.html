@@ -1,38 +1,43 @@
 <div class="main ">
-  <h6 class="mb-4 text-muted">Fill details below to add a audit to a plan</h6>
+  <h6 class="mb-4 text-muted">Fix a audit to a plan</h6>
 
-  <form [formGroup]="EditForm" class="d-flex flex-column gap-2 mb-3">
-    <app-select-input
-      [formGroup]="EditForm"
-      [label]="'Department'"
-      [controlName]="'department'"
-      [placeholder]="'Select Status'"
-      [options]="['HR', 'Finance', 'IT']"
-    ></app-select-input>
-    <app-select-input
-      [formGroup]="EditForm"
-      [label]="'Audit Title'"
-      [controlName]="'auditTitle'"
-      [placeholder]="'Select Status'"
-      [options]="['HR', 'Finance', 'IT']"
-    ></app-select-input>
-    <app-select-input
-      [formGroup]="EditForm"
-      [label]="'Audit Type'"
-      [controlName]="'auditType'"
-      [placeholder]="'Select Status'"
-      [options]="['HR', 'Finance', 'IT']"
-    ></app-select-input>
-    <app-select-input
-      [formGroup]="EditForm"
-      [label]="'Proposed Timining'"
-      [controlName]="'proposedTiming'"
-      [placeholder]="'Select Status'"
-      [options]="['HR', 'Finance', 'IT']"
-    ></app-select-input>
+  <form [formGroup]="EditForm" (ngSubmit)="onSubmit(EditForm.value)" class="d-flex flex-column gap-2 mb-3">
+    <div class="mb-3">
+      <label class="form-label">Department</label>
+      <select formControlName="departmentId" class="form-select mb-2 w-100">
+        <option selected disabled>Select option</option>
+        <option *ngFor="let item of Departments" value="{{ item.id }}">
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <app-text-input
+        [controlName]="'auditTitle'"
+        [placeholder]="'Audit Title'"
+        [type]="'email'"
+        [formGroup]="EditForm"
+      ></app-text-input>
+    </div>
+    <div class="mb-3">
+      <app-text-input
+        [controlName]="'proposedTiming'"
+        [placeholder]="'Proposed Timing'"
+        [type]="'date'"
+        [formGroup]="EditForm"
+      ></app-text-input>
+    </div>
+    <div class="w-100">
+      <button
+        type="submit"
+        class="btn save-btn btn-primary w-100"
+        [disabled]="EditForm.invalid"
+      >
+        <div class="spinner-border" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <ng-container *ngIf="!loading"> Add Audit</ng-container>
+      </button>
+    </div>
   </form>
-
-  <div class="w-100">
-    <button class="btn update-btn btn-primary w-100">Update</button>
-  </div>
 </div>
