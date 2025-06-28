@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { PagesComponent } from './pages/pages.component';
 import { SharedModule } from '../shared/shared.module';
+import { DashboardGuard } from '../core/guards/dashboard.guard';
 
 const routes: Routes = [
   {
@@ -14,6 +15,7 @@ const routes: Routes = [
     component: PagesComponent,
     loadChildren: () =>
       import('./pages/pages.module').then((m) => m.PagesModule),
+    canActivate: [DashboardGuard],
   },
 ];
 

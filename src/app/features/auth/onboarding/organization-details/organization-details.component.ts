@@ -13,7 +13,7 @@ export class OrganizationDetailsComponent {
   @Input() OrganizationDetails: any | null = null;
   OrganizationForm!: FormGroup;
   Countries: any;
-  toppingList: Array<any> = [];
+  exchangeList: Array<any> = [];
   OrgId: string = '';
 
   numberOfEmployees: string[] = ['1 - 50', '50 - 100', '101 - 200'];
@@ -30,8 +30,8 @@ export class OrganizationDetailsComponent {
     this.GetCountries();
     this.GetExchanges();
     this.GetIndustries();
-    console.log(this.helper.GetItem('user'));
     this.GetDetails();
+    this.watchExchangeTypes();
   }
 
   populateForm() {
@@ -40,7 +40,7 @@ export class OrganizationDetailsComponent {
         this.OrganizationDetails?.companyName || '',
         [Validators.minLength(6), Validators.required],
       ],
-      exchangeList: [],
+      exchangesList: [],
       preferredName: [
         this.OrganizationDetails?.psuedoName || '',
         [Validators.minLength(6), Validators.required],
@@ -61,22 +61,32 @@ export class OrganizationDetailsComponent {
         this.OrganizationDetails?.postCode || '',
         [Validators.minLength(6), Validators.required],
       ],
-      exchangeListed: [],
-      companyId: this.OrgId,
-      numberOfEmployees: [''],
-      annualTurnOver: [''],
+      exchangeListed: [false],
+      numberOfEmployees: ['', Validators.required],
+      annualTurnOver: ['', Validators.required],
       groupMember: [false],
       individualCompany: [true],
-      industry: [],
+      industry: ['', Validators.required],
+      groupOrganizationName: [''],
     });
     if (this.OrganizationDetails) {
-      this.OrganizationForm.patchValue({
-        businessName: this.OrganizationDetails?.businessName || '',
-        businessType: this.OrganizationDetails?.businessType || '',
-        businessAddress: this.OrganizationDetails?.businessAddress || '',
-        businessPhone: this.OrganizationDetails?.businessPhone || '',
-      });
     }
+  }
+  watchExchangeTypes() {
+    this.OrganizationForm.get('exchangeListed')?.valueChanges.subscribe(
+      (res) => {
+        if (res === true) {
+          this.formSubmit;
+        }
+      }
+    );
+  }
+  watchIsGroupName() {
+    this.OrganizationForm.get('')?.valueChanges.subscribe((res) => {
+      if (res === true) {
+        // this.form;
+      }
+    });
   }
 
   get orgForm() {
@@ -91,8 +101,13 @@ export class OrganizationDetailsComponent {
       ...this.OrganizationForm.value,
       countryId: Number(this.OrganizationForm.value.countryId),
       companyId: this.OrgId,
-      groupOrganizationName: '',
+      exchangesList:
+        this.OrganizationForm.value.exchangesList == null
+          ? [0]
+          : this.OrganizationForm.value.exchangesList,
     };
+    console.log(body);
+    return;
     this.api.SaveCompanyOnboardingInfo(body).subscribe((res) => {
       console.log(res);
       if (res.isSuccess) {
@@ -110,7 +125,7 @@ export class OrganizationDetailsComponent {
   }
   GetExchanges() {
     this.api.GetExchanges().subscribe((res) => {
-      this.toppingList = res.data;
+      this.exchangeList = res.data;
     });
   }
 

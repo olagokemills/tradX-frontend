@@ -8,7 +8,7 @@ import { OrganizationPayload } from 'src/app/shared/models/appData.model';
   styleUrls: ['./onboarding.component.scss'],
 })
 export class OnboardingComponent {
-  pageName: string = '1';
+  pageName: string = '3';
   ratingInfo: any | null = null;
   organizationDetails: any | null = null;
   contactInfo: any | null = null;

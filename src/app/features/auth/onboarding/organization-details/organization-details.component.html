@@ -41,16 +41,6 @@
       </div>
 
       <div class="col-md-6">
-        <label class="form-label">Role</label>
-        <select class="form-select" formControlName="countryId">
-          <option selected disabled>Select Option</option>
-          <option *ngFor="let item of Countries" [value]="item.id">
-            {{ item.name }}
-          </option>
-        </select>
-      </div>
-
-      <div class="col-md-6">
         <app-text-input
           [controlName]="'address'"
           [placeholder]="'Company Address'"
@@ -127,9 +117,9 @@
         >
         <mat-form-field appearance="outline" class="small-height-input">
           <mat-label>Select Stock Exchange</mat-label>
-          <mat-select [formControlName]="'exchangeList'" multiple>
-            <mat-option *ngFor="let topping of toppingList" [value]="topping.id">{{
-              topping.name
+          <mat-select [formControlName]="'exchangesList'" multiple>
+            <mat-option *ngFor="let item of exchangeList" [value]="item.id">{{
+              item.name
             }}</mat-option>
           </mat-select>
         </mat-form-field>
@@ -146,7 +136,8 @@
               type="radio"
               name="groupCompany"
               id="groupYes"
-              value="yes"
+              [value]="true"
+              formControlName="groupMember"
             />
             <label class="form-check-label form-label" for="groupYes"
               >Yes</label
@@ -158,11 +149,21 @@
               type="radio"
               name="groupCompany"
               id="groupNo"
-              value="no"
+              [value]="false"
+              formControlName="groupMember"
             />
             <label class="form-check-label form-label" for="groupNo">No</label>
           </div>
         </div>
+      </div>
+      <div *ngIf="orgForm['groupMember']?.value === 'true'" class="col-md-6">
+        <label class="form-label">If yes, please enter Group Name</label>
+        <app-text-input
+          [controlName]="'groupOrganizationName'"
+          [placeholder]="'Group name'"
+          [type]="'text'"
+          [formGroup]="OrganizationForm"
+        ></app-text-input>
       </div>
 
       <div class="col-md-6">
@@ -170,7 +171,7 @@
         <select class="form-select" formControlName="industry">
           <option selected disabled>Select Option</option>
           <option *ngFor="let item of industry" [value]="item.id">
-            {{ item.name}}
+            {{ item.name }}
           </option>
         </select>
       </div>

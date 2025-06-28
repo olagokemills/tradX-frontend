@@ -33,16 +33,22 @@
       <label class="form-label">Role in Organization</label>
       <select class="form-select" formControlName="roleId">
         <option selected disabled>Select Option</option>
-        <option value={{item.roleId}} *ngFor="let item of OrgRoles">{{item.roleName}}</option>
+        <option value="{{ item.roleId }}" *ngFor="let item of OrgRoles">
+          {{ item.roleName }}
+        </option>
       </select>
     </div>
     <div class="col-md-6">
       <label class="form-label">Permission</label>
       <select class="form-select" formControlName="organizationRoleId">
         <option selected disabled>Select Option</option>
-        <option value={{item.id}} *ngFor="let item of roles">{{item.roleName}}</option>
+        <option value="{{ item.id }}" *ngFor="let item of roles">
+          {{ item.roleName }}
+        </option>
       </select>
     </div>
+
+    <!-- add logo upload here -->
 
     <div class="footer-btn-area">
       <button class="btn btn-primary mt-4">Next</button>

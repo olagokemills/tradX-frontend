@@ -7,6 +7,7 @@ import { GenericService } from 'src/app/core/utils/generic-service.service';
 import { LoginPayload } from 'src/app/shared/models/appData.model';
 import * as AuthActions from '../../../shared/store/auth/auth.actions';
 import { Actions } from '@ngrx/effects';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
     private loginService: LoginService,
     private gVars: GenericService,
     private store: Store,
-    private actions$: Actions
+    private actions$: Actions,
+    private router: Router
   ) {
     this.actions$.subscribe((action) => {
       console.log('Dispatched Action:', action);
@@ -40,7 +42,15 @@ export class LoginComponent implements OnInit {
     this.loginService.LoginUser(data).subscribe(
       (res) => {
         this.loading = false;
+        ///check for redicect url in redirectUrl query param
+        const redirectUrl =
+          this.gVars.router.routerState.snapshot.root.queryParams[
+            'redirectUrl'
+          ];
         if (res.isSuccess) {
+          if (redirectUrl) {
+            this.gVars.router.navigate([redirectUrl]);
+          }
           this.gVars.toastr.success('Login Success');
           this.store.dispatch(
             AuthActions.loginSuccess({
