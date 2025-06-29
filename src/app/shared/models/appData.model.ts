@@ -110,9 +110,9 @@ export interface OrganizationResponse {
 
 export interface OrganizationPayloadResponse {
   data: {
-    organizationId: string,
+    organizationId: string;
     message: string;
-  },
+  };
   errorMessage: string;
   responseMessage: string;
   responseCode: number;
@@ -200,6 +200,7 @@ export interface CreateAuditPayload {
   departmentId: number;
   auditTitle: string;
   proposedTiming: string;
+  auditYear: string;
 }
 export interface UserModel {
   organizationId: string;

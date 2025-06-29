@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private utils: GenericService,
     private store: Store
-  ) { }
+  ) {}
   ngOnInit(): void {
     this.SignUpForm = this.fb.group(
       {
@@ -36,19 +36,26 @@ export class SignupComponent implements OnInit, OnDestroy {
       },
       { validators: passwordMatchValidator() }
     );
-    this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
-      if (signup.response && signup.response.isSuccess) {
-        this.utils.toastr.success(
-          signup.response.responseMessage,
-          'Please proceed to login'
-        );
-        setTimeout(() => {
-          this.utils.router.navigate(['/auth/login']);
-        }, 2000);
+    this.signupSub = this.store.select(selectSignup).subscribe(
+      (signup) => {
+        if (signup.response && signup.response.isSuccess) {
+          this.utils.toastr.success(
+            signup.response.responseMessage,
+            'Please proceed to login'
+          );
+          setTimeout(() => {
+            this.utils.router.navigate(['/auth/login']);
+          }, 2000);
+        }
+      },
+      (error) => {
+        this.loading = false;
+        this.utils.toastr.error(error.responseMessage, 'Error Occurred');
       }
-    });
+    );
   }
   Register(data: RegisterPayload) {
+    this.loading = true;
     this.store.dispatch(AuthActions.signupRequest({ payload: data }));
   }
   ngOnDestroy(): void {

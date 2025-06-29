@@ -47,4 +47,25 @@ export class AuditService {
   // DeleteAuditPlan(data: number) {
   //   return this.http.post<any></any>('', data);
   // }
+
+  FetchAuditYearList(orgId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}audit-plan/audit-year/${orgId}`);
+  }
+
+  createAuditYear({
+    organizationId,
+    year,
+  }: {
+    organizationId: string;
+    year: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/audit-year`, {
+      organizationId,
+      year,
+    });
+  }
+
+  FetchAuditList() {
+    return this.http.get<any>(`${this.baseUrl}audit-plan/audit-list`);
+  }
 }

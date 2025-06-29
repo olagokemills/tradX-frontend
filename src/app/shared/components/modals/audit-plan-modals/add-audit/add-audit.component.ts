@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuditService } from 'src/app/core/services/audit/audit-services.service';
 import { UserService } from 'src/app/core/services/users.service';
 import { EncryptionService } from 'src/app/core/utils/encryption.service';
@@ -20,14 +20,17 @@ export class AddAuditComponent implements OnInit {
   Departments!: Department[];
   OrgId: string = '';
   loading: boolean = false;
-
   constructor(
     private dept: UserService,
     private api: AuditService,
     private fb: FormBuilder,
     private helper: EncryptionService,
-    private utils: GenericService
-  ) {}
+    private utils: GenericService,
+    public dialogRef: MatDialogRef<AddAuditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    console.log(data, 'data from list');
+  }
   ngOnInit(): void {
     this.GetDepts();
     this.GetDetails();
@@ -58,7 +61,15 @@ export class AddAuditComponent implements OnInit {
 
   CreateNewAudit(data: CreateAuditPayload) {
     this.loading = true;
-    this.api.CreateAuditPlan(data).subscribe({
+    const payload: CreateAuditPayload = {
+      departmentId: Number(data.departmentId),
+      auditTitle: data.auditTitle,
+      proposedTiming: new Date(data.proposedTiming).toISOString(),
+      organizationId: this.data.organizationId,
+      auditYear: this.data.auditYear,
+    };
+    console.log(payload, 'payload here');
+    this.api.CreateAuditPlan(payload).subscribe({
       next: (res: any) => {
         this.loading = false;
         if (res.isSuccess) {

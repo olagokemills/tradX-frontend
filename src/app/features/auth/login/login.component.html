@@ -17,14 +17,6 @@
     <form [formGroup]="LoginForm" (ngSubmit)="Login(LoginForm.value)">
       <div class="mb-3">
         <app-text-input
-          [controlName]="'orgCode'"
-          [placeholder]="'Organization Code'"
-          [type]="'text'"
-          [formGroup]="LoginForm"
-        ></app-text-input>
-      </div>
-      <div class="mb-3">
-        <app-text-input
           [controlName]="'emailAddress'"
           [placeholder]="'Email Address'"
           [type]="'email'"
@@ -44,7 +36,7 @@
       <div class="mb-3">
         <app-text-input
           [controlName]="'organizationCode'"
-          [placeholder]="'Organization ID'"
+          [placeholder]="'Organization Code'"
           [type]="'text'"
           [formGroup]="LoginForm"
         ></app-text-input>

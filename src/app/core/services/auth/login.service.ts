@@ -57,4 +57,8 @@ export class LoginService {
       data
     );
   }
+
+  GetOrganizationDetails(userId: string): Observable<string> {
+    return this.http.get<string>(`${this.baseUrl}user/user/${userId}`);
+  }
 }

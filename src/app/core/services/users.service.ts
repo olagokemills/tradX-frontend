@@ -49,4 +49,7 @@ export class UserService {
       body
     );
   }
+  ModifyUserStatus(body: ModifyStatusPayload): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}user/modify-user-status`, body);
+  }
 }

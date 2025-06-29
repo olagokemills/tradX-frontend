@@ -25,6 +25,7 @@ export class AddUserModalComponent implements OnInit {
   OrgRoles: any;
   loading: boolean = false;
   pageName: string = '';
+  userStatus: string = '';
   constructor(
     private fb: FormBuilder,
     public dialogRef: MatDialogRef<AddUserModalComponent>,
@@ -46,11 +47,12 @@ export class AddUserModalComponent implements OnInit {
       emailAddress: ['', [Validators.required, Validators.email]],
       roleId: ['', Validators.required],
       department: ['', Validators.required],
-      organizationId: [this.OrgId],
+      organizationId: [],
       organizationRoleId: ['', Validators.required],
       countryId: [1],
     });
     this.checkPageName(this.data);
+    // console.log(this.s);
   }
 
   checkPageName(data?: { body: any; action: string }) {
@@ -102,17 +104,19 @@ export class AddUserModalComponent implements OnInit {
   }
 
   GetDetails() {
-    const details = this.helper.GetItem('user').data;
-    this.OrgId = details?.user.organizationId;
-    console.log(details, 'details here');
+    const Org = JSON.parse(sessionStorage.getItem('organizationInfo')!);
+    console.log(Org, 'org here');
+    this.OrgId = Org?.data.organizations[0].companyId;
   }
 
   onSubmit(values: CreateUserPayload) {
     const body = {
       ...values,
       organizationRoleId: Number(values.organizationRoleId),
+      organizationId: this.OrgId,
     };
     this.loading = true;
+    console.log(body, 'body here');
     if (this.pageName === 'Edit User') {
       this.modifyUser({ ...body, userId: this.data.userData.userId });
       return;
@@ -145,7 +149,6 @@ export class AddUserModalComponent implements OnInit {
       password: user.password || '',
       roleId: user.roleId || '',
       department: user.department || '',
-      organizationId: this.OrgId,
       organizationRoleId: user.organizationRoleId || '',
       countryId: 1,
     });
@@ -153,12 +156,6 @@ export class AddUserModalComponent implements OnInit {
     this.addUserForm.updateValueAndValidity();
     console.log(this.addUserForm.value);
   }
-
-  // editUser(data:UserData){
-  //      this.api.EditUser(body).subscribe((res) => {
-  //     console.log(res, 'res here');
-  //   });
-  // }
 
   modifyUser(data: any) {
     this.api.ModifyUser(data).subscribe(
@@ -199,6 +196,29 @@ export class AddUserModalComponent implements OnInit {
     );
   }
 
+  onUserStatusChange() {
+    this.loading = true;
+    const body = {
+      userStatus: this.userStatus,
+      userId: this.data.userData.userId,
+    };
+    console.log(body, 'body here');
+    this.api.ModifyUserStatus(body).subscribe(
+      (res) => {
+        this.loading = false;
+        if (res.isSuccess) {
+          this.utils.toastr.success(res.data.message, res.responseMessage);
+          this.dismissModal();
+        } else {
+          this.utils.toastr.error(res.responseMessage);
+        }
+        console.log(res, 'res here');
+      },
+      (err) => {
+        this.loading = false;
+      }
+    );
+  }
   dismissModal() {
     this.dialogRef.close();
   }

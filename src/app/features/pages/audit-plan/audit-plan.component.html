@@ -11,6 +11,7 @@
           (itemClicked)="handleActionClick($event)"
         ></app-dropdown-button>
         <app-dropdown-button
+          *ngIf="auditYearList && auditYearList.length"
           [buttonLabel]="
             selectedAuditYear ? selectedAuditYear.yearName : 'Select Year'
           "
@@ -26,8 +27,7 @@
         <app-search-input></app-search-input>
       </div>
       <button
-        data-bs-toggle="offcanvas"
-        data-bs-target="#addAudit"
+        (click)="openAddAuditModal()"
         class="btn add-btn btn-neutral mt-3 mt-md-0 d-flex align-items-center gap-2"
       >
         <i class="bi bi-plus"></i>
@@ -172,7 +172,7 @@
             {{ tableRow.proposedTiming }}
           </td>
           <td>
-            {{ tableRow.dateAdded || '--' }}
+            {{ tableRow.dateAdded || "--" }}
           </td>
           <td>
             <span class="badge bg-gray px-2 py-1 rounded-pill">
