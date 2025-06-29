@@ -38,6 +38,13 @@ export class SignupComponent implements OnInit, OnDestroy {
     );
     this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
       if (signup.response && signup.response.isSuccess) {
+        // Store the organization ID in localStorage
+        const organizationId = signup.response.data?.organizationId;
+        if (organizationId) {
+          localStorage.setItem('organizationId', organizationId);
+          console.log('Organization ID stored in localStorage after signup:', organizationId);
+        }
+
         this.utils.toastr.success(
           signup.response.responseMessage,
           'Please proceed to login'

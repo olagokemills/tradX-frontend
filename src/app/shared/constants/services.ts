@@ -4,6 +4,7 @@ export const AuthPoints = {
   organization: 'auth/organization',
   contactInfo: 'auth/contact-information',
   getCountries: 'reference-data/countries',
+  logoUpload: 'auth/logo-upload',
 };
 export const EndPoints = {
   getUsers: 'user/users',

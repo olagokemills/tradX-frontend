@@ -52,6 +52,13 @@ export class LoginComponent implements OnInit {
           ];
         if (res.isSuccess) {
           this.gVars.toastr.success('Login Success');
+
+          // Store the organization code from user input in local storage
+          if (data.organizationCode) {
+            localStorage.setItem('organizationCode', data.organizationCode);
+            // console.log('Organization Code stored in localStorage:', data.organizationCode);
+          }
+
           this.store.dispatch(
             AuthActions.loginSuccess({
               user: res,

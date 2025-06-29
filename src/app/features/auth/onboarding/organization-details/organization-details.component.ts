@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { LoginService } from 'src/app/core/services/auth/login.service';
 import { EncryptionService } from 'src/app/core/utils/encryption.service';
+import { OrganizationPayload } from 'src/app/shared/models/appData.model';
 
 @Component({
   selector: 'app-organization-details',
@@ -19,6 +20,7 @@ export class OrganizationDetailsComponent {
   numberOfEmployees: string[] = ['1 - 50', '50 - 100', '101 - 200'];
   annualTurnOver: string[] = ['50m', '100m', '200m'];
   industry: Array<any> = [];
+
   constructor(
     private fb: FormBuilder,
     private helper: EncryptionService,
@@ -35,26 +37,48 @@ export class OrganizationDetailsComponent {
     this.watchGroupMemberChanges();
   }
 
+  private createGroupOrganizationFormGroup(): FormGroup {
+    return this.fb.group({
+      isGroup: [false],
+      groupOrganizationName: ['', Validators.required],
+      // companyRelationType is only used internally to determine isGroup value
+      companyRelationType: ['', Validators.required]
+    });
+  }
+
+  get groupOrganizations() {
+    return this.OrganizationForm.get('groupOrganizations') as FormArray;
+  }
+
+  getGroupOrganizationForm(index: number): FormGroup {
+    return this.groupOrganizations.at(index) as FormGroup;
+  }
+
+  addGroupOrganization() {
+    this.groupOrganizations.push(this.createGroupOrganizationFormGroup());
+  }
+
+  removeGroupOrganization(index: number) {
+    if (this.groupOrganizations.length > 1) {
+      this.groupOrganizations.removeAt(index);
+    }
+  }
+
   private watchGroupMemberChanges() {
     this.OrganizationForm.get('groupMember')?.valueChanges.subscribe((isGroupMember) => {
-      const groupNameControl = this.OrganizationForm.get('groupOrganizationName');
-      const relationTypeControl = this.OrganizationForm.get('companyRelationType');
-
-      // Handle string 'true' and boolean true values
       const isTrue = isGroupMember === 'true';
 
       if (isTrue) {
-        groupNameControl?.setValidators([Validators.required]);
-        relationTypeControl?.setValidators([Validators.required]);
+        // Add default group organization if none exists
+        if (this.groupOrganizations.length === 0) {
+          this.addGroupOrganization();
+        }
       } else {
-        groupNameControl?.clearValidators();
-        relationTypeControl?.clearValidators();
-        groupNameControl?.setValue('');
-        relationTypeControl?.setValue('');
+        // Clear all group organizations when set to false
+        while (this.groupOrganizations.length) {
+          this.groupOrganizations.removeAt(0);
+        }
       }
-
-      groupNameControl?.updateValueAndValidity();
-      relationTypeControl?.updateValueAndValidity();
     });
   }
 
@@ -75,7 +99,7 @@ export class OrganizationDetailsComponent {
       ],
       countryId: [
         this.OrganizationDetails?.country || '',
-        [Validators.minLength(6), Validators.required],
+        [Validators.required],
       ],
       address: [
         this.OrganizationDetails?.companyAddress || '',
@@ -91,8 +115,7 @@ export class OrganizationDetailsComponent {
       groupMember: ['false'],
       individualCompany: [true],
       industry: ['', Validators.required],
-      groupOrganizationName: [''],
-      companyRelationType: [''],
+      groupOrganizations: this.fb.array([])
     });
   }
   private watchExchangeTypes() {
@@ -115,10 +138,11 @@ export class OrganizationDetailsComponent {
     return this.OrganizationForm?.controls;
   }
   GetDetails() {
-    const details = this.helper.GetItem('user').data;
-    this.OrgId = details?.user.organizationId;
+    // Always get orgId from localStorage
+    this.OrgId = localStorage.getItem('organizationId') || '';
   }
   handleSubmit(data: any) {
+    console.log(this.OrganizationForm, 'organization details form data');
     if (!this.OrganizationForm.valid) {
       Object.keys(this.OrganizationForm.controls).forEach(key => {
         const control = this.OrganizationForm.get(key);
@@ -130,18 +154,33 @@ export class OrganizationDetailsComponent {
     }
 
     const formValue = this.OrganizationForm.value;
-    const body = {
-      ...formValue,
-      countryId: Number(formValue.countryId),
+
+    // Create the body object exactly matching the OrganizationPayload interface
+    const body: OrganizationPayload = {
       companyId: this.OrgId,
-      exchangesList: formValue.exchangesList ?? [0],
-      groupMember: formValue.groupMember === 'true',
+      companyName: formValue.companyName,
+      preferredName: formValue.preferredName,
       exchangeListed: formValue.exchangeListed === 'true',
-      ...(formValue.groupMember === 'true' && {
-        groupOrganizationName: formValue.groupOrganizationName,
-        companyRelationType: formValue.companyRelationType
-      })
+      exchangesList: formValue.exchangesList || [],
+      primaryDomain: formValue.primaryDomain,
+      countryId: Number(formValue.countryId),
+      address: formValue.address,
+      numberOfEmployees: formValue.numberOfEmployees,
+      annualTurnOver: formValue.annualTurnOver,
+      zipCode: formValue.zipCode,
+      industry: formValue.industry,
+      groupMember: formValue.groupMember === 'true',
+      individualCompany: formValue.individualCompany,
+      // Map form array to match the GroupOrganization interface exactly
+      groupOrganizations: formValue.groupMember === 'true' ?
+        formValue.groupOrganizations.map((org: any) => ({
+          isGroup: org.companyRelationType === 'main',
+          groupOrganizationName: org.groupOrganizationName
+          // No other properties - strictly following the interface
+        })) : []
     };
+
+    // console.log(body, 'final submission');
 
     this.api.SaveCompanyOnboardingInfo(body).subscribe({
       next: (res) => {

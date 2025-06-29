@@ -3,8 +3,9 @@ import { LoginService } from 'src/app/core/services/auth/login.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EncryptionService } from 'src/app/core/utils/encryption.service';
 import { first } from 'rxjs';
-import { Role } from 'src/app/shared/models/appData.model';
+import { Role, ContactInformationPayload } from 'src/app/shared/models/appData.model';
 import { UserService } from 'src/app/core/services/users.service';
+import { Store } from '@ngrx/store';
 @Component({
   selector: 'app-contact-info',
   templateUrl: './contact-info.component.html',
@@ -25,7 +26,8 @@ export class ContactInfoComponent implements OnInit {
     private fb: FormBuilder,
     private api: LoginService,
     private helper: EncryptionService,
-    private user: UserService
+    private user: UserService,
+    private store: Store
   ) {
     this.GetDetails();
   }
@@ -34,6 +36,14 @@ export class ContactInfoComponent implements OnInit {
     this.populateForm();
     this.GetOrgRoles();
     this.GetRoles();
+    this.getLoginState();
+  }
+
+  getLoginState() {
+    // Subscribe to the auth state from the store
+    this.store.select((state: any) => state['auth']).subscribe(authState => {
+      console.log('Current Auth State:', authState);
+    });
   }
   GetDetails() {
     const details = this.helper.GetItem('user').data;
@@ -83,7 +93,7 @@ export class ContactInfoComponent implements OnInit {
     });
 
     if (this.Details?.fullname) {
-      console.log(this.Details, 'details heer');
+      // console.log(this.Details, 'details heer');
       this.ContactForm.patchValue({
         fullName: this.Details.fullname,
 
@@ -93,41 +103,74 @@ export class ContactInfoComponent implements OnInit {
     }
   }
   handleSubmit(data: any) {
-    const formData = new FormData();
-    const payload = {
-      ...data,
+    // Get organizationId from localStorage or fallback to user details
+    const organizationId = localStorage.getItem('organizationId') || this.Details.organizationId;
+
+    const payload: ContactInformationPayload = {
       countryId: 1,
-      organizationId: this.Details.organizationId,
+      organizationId: organizationId,
       firstName: this.Details.fullname || '',
       lastName: this.Details.fullname || '',
+      emailAddress: data.emailAddress,
+      phoneNumber: data.phoneNumber,
+      roleId: data.roleId,
       organizationRoleId: Number(data.organizationRoleId),
     };
 
-    // Append all form data
-    Object.keys(payload).forEach(key => {
-      if (key !== 'logo') {
-        formData.append(key, payload[key]);
+    // First, save contact information
+    this.api.saveContactInformation(payload).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          // If contact info was saved successfully and we have a logo, upload it
+          if (data.logo) {
+            this.uploadLogo(data.logo, this.Details.organizationId);
+          } else {
+            this.formSubmit.emit('success');
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Error saving contact information:', err);
+        // Do not emit success on error
       }
     });
+  }
 
-    // Append logo if exists
-    if (data.logo) {
-      formData.append('logo', data.logo);
-    }
-    //     {
-    //   "organizationId": "string",
-    //   "firstName": "iKvqx.DID.28eMJFkgSvx0O8T2FWuC",
-    //   "lastName": "yCLqh03,fb8GKBpWeJHYosSxbtpbdXyI4BhQ6X3Mecmde",
-    //   "emailAddress": "hDLsX5Sbe@jM:s!FdtoL%II2^c9&OqEdXQ<*[5)8$,W*=^muWD8\\#*|JR%;CM<~dy7FK\\>x.r~xv2vCfLfPwe87yy]Z.v1s-=7=,4r8GPS`Xgb/~U",
-    //   "countryId": 0,
-    //   "phoneNumber": "74289065220",
-    //   "roleId": "string",
-    //   "organizationRoleId": 0
-    // }
-    this.api.saveContactInformation(payload).subscribe((res) => {
-      console.log(res, 'res from contact');
-    });
-    this.formSubmit.emit(this.ContactInfo);
+  /**
+   * Upload logo as a separate API call
+   */
+  uploadLogo(file: File, organizationId: string) {
+    // Get organizationId from localStorage or use the provided fallback
+    const orgId = localStorage.getItem('organizationCode') || organizationId;
+
+    // Convert the file to base64
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      // Get base64 string without the data:image prefix
+      const base64String = reader.result as string;
+      const base64Content = base64String.split(',')[1]; // Remove the data:image/jpeg;base64, part
+
+      // Call the logo upload API
+      this.api.uploadLogo(
+        orgId,
+        base64Content,
+        file.name
+      ).subscribe({
+        next: (response) => {
+          console.log('Logo uploaded successfully:', response);
+          this.formSubmit.emit('success');
+        },
+        error: (error) => {
+          console.error('Error uploading logo:', error);
+          this.formSubmit.emit(this.ContactInfo);
+        }
+      });
+    };
+    reader.onerror = (error) => {
+      console.error('Error reading file:', error);
+      this.formSubmit.emit(this.ContactInfo);
+    };
   }
   onFileSelected(event: any) {
     const file = event.target.files[0];
