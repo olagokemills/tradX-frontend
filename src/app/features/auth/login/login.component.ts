@@ -34,6 +34,7 @@ export class LoginComponent implements OnInit {
       emailAddress: [],
       password: ['', Validators.required],
       ipAddress: ['1.0.1.1'],
+      orgCode: ['', Validators.required],
     });
   }
 
