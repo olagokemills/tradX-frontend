@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         ///check for redicect url in redirectUrl query param
         const redirectUrl =
           this.gVars.router.routerState.snapshot.root.queryParams[
-          'redirectUrl'
+            'redirectUrl'
           ];
         if (res.isSuccess) {
           this.gVars.toastr.success('Login Success');
@@ -67,7 +67,8 @@ export class LoginComponent implements OnInit {
           if (redirectUrl) {
             this.gVars.router.navigate([redirectUrl]);
           } else {
-            this.gVars.router.navigate(['/auth/onboarding']);
+            this.fetchOrganizationId(res.data.user.userId);
+            // this.gVars.router.navigate(['/auth/onboarding']);
           }
         } else {
           this.gVars.toastr.error(res.responseMessage);
@@ -78,5 +79,16 @@ export class LoginComponent implements OnInit {
         this.loading = false;
       }
     );
+  }
+
+  fetchOrganizationId(userId: string) {
+    this.loginService
+      .GetOrganizationDetails(userId)
+      .pipe(first())
+      .subscribe((orgId) => {
+        console.log('Fetched Organization ID:', orgId);
+        sessionStorage.setItem('organizationInfo', JSON.stringify(orgId));
+        this.gVars.router.navigate(['/auth/onboarding']);
+      });
   }
 }

@@ -13,13 +13,15 @@
 
   <div class="mb-3">
     <label class="form-label">Year</label>
-    <select class="form-select mb-2 w-100">
-      <option selected disabled>Enter year</option>
-      <option>2023</option>
-    </select>
+    <input type="text" class="form-control" [(ngModel)]="year" />
   </div>
 
   <div class="w-100">
-    <button class="btn save-btn btn-primary w-100">Save</button>
+    <button class="btn save-btn btn-primary w-100" (click)="onSave()">
+      <div class="spinner-border" role="status" *ngIf="loading">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <ng-container *ngIf="!loading">Save</ng-container>
+    </button>
   </div>
 </div>

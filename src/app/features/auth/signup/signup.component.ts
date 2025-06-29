@@ -42,7 +42,7 @@ export class SignupComponent implements OnInit, OnDestroy {
         const organizationId = signup.response.data?.organizationId;
         if (organizationId) {
           localStorage.setItem('organizationId', organizationId);
-          console.log('Organization ID stored in localStorage after signup:', organizationId);
+          // console.log('Organization ID stored in localStorage after signup:', organizationId);
         }
 
         this.utils.toastr.success(
@@ -53,9 +53,14 @@ export class SignupComponent implements OnInit, OnDestroy {
           this.utils.router.navigate(['/auth/login']);
         }, 2000);
       }
+      if (signup.error) {
+        this.utils.toastr.error(signup.error, 'Signup Error');
+      }
+      this.loading = false;
     });
   }
   Register(data: RegisterPayload) {
+    this.loading = true;
     this.store.dispatch(AuthActions.signupRequest({ payload: data }));
   }
   ngOnDestroy(): void {
