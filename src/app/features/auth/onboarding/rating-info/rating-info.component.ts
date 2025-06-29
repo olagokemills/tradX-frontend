@@ -323,7 +323,7 @@ export class RatingInfoComponent {
       ],
     },
   ];
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
   ngOnInit(): void {
     this.populateForm();
   }
@@ -444,5 +444,18 @@ export class RatingInfoComponent {
     // );
 
     return { reportConfig, auditConfig };
+  }
+
+  getContrastColor(hexcolor: string): string {
+    // Convert hex to RGB
+    const r = parseInt(hexcolor.slice(1, 3), 16);
+    const g = parseInt(hexcolor.slice(3, 5), 16);
+    const b = parseInt(hexcolor.slice(5, 7), 16);
+
+    // Calculate luminance
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+    // Return black or white based on background brightness
+    return luminance > 0.5 ? '#000000' : '#FFFFFF';
   }
 }

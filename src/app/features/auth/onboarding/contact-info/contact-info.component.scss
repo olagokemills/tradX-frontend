@@ -17,3 +17,80 @@ select {
   font-size: 14px;
 }
 
+.logo-upload-container {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.upload-area {
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover,
+  &.dragover {
+    border-color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+  }
+
+  .upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #6c757d;
+
+    i {
+      color: #0d6efd;
+    }
+  }
+}
+
+.file-input {
+  display: none;
+}
+
+.logo-preview {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: white;
+  }
+
+  .remove-logo {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #fff;
+      transform: scale(1.1);
+    }
+  }
+}
+
+.small {
+  font-size: 0.875rem;
+}

@@ -18,7 +18,6 @@ import { Observable } from 'rxjs';
 export class LoginComponent implements OnInit {
   LoginForm!: FormGroup;
   loading: boolean = false;
-  organizationId$!: Observable<string>;
 
   constructor(
     private fb: FormBuilder,
@@ -36,54 +35,41 @@ export class LoginComponent implements OnInit {
     this.LoginForm = this.fb.group({
       emailAddress: [],
       password: ['', Validators.required],
+      organizationCode: ['', Validators.required],
       ipAddress: ['1.0.1.1'],
     });
-    this.organizationId$ = this.store.select(selectSignupOrganizationId);
   }
 
   Login(data: LoginPayload) {
     this.loading = true;
-    this.organizationId$.pipe(first()).subscribe((orgId) => {
-      // Fallback to localStorage if orgId is not in state
-      let organizationCode = orgId;
-      if (!organizationCode) {
-        organizationCode = localStorage.getItem('signup_organizationId') || '';
-      }
-      // Use only the value after @ if present
-      if (organizationCode && organizationCode.includes('@')) {
-        organizationCode = organizationCode.split('@')[1];
-      }
-      const loginData = { ...data, organizationCode };
-      this.loginService.LoginUser(loginData).subscribe(
-        (res) => {
-          this.loading = false;
-          ///check for redicect url in redirectUrl query param
-          const redirectUrl =
-            this.gVars.router.routerState.snapshot.root.queryParams[
-            'redirectUrl'
-            ];
-          if (res.isSuccess) {
-            // Clear organizationId from localStorage after successful login
-            localStorage.removeItem('signup_organizationId');
-            if (redirectUrl) {
-              this.gVars.router.navigate([redirectUrl]);
-            }
-            this.gVars.toastr.success('Login Success');
-            this.store.dispatch(
-              AuthActions.loginSuccess({
-                user: res,
-              })
-            );
-            this.gVars.router.navigate(['/auth/onboarding']);
+    this.loginService.LoginUser(data).subscribe(
+      (res) => {
+        this.loading = false;
+        ///check for redicect url in redirectUrl query param
+        const redirectUrl =
+          this.gVars.router.routerState.snapshot.root.queryParams[
+          'redirectUrl'
+          ];
+        if (res.isSuccess) {
+          this.gVars.toastr.success('Login Success');
+          this.store.dispatch(
+            AuthActions.loginSuccess({
+              user: res,
+            })
+          );
+          if (redirectUrl) {
+            this.gVars.router.navigate([redirectUrl]);
           } else {
-            this.gVars.toastr.error(res.responseMessage);
+            this.gVars.router.navigate(['/auth/onboarding']);
           }
-          console.log(res);
-        },
-        (err) => {
-          this.loading = false;
+        } else {
+          this.gVars.toastr.error(res.responseMessage);
         }
-      );
-    });
+        console.log(res);
+      },
+      (err) => {
+        this.loading = false;
+      }
+    );
   }
 }

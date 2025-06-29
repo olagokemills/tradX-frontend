@@ -38,14 +38,6 @@ export class SignupComponent implements OnInit, OnDestroy {
     );
     this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
       if (signup.response && signup.response.isSuccess) {
-        const username = signup.response.data?.username;
-        let orgId = '';
-        if (username && username.includes('@')) {
-          orgId = username.split('@')[1];
-        }
-        if (orgId) {
-          localStorage.setItem('signup_organizationId', orgId);
-        }
         this.utils.toastr.success(
           signup.response.responseMessage,
           'Please proceed to login'
