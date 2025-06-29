@@ -40,6 +40,7 @@ export class AddAuditComponent implements OnInit {
       auditTitle: ['', Validators.required],
       proposedTiming: ['', Validators.required],
       organizationId: this.OrgId,
+      auditScopeSummary: ['', Validators.required],
     });
   }
 
@@ -67,6 +68,7 @@ export class AddAuditComponent implements OnInit {
       proposedTiming: new Date(data.proposedTiming).toISOString(),
       organizationId: this.data.organizationId,
       auditYear: this.data.auditYear,
+      auditScopeSummary: data.auditScopeSummary,
     };
     console.log(payload, 'payload here');
     this.api.CreateAuditPlan(payload).subscribe({

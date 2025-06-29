@@ -201,6 +201,7 @@ export interface CreateAuditPayload {
   auditTitle: string;
   proposedTiming: string;
   auditYear: string;
+  auditScopeSummary: string;
 }
 export interface UserModel {
   organizationId: string;
