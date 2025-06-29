@@ -40,3 +40,74 @@ mat-form-field {
 //   overflow-y: scroll;
 //   overflow-x: hidden;
 // }
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-radio-input {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  border: 2px solid #dee2e6;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+
+  &:checked {
+    border-color: #0d6efd;
+    background-color: #0d6efd;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: white;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+  }
+
+  &:hover:not(:checked) {
+    border-color: #0d6efd;
+  }
+}
+
+.custom-radio-label {
+  margin-left: 0.5rem;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+  padding-top: 2px;
+}
+
+// Update form label styles
+.form-label {
+  color: #495057;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+
+  &.mb-2 {
+    margin-bottom: 0.5rem !important;
+  }
+}

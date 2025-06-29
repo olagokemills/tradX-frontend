@@ -42,6 +42,15 @@
       </div>
 
       <div class="mb-3">
+        <app-text-input
+          [controlName]="'organizationCode'"
+          [placeholder]="'Organization ID'"
+          [type]="'text'"
+          [formGroup]="LoginForm"
+        ></app-text-input>
+      </div>
+
+      <div class="mb-3">
         <small href="#" class="text-decoration-none font-semibold pointer"
           >Having trouble in sign in?</small
         >

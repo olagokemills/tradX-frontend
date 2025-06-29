@@ -8,6 +8,8 @@ import { LoginPayload } from 'src/app/shared/models/appData.model';
 import * as AuthActions from '../../../shared/store/auth/auth.actions';
 import { Actions } from '@ngrx/effects';
 import { Router } from '@angular/router';
+import { selectSignupOrganizationId } from 'src/app/shared/store/auth/auth.selectors';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -33,6 +35,7 @@ export class LoginComponent implements OnInit {
     this.LoginForm = this.fb.group({
       emailAddress: [],
       password: ['', Validators.required],
+      organizationCode: ['', Validators.required],
       ipAddress: ['1.0.1.1'],
       orgCode: ['', Validators.required],
     });
@@ -46,19 +49,20 @@ export class LoginComponent implements OnInit {
         ///check for redicect url in redirectUrl query param
         const redirectUrl =
           this.gVars.router.routerState.snapshot.root.queryParams[
-            'redirectUrl'
+          'redirectUrl'
           ];
         if (res.isSuccess) {
-          if (redirectUrl) {
-            this.gVars.router.navigate([redirectUrl]);
-          }
           this.gVars.toastr.success('Login Success');
           this.store.dispatch(
             AuthActions.loginSuccess({
               user: res,
             })
           );
-          this.gVars.router.navigate(['/auth/onboarding']);
+          if (redirectUrl) {
+            this.gVars.router.navigate([redirectUrl]);
+          } else {
+            this.gVars.router.navigate(['/auth/onboarding']);
+          }
         } else {
           this.gVars.toastr.error(res.responseMessage);
         }

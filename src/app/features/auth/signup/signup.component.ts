@@ -1,24 +1,29 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LoginService } from 'src/app/core/services/auth/login.service';
 import { GenericService } from 'src/app/core/utils/generic-service.service';
 import { passwordMatchValidator } from 'src/app/shared/classes/password-match';
 import { passwordValidator } from 'src/app/shared/classes/password-validator';
 import { RegisterPayload } from 'src/app/shared/models/appData.model';
+import { Store } from '@ngrx/store';
+import * as AuthActions from 'src/app/shared/store/auth/auth.actions';
+import { selectSignup } from 'src/app/shared/store/auth/auth.selectors';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
   styleUrls: ['./signup.component.scss', '../login/login.component.scss'],
 })
-export class SignupComponent implements OnInit {
+export class SignupComponent implements OnInit, OnDestroy {
   SignUpForm!: FormGroup;
   loading: boolean = false;
+  signupSub!: Subscription;
+
   constructor(
     private fb: FormBuilder,
-    private loginService: LoginService,
-    private utils: GenericService
-  ) {}
+    private utils: GenericService,
+    private store: Store
+  ) { }
   ngOnInit(): void {
     this.SignUpForm = this.fb.group(
       {
@@ -29,30 +34,24 @@ export class SignupComponent implements OnInit {
         password: ['', passwordValidator],
         confirmPassword: [''],
       },
-
       { validators: passwordMatchValidator() }
     );
+    this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
+      if (signup.response && signup.response.isSuccess) {
+        this.utils.toastr.success(
+          signup.response.responseMessage,
+          'Please proceed to login'
+        );
+        setTimeout(() => {
+          this.utils.router.navigate(['/auth/login']);
+        }, 2000);
+      }
+    });
   }
   Register(data: RegisterPayload) {
-    this.loading = true;
-    this.loginService.Register(data).subscribe(
-      (res) => {
-        this.loading = false;
-        if (res.isSuccess) {
-          this.utils.toastr.success(
-            res.responseMessage,
-            'Please proceed to login'
-          );
-          setTimeout(() => {
-            this.utils.router.navigate(['/auth/login']);
-          }, 2000);
-        }
-
-        console.log(res);
-      },
-      (err) => {
-        this.loading = false;
-      }
-    );
+    this.store.dispatch(AuthActions.signupRequest({ payload: data }));
+  }
+  ngOnDestroy(): void {
+    if (this.signupSub) this.signupSub.unsubscribe();
   }
 }

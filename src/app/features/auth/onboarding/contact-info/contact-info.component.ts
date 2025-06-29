@@ -18,6 +18,8 @@ export class ContactInfoComponent implements OnInit {
   fullName: string = '';
   roles!: Role[];
   OrgRoles!: any;
+  logoPreview: string | null = null;
+  maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
 
   constructor(
     private fb: FormBuilder,
@@ -46,7 +48,7 @@ export class ContactInfoComponent implements OnInit {
         this.roles = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => {},
+      error: (err) => { },
     });
   }
   GetOrgRoles() {
@@ -55,7 +57,7 @@ export class ContactInfoComponent implements OnInit {
         this.OrgRoles = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => {},
+      error: (err) => { },
     });
   }
   populateForm() {
@@ -77,6 +79,7 @@ export class ContactInfoComponent implements OnInit {
         [Validators.minLength(6), Validators.required],
       ],
       organizationRoleId: [0, [Validators.minLength(6), Validators.required]],
+      logo: [null],
     });
 
     if (this.Details?.fullname) {
@@ -90,15 +93,27 @@ export class ContactInfoComponent implements OnInit {
     }
   }
   handleSubmit(data: any) {
+    const formData = new FormData();
     const payload = {
       ...data,
-
       countryId: 1,
       organizationId: this.Details.organizationId,
       firstName: this.Details.fullname || '',
       lastName: this.Details.fullname || '',
       organizationRoleId: Number(data.organizationRoleId),
     };
+
+    // Append all form data
+    Object.keys(payload).forEach(key => {
+      if (key !== 'logo') {
+        formData.append(key, payload[key]);
+      }
+    });
+
+    // Append logo if exists
+    if (data.logo) {
+      formData.append('logo', data.logo);
+    }
     //     {
     //   "organizationId": "string",
     //   "firstName": "iKvqx.DID.28eMJFkgSvx0O8T2FWuC",
@@ -113,5 +128,63 @@ export class ContactInfoComponent implements OnInit {
       console.log(res, 'res from contact');
     });
     this.formSubmit.emit(this.ContactInfo);
+  }
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    this.handleFile(file);
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const element = event.target as HTMLElement;
+    element.classList.add('dragover');
+  }
+
+  onDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const element = event.target as HTMLElement;
+    element.classList.remove('dragover');
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    const element = event.target as HTMLElement;
+    element.classList.remove('dragover');
+
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      this.handleFile(file);
+    }
+  }
+
+  handleFile(file: File) {
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload an image file');
+      return;
+    }
+
+    if (file.size > this.maxFileSize) {
+      alert('File is too large. Maximum size is 2MB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      this.logoPreview = e.target.result;
+      this.ContactForm.patchValue({
+        logo: file,
+      });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeLogo() {
+    this.logoPreview = null;
+    this.ContactForm.patchValue({
+      logo: null,
+    });
   }
 }

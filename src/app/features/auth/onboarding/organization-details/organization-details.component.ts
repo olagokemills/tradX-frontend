@@ -23,7 +23,7 @@ export class OrganizationDetailsComponent {
     private fb: FormBuilder,
     private helper: EncryptionService,
     private api: LoginService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.populateForm();
@@ -32,6 +32,30 @@ export class OrganizationDetailsComponent {
     this.GetIndustries();
     this.GetDetails();
     this.watchExchangeTypes();
+    this.watchGroupMemberChanges();
+  }
+
+  private watchGroupMemberChanges() {
+    this.OrganizationForm.get('groupMember')?.valueChanges.subscribe((isGroupMember) => {
+      const groupNameControl = this.OrganizationForm.get('groupOrganizationName');
+      const relationTypeControl = this.OrganizationForm.get('companyRelationType');
+
+      // Handle string 'true' and boolean true values
+      const isTrue = isGroupMember === 'true';
+
+      if (isTrue) {
+        groupNameControl?.setValidators([Validators.required]);
+        relationTypeControl?.setValidators([Validators.required]);
+      } else {
+        groupNameControl?.clearValidators();
+        relationTypeControl?.clearValidators();
+        groupNameControl?.setValue('');
+        relationTypeControl?.setValue('');
+      }
+
+      groupNameControl?.updateValueAndValidity();
+      relationTypeControl?.updateValueAndValidity();
+    });
   }
 
   populateForm() {
@@ -61,33 +85,31 @@ export class OrganizationDetailsComponent {
         this.OrganizationDetails?.postCode || '',
         [Validators.minLength(6), Validators.required],
       ],
-      exchangeListed: [false],
+      exchangeListed: ['false'],
       numberOfEmployees: ['', Validators.required],
       annualTurnOver: ['', Validators.required],
-      groupMember: [false],
+      groupMember: ['false'],
       individualCompany: [true],
       industry: ['', Validators.required],
       groupOrganizationName: [''],
+      companyRelationType: [''],
     });
-    if (this.OrganizationDetails) {
-    }
   }
-  watchExchangeTypes() {
+  private watchExchangeTypes() {
     this.OrganizationForm.get('exchangeListed')?.valueChanges.subscribe(
-      (res) => {
-        if (res === true) {
-          this.formSubmit;
+      (isListed) => {
+        const exchangesControl = this.OrganizationForm.get('exchangesList');
+        if (isListed === true) {
+          exchangesControl?.setValidators([Validators.required]);
+        } else {
+          exchangesControl?.clearValidators();
+          exchangesControl?.setValue(null);
         }
+        exchangesControl?.updateValueAndValidity();
       }
     );
   }
-  watchIsGroupName() {
-    this.OrganizationForm.get('')?.valueChanges.subscribe((res) => {
-      if (res === true) {
-        // this.form;
-      }
-    });
-  }
+  // Removed duplicate method setupGroupMemberValidation as it's identical to watchGroupMemberChanges
 
   get orgForm() {
     return this.OrganizationForm?.controls;
@@ -97,25 +119,40 @@ export class OrganizationDetailsComponent {
     this.OrgId = details?.user.organizationId;
   }
   handleSubmit(data: any) {
+    if (!this.OrganizationForm.valid) {
+      Object.keys(this.OrganizationForm.controls).forEach(key => {
+        const control = this.OrganizationForm.get(key);
+        if (control?.invalid) {
+          control.markAsTouched();
+        }
+      });
+      return;
+    }
+
+    const formValue = this.OrganizationForm.value;
     const body = {
-      ...this.OrganizationForm.value,
-      countryId: Number(this.OrganizationForm.value.countryId),
+      ...formValue,
+      countryId: Number(formValue.countryId),
       companyId: this.OrgId,
-      exchangesList:
-        this.OrganizationForm.value.exchangesList == null
-          ? [0]
-          : this.OrganizationForm.value.exchangesList,
+      exchangesList: formValue.exchangesList ?? [0],
+      groupMember: formValue.groupMember === 'true',
+      exchangeListed: formValue.exchangeListed === 'true',
+      ...(formValue.groupMember === 'true' && {
+        groupOrganizationName: formValue.groupOrganizationName,
+        companyRelationType: formValue.companyRelationType
+      })
     };
-    console.log(body);
-    return;
-    this.api.SaveCompanyOnboardingInfo(body).subscribe((res) => {
-      console.log(res);
-      if (res.isSuccess) {
-        this.formSubmit.emit('success');
-      } else {
+
+    this.api.SaveCompanyOnboardingInfo(body).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.formSubmit.emit('success');
+        }
+      },
+      error: (error) => {
+        console.error('Error saving company info:', error);
       }
     });
-    this.formSubmit.emit(body);
   }
 
   GetCountries() {
