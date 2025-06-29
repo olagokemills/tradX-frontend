@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { EncryptionService } from '../utils/encryption.service';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  constructor(private helper: EncryptionService) {}
+  constructor(private helper: EncryptionService) { }
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler

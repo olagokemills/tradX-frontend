@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
           ///check for redicect url in redirectUrl query param
           const redirectUrl =
             this.gVars.router.routerState.snapshot.root.queryParams[
-              'redirectUrl'
+            'redirectUrl'
             ];
           if (res.isSuccess) {
             // Clear organizationId from localStorage after successful login
