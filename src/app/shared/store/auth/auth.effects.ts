@@ -4,13 +4,17 @@ import { Store } from "@ngrx/store";
 import { tap, map, withLatestFrom } from "rxjs/operators";
 import * as AuthActions from "./auth.actions";
 import { EncryptionService } from "src/app/core/utils/encryption.service";
+import { LoginService } from "src/app/core/services/auth/login.service";
+import { catchError, exhaustMap } from "rxjs/operators";
+import { of } from "rxjs";
 
 @Injectable()
 export class AuthEffects {
   constructor(
     private actions$: Actions,
     private store: Store,
-    private helper: EncryptionService
+    private helper: EncryptionService,
+    private loginService: LoginService
   ) {}
 
   // Persist all user data to session storage on login success
@@ -45,6 +49,18 @@ export class AuthEffects {
           return AuthActions.clearUser();
         }
       })
+    )
+  );
+
+  signup$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.signupRequest),
+      exhaustMap(({ payload }) =>
+        this.loginService.Register(payload).pipe(
+          map((response) => AuthActions.signupSuccess({ response })),
+          catchError((error) => of(AuthActions.signupFailure({ error })))
+        )
+      )
     )
   );
 

@@ -12,9 +12,8 @@ export interface RatingScale {
 export interface LoginPayload {
   emailAddress: string;
   password: string;
+  organizationCode: string;
   ipAddress: string;
-  firstName?: string;
-  lastName?: string;
 }
 
 export interface LoginResponse {
@@ -76,6 +75,7 @@ export interface RegisterResponse {
 export interface RegisterData {
   organizationId: string;
   userId: string;
+  username: string;
   email: string;
   message: string;
   token: string;
@@ -110,7 +110,7 @@ export interface OrganizationResponse {
 
 export interface OrganizationPayloadResponse {
   data: {
-    organizationId:string,
+    organizationId: string,
     message: string;
   },
   errorMessage: string;
@@ -201,7 +201,7 @@ export interface CreateAuditPayload {
   auditTitle: string;
   proposedTiming: string;
 }
-export  interface UserModel {
+export interface UserModel {
   organizationId: string;
   firstName: string;
   lastName: string;
