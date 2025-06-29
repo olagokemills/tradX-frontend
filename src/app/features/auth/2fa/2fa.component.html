@@ -1,0 +1,56 @@
+<!-- Trusted Advisor 2FA Page -->
+<div class="position-absolute top-0 start-0 p-4">
+  <img src="assets/images/brand/logo.svg" alt="Trusted Advisor" height="30" />
+</div>
+
+<div class="container-fluid vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="card p-5 shadow-sm border-0">
+    <div class="text-start mb-4">
+      <h2 class="fw-bold mb-3">Two-Factor Authentication</h2>
+      <p class="font-semibold mb-0">
+        Please enter the 5-digit verification code sent to {{ emailAddress }}
+      </p>
+    </div>
+
+    <form [formGroup]="otpForm" (ngSubmit)="submitOtp()" class="w-100">
+      <div class="mb-4">
+        <app-digit-input formControlName="otp"></app-digit-input>
+        <div *ngIf="otpForm.get('otp')?.invalid && otpForm.get('otp')?.touched"
+             class="text-danger small text-center mt-2">
+          Please enter all 5 digits of the code.
+        </div>
+      </div>
+
+      <div class="d-grid mb-3">
+        <button type="submit" class="btn btn-primary submit-btn"
+                [disabled]="otpForm.invalid || isLoading">
+          <div class="spinner-border" role="status" *ngIf="isLoading">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <ng-container *ngIf="!isLoading">Verify & Continue</ng-container>
+        </button>
+      </div>
+
+      <div *ngIf="errorMsg" class="alert alert-danger" role="alert">
+        {{ errorMsg }}
+      </div>
+
+      <div class="text-center mt-3">
+        <p class="text-muted small mb-2">Code expires in {{ formatTimeLeft() }}</p>
+        <ng-container *ngIf="!canResend && resendCooldown > 0">
+          <small class="text-muted">Resend available in {{ resendCooldown }}s</small>
+        </ng-container>
+        <!-- <ng-container *ngIf="canResend || resendCooldown === 0">
+          <small class="text-muted">Didn't receive the code?</small>
+          <a (click)="resendCode()" class="fw-bold ms-1 pointer" [class.text-muted]="!canResend" style="cursor: pointer;">
+            Resend Code
+          </a>
+        </ng-container> -->
+        <p class="text-muted small mt-2">
+          <i class="bi bi-info-circle me-1"></i>
+          Check your spam folder if you don't see the code
+        </p>
+      </div>
+    </form>
+  </div>
+</div>

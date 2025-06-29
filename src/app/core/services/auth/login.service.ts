@@ -16,6 +16,7 @@ import {
   RatingsResponse,
   UserResponse,
 } from 'src/app/shared/models/appData.model';
+import { ValidateOtpPayload, ValidateOtpResponse } from 'src/app/shared/models/validate-otp.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -101,6 +102,16 @@ export class LoginService {
   getUserById(userId: string): Observable<UserResponse> {
     return this.http.get<UserResponse>(
       `${this.baseUrl}user/user/${userId}`
+    );
+  }
+
+  /**
+   * Validate OTP for 2FA
+   */
+  validateOtp(payload: ValidateOtpPayload): Observable<ValidateOtpResponse> {
+    return this.http.post<ValidateOtpResponse>(
+      `${this.baseUrl}auth/validate-otp`,
+      payload
     );
   }
 }

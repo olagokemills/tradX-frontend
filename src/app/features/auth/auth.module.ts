@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
 import { MatSelectModule } from '@angular/material/select';
+import { TwoFaComponent } from './2fa/2fa.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,10 @@ const routes: Routes = [
     path: 'onboarding',
     component: OnboardingComponent,
   },
+  {
+    path: '2fa',
+    component: TwoFaComponent,
+  },
 ];
 
 @NgModule({
@@ -40,6 +45,7 @@ const routes: Routes = [
     RatingInfoComponent,
     ContactInfoComponent,
     SubscriptionPlansComponent,
+    TwoFaComponent,
   ],
   imports: [
     CommonModule,
@@ -53,4 +59,4 @@ const routes: Routes = [
     FormsModule,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

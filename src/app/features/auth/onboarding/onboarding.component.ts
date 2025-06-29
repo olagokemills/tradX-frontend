@@ -36,8 +36,8 @@ export class OnboardingComponent {
               localStorage.setItem('organizationId', organizationId);
             }
             if (onboardingCompleted) {
-              // Route to user management if onboarding is completed
-              window.location.href = '/user-management';
+              // Route to 2FA page if onboarding is completed
+              this.router.navigate(['/auth/2fa']);
               return;
             }
             // else, stay on onboarding
