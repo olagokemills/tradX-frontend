@@ -80,4 +80,16 @@ export class AuditService {
       { auditPlanId, proposedTiming }
     );
   }
+  removeAudit({
+    auditId,
+    organizationId,
+  }: {
+    auditId: string;
+    organizationId: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/delete-audit-plan`, {
+      auditId,
+      organizationId,
+    });
+  }
 }

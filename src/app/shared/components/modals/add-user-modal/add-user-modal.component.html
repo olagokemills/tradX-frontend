@@ -37,12 +37,15 @@
         type="email"
         [formGroup]="addUserForm"
       ></app-text-input>
-      <app-text-input
-        controlName="phoneNumber"
-        placeholder="Phone Number"
-        type="email"
-        [formGroup]="addUserForm"
-      ></app-text-input>
+
+      <ng-container *ngIf="pageName !== 'Edit User'">
+        <app-text-input
+          controlName="phoneNumber"
+          placeholder="Phone Number"
+          type="email"
+          [formGroup]="addUserForm"
+        ></app-text-input>
+      </ng-container>
 
       <div>
         <label class="form-label mb-0">Role</label>
@@ -114,11 +117,7 @@
       </div>
     </div> -->
 
-      <button
-        [disabled]="addUserForm.invalid"
-        type="submit"
-        class="btn btn-primary mt-3"
-      >
+      <button type="submit" class="btn btn-primary mt-3">
         <div class="spinner-border" role="status" *ngIf="loading">
           <span class="visually-hidden">Loading...</span>
         </div>

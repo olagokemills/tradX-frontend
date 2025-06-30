@@ -78,9 +78,12 @@ export class AuditPlanComponent implements OnInit {
     });
   }
   viewAudit() {}
-  removeAudit() {
+  removeAudit(data: any) {
     const dialogRef = this.dialog.open(RemoveAuditComponent, {
       width: '500px',
+      data: {
+        auditId: data,
+      },
     });
     dialogRef.afterClosed().subscribe((result) => {});
   }
