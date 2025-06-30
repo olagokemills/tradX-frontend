@@ -100,12 +100,12 @@ export class AddAuditComponent implements OnInit {
     if (this.AddAuditForm.invalid) return;
     const formValue = this.AddAuditForm.value;
     if (this.data?.mode === 'edit' && this.data?.audit) {
-      // Edit mode: call update API
+      // Edit mode: call update API with only required fields
       const payload = {
-        ...this.data.audit,
-        ...formValue,
-        organizationId: this.data.organizationId,
-        auditYear: this.data.auditYear,
+        auditPlanId: this.data.audit.auditPlanId,
+        auditTitle: formValue.auditTitle,
+        departmentId: Number(formValue.departmentId),
+        status: this.data.audit.status,
         proposedTiming: new Date(formValue.proposedTiming).toISOString(),
       };
       this.loading = true;

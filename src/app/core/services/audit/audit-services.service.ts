@@ -33,7 +33,13 @@ export class AuditService {
     );
   }
 
-  ModifyAudit(data: CreateAuditPayload): Observable<any> {
+  ModifyAudit(data: {
+    auditPlanId: string;
+    auditTitle: string;
+    departmentId: number;
+    status: string;
+    proposedTiming: string;
+  }): Observable<any> {
     return this.http.post<any>(
       `${this.baseUrl}${AuditPoints.modifyAudit}`,
       data
