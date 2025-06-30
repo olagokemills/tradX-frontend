@@ -8,17 +8,25 @@
 >
   <div class="card p-5 shadow-sm border-0">
     <div class="text-start mb-4">
-      <h2 class="fw-bold mb-2">Register</h2>
+      <h2 class="fw-bold mb-3">Register</h2>
       <p class="text-muted mb-0">
         Hey, Fill your details to get started with account creation
       </p>
     </div>
 
-    <form [formGroup]="SignUpForm">
+    <form [formGroup]="SignUpForm" (ngSubmit)="Register(SignUpForm.value)">
       <div class="mb-3">
         <app-text-input
-          [controlName]="'fullName'"
-          [placeholder]="'Firstname Lastname'"
+          [controlName]="'firstName'"
+          [placeholder]="'First Name'"
+          [type]="'text'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'lastName'"
+          [placeholder]="'Last Name'"
           [type]="'text'"
           [formGroup]="SignUpForm"
         ></app-text-input>
@@ -34,7 +42,7 @@
 
       <div class="mb-3">
         <app-text-input
-          [controlName]="'email'"
+          [controlName]="'emailAddress'"
           [placeholder]="'Email Address'"
           [type]="'email'"
           [formGroup]="SignUpForm"
@@ -49,9 +57,26 @@
           [formGroup]="SignUpForm"
         ></app-text-input>
       </div>
+      <div class="mb-3">
+        <app-text-input
+          [controlName]="'confirmPassword'"
+          [placeholder]="'Confirm Password'"
+          [type]="'password'"
+          [formGroup]="SignUpForm"
+        ></app-text-input>
+      </div>
 
       <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-primary">Create Account</button>
+        <button
+          type="submit"
+          class="btn btn-primary submit-btn"
+          [disabled]="SignUpForm.invalid"
+        >
+          <div class="spinner-border" role="status" *ngIf="loading">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <ng-container *ngIf="!loading"> Create Account</ng-container>
+        </button>
       </div>
     </form>
 

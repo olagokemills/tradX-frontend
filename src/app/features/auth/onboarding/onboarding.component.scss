@@ -6,6 +6,8 @@
     padding: 1rem;
     margin-bottom: 1rem;
     border-radius: 10px;
+    transition: background-color 0.4s ease, box-shadow 0.3s ease,
+      transform 0.3s ease;
     &__title {
       display: flex;
       justify-content: space-between;
@@ -24,6 +26,7 @@
       border-radius: 10px;
     }
     &__description {
+      display: none;
       margin-top: 0.5rem;
       font-size: 12px;
       color: #6b7280;
@@ -31,6 +34,10 @@
       padding-right: 0.75rem;
       margin-bottom: 0;
       font-weight: 400;
+      &.active {
+        display: flex;
+        color: #fff;
+      }
     }
   }
 }

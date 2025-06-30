@@ -1,0 +1,27 @@
+<div class="main container">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">Add New Audit Plan</h5>
+    <button
+      (click)="onClose()"
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <h6 class="mb-4 text-muted">Fill details below</h6>
+
+  <div class="mb-3">
+    <label class="form-label">Year</label>
+    <input type="text" class="form-control" [(ngModel)]="year" />
+  </div>
+
+  <div class="w-100">
+    <button class="btn save-btn btn-primary w-100" (click)="onSave()">
+      <div class="spinner-border" role="status" *ngIf="loading">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <ng-container *ngIf="!loading">Save</ng-container>
+    </button>
+  </div>
+</div>

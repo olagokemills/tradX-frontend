@@ -1,0 +1,103 @@
+.main-header {
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  z-index: 1040;
+}
+
+.logo {
+  width: 6.5rem;
+  animation: pop 0.5s ease;
+}
+
+input {
+  font-size: 14px;
+  &::placeholder {
+    color: #b2b2b2 !important;
+    font-size: 14px;
+  }
+}
+
+.brand-text {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.nav-links .nav-item {
+  color:black;
+  font-size: 14px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.nav-links .nav-item:hover {
+  background: #f1f1f1;
+}
+
+.nav-links .active {
+  background: #e1eae6;
+}
+
+.search-box {
+  border: 1px solid #cac9c9;
+  border-radius: 6px;
+  padding: 6px 9px;
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  background: transparent;
+  margin-left: 6px;
+  font-size: 14px;
+}
+
+.icon-btn {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.profile {
+  background: #f1f1f1;
+  color: #b2b2b2;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.mobile-link {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  cursor: pointer;
+}
+a {
+  color: black !important;
+  text-decoration: none !important;
+}
+@keyframes pop {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

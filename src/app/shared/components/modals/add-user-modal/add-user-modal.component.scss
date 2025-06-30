@@ -1,0 +1,21 @@
+.main {
+  height: fit-content;
+  max-height: 70vh;
+  overflow-y: scroll;
+  .add-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  select {
+    padding: 10px;
+    font-size: 14px;
+  }
+  .form-label {
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+}
+.img-icon {
+  font-size: 24px;
+}

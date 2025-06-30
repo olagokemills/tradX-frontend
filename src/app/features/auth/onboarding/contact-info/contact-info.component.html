@@ -1,5 +1,5 @@
-<h5 class="fw-bold mb-4">Organization Details</h5>
-<form [formGroup]="ContactForm">
+<h5 class="fw-bold mb-4">Contact Information</h5>
+<form (ngSubmit)="handleSubmit(ContactForm.value)" [formGroup]="ContactForm">
   <div class="row g-4">
     <div class="col-md-6">
       <app-text-input
@@ -7,6 +7,7 @@
         [placeholder]="'Full Name'"
         [type]="'text'"
         [formGroup]="ContactForm"
+        [disabled]="true"
       ></app-text-input>
     </div>
 
@@ -16,6 +17,7 @@
         [placeholder]="'Email Address'"
         [type]="'email'"
         [formGroup]="ContactForm"
+        [disabled]="true"
       ></app-text-input>
     </div>
 
@@ -27,12 +29,61 @@
         [formGroup]="ContactForm"
       ></app-text-input>
     </div>
-
     <div class="col-md-6">
       <label class="form-label">Role in Organization</label>
-      <select class="form-select">
+      <select class="form-select" formControlName="roleId">
         <option selected disabled>Select Option</option>
+        <option value="{{ item.roleId }}" *ngFor="let item of OrgRoles">
+          {{ item.roleName }}
+        </option>
       </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Permission</label>
+      <select class="form-select" formControlName="organizationRoleId">
+        <option selected disabled>Select Option</option>
+        <option value="{{ item.id }}" *ngFor="let item of roles">
+          {{ item.roleName }}
+        </option>
+      </select>
+    </div>
+
+    <div class="col-12">
+      <label class="form-label">Company Logo</label>
+      <div class="logo-upload-container">
+        <div class="logo-preview" *ngIf="logoPreview">
+          <img [src]="logoPreview" alt="Company logo preview">
+          <button type="button" class="remove-logo" (click)="removeLogo()">
+            <i class="bi bi-x"></i>
+          </button>
+        </div>
+        <div class="upload-area" *ngIf="!logoPreview"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)">
+          <input
+            type="file"
+            #fileInput
+            (change)="onFileSelected($event)"
+            accept="image/*"
+            class="file-input"
+            [formControlName]="'logo'"
+          >
+          <div class="upload-content">
+            <i class="bi bi-cloud-upload fs-3 mb-2"></i>
+            <p class="mb-1">Drag and drop your logo here</p>
+            <p class="text-muted small">or</p>
+            <button type="button" class="btn btn-outline-primary btn-sm" (click)="fileInput.click()">
+              Choose File
+            </button>
+            <p class="mt-2 text-muted small">Supported formats: PNG, JPG, JPEG (max 2MB)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-btn-area">
+      <button class="btn btn-primary mt-4">Next</button>
     </div>
   </div>
 </form>

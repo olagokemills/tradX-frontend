@@ -1,0 +1,54 @@
+<div class="main">
+  <h6 class="mb-4 text-muted">Fill details below</h6>
+  <form
+    (ngSubmit)="CreateNewAudit(AddAuditForm.value)"
+    [formGroup]="AddAuditForm"
+  >
+    <div class="mb-3">
+      <label class="form-label">Department</label>
+      <select formControlName="departmentId" class="form-select mb-2 w-100">
+        <option selected disabled>Select option</option>
+        <option *ngFor="let item of Departments" value="{{ item.id }}">
+          {{ item.name }}
+        </option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <app-text-input
+        [controlName]="'auditTitle'"
+        [placeholder]="'Audit Title'"
+        [type]="'email'"
+        [formGroup]="AddAuditForm"
+      ></app-text-input>
+    </div>
+    <div class="mb-3">
+      <app-text-input
+        [controlName]="'proposedTiming'"
+        [placeholder]="'Proposed Timing'"
+        [type]="'date'"
+        [formGroup]="AddAuditForm"
+      ></app-text-input>
+    </div>
+    <div class="mb-3">
+      <app-text-input
+        [controlName]="'auditScopeSummary'"
+        [placeholder]="'Audit Scope Summary'"
+        [type]="'text'"
+        [formGroup]="AddAuditForm"
+      ></app-text-input>
+    </div>
+
+    <div class="w-100">
+      <button
+        type="submit"
+        class="btn save-btn btn-primary w-100"
+        [disabled]="AddAuditForm.invalid"
+      >
+        <div class="spinner-border" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <ng-container *ngIf="!loading"> Add Audit</ng-container>
+      </button>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,9 @@
+<div class="search-box d-flex">
+  <img src="assets/images/utils/search.svg" alt="search" />
+  <input
+    [(ngModel)]="searchTerm"
+    (input)="onSearch()"
+    type="text"
+    placeholder="Search"
+  />
+</div>

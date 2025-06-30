@@ -8,7 +8,14 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { OrganizationDetailsComponent } from './onboarding/organization-details/organization-details.component';
 import { RatingInfoComponent } from './onboarding/rating-info/rating-info.component';
 import { ContactInfoComponent } from './onboarding/contact-info/contact-info.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SubscriptionPlansComponent } from './onboarding/subscription-plans/subscription-plans.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
+import { MatSelectModule } from '@angular/material/select';
+import { TwoFaComponent } from './2fa/2fa.component';
 
 const routes: Routes = [
   {
@@ -23,6 +30,10 @@ const routes: Routes = [
     path: 'onboarding',
     component: OnboardingComponent,
   },
+  {
+    path: '2fa',
+    component: TwoFaComponent,
+  },
 ];
 
 @NgModule({
@@ -33,12 +44,19 @@ const routes: Routes = [
     OrganizationDetailsComponent,
     RatingInfoComponent,
     ContactInfoComponent,
+    SubscriptionPlansComponent,
+    TwoFaComponent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     SharedModule,
     ReactiveFormsModule,
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    FormsModule,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

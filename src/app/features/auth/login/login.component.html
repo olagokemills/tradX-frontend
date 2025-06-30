@@ -8,16 +8,16 @@
 >
   <div class="card p-5 shadow-sm border-0">
     <div class="text-start mb-4">
-      <h2 class="fw-bold mb-2">Login</h2>
-      <p class="text-muted mb-0">
+      <h2 class="fw-bold mb-3">Login</h2>
+      <p class="font-semibold mb-0">
         Hey, Enter your details to get sign in to your account
       </p>
     </div>
 
-    <form [formGroup]="LoginForm">
+    <form [formGroup]="LoginForm" (ngSubmit)="Login(LoginForm.value)">
       <div class="mb-3">
         <app-text-input
-          [controlName]="'email'"
+          [controlName]="'emailAddress'"
           [placeholder]="'Email Address'"
           [type]="'email'"
           [formGroup]="LoginForm"
@@ -34,13 +34,31 @@
       </div>
 
       <div class="mb-3">
-        <small href="#" class="text-decoration-none pointer"
+        <app-text-input
+          [controlName]="'organizationCode'"
+          [placeholder]="'Organization Code'"
+          [type]="'text'"
+          [formGroup]="LoginForm"
+        ></app-text-input>
+      </div>
+
+      <div class="mb-3">
+        <small href="#" class="text-decoration-none font-semibold pointer"
           >Having trouble in sign in?</small
         >
       </div>
 
       <div class="d-grid mb-3">
-        <button type="submit" class="btn btn-primary">Login</button>
+        <button
+          type="submit"
+          class="btn btn-primary submit-btn"
+          [disabled]="LoginForm.invalid"
+        >
+          <div class="spinner-border" role="status" *ngIf="loading">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <ng-container *ngIf="!loading">Login</ng-container>
+        </button>
       </div>
     </form>
 

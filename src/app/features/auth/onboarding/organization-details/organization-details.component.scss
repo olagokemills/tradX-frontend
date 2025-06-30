@@ -1,9 +1,130 @@
 .footer-btn-area {
   display: flex;
   justify-content: flex-end;
-  margin-top: 5rem;
+  margin-top: 2rem;
   .btn {
     min-width: 200px;
     margin-left: 1rem;
+  }
+}
+
+.form-select {
+  padding: 10px;
+  font-size: 14px;
+}
+.form-label {
+  font-size: 14px;
+  margin: 0;
+}
+input {
+  padding: 10px;
+  font-size: 14px;
+}
+mat-form-field {
+  width: 100%;
+  height: 43px;
+}
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
+  padding: 0.5em;
+}
+.small-height-input {
+  max-height: 46px;
+  font-size: 12px !important; // decrease the font size  to set height
+  .mat-input-element {
+    font-size: 16px !important; //increase the size of input font
+  }
+}
+
+// .form-container-section {
+//   height: 100vh;
+//   overflow-y: scroll;
+//   overflow-x: hidden;
+// }
+
+.group-organizations-container {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.group-organization-item {
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.custom-radio {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+
+.custom-radio-input {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  border: 2px solid #dee2e6;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+
+  &:checked {
+    border-color: #0d6efd;
+    background-color: #0d6efd;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: white;
+    }
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25);
+  }
+
+  &:hover:not(:checked) {
+    border-color: #0d6efd;
+  }
+}
+
+.custom-radio-label {
+  margin-left: 0.5rem;
+  font-size: 14px;
+  color: #495057;
+  cursor: pointer;
+  padding-top: 2px;
+}
+
+// Update form label styles
+.form-label {
+  color: #495057;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+
+  &.mb-2 {
+    margin-bottom: 0.5rem !important;
   }
 }

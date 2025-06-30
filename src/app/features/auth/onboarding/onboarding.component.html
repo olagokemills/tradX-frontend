@@ -1,5 +1,15 @@
+<!-- Loading Spinner -->
+<div
+  *ngIf="isLoading"
+  class="d-flex justify-content-center align-items-center min-vh-100"
+>
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+
 <!-- Main Content -->
-<div class="container">
+<div class="container" *ngIf="!isLoading">
   <div class="d-flex justify-content-between align-items-center py-3">
     <img src="assets/images/brand/logo.svg" alt="Trusted Advisor" height="30" />
     <button class="btn btn-outline-dark logout-btn">
@@ -11,40 +21,51 @@
   </div>
   <div class="row mt-4 gap-5">
     <!-- Sidebar -->
-    <div class="col-md-4">
+    <div class="col-md-4 mt-2">
       <p class="text-muted mb-1">Welcome Layar Pan</p>
       <h5 class="fw-bold">Complete account setup</h5>
 
       <div class="step-list mt-4">
-        <div class="step-item">
-          <div class="step-item__title completed">
+        <div
+          [class.active]="pageName === '1'"
+          (click)="handlePageChange('1')"
+          class="step-item"
+        >
+          <div class="step-item__title current">
             <strong>1. Organization Details</strong>
-
             <i class="bi bi-check-circle"></i>
           </div>
-          <p class="step-item__description">
+          <p [class.active]="pageName === '1'" class="step-item__description">
             To create an account for your organization kindly fill the
             information
           </p>
         </div>
-        <div class="step-item active">
+        <div
+          [class.active]="pageName === '2'"
+          (click)="handlePageChange('2')"
+          class="step-item"
+        >
           <div class="step-item__title current">
             <strong>2. Contact Information</strong>
 
             <i class="bi bi-check-circle"></i>
           </div>
-          <p class="step-item__description">
+          <p [class.active]="pageName === '2'" class="step-item__description">
             To create an account for your organization kindly fill the
             information
           </p>
         </div>
-        <div class="step-item">
+        <div
+          [class.active]="pageName === '3'"
+          (click)="handlePageChange('3')"
+          class="step-item"
+        >
           <div class="step-item__title current">
             <strong>3. Account Customization</strong>
 
             <i class="bi bi-check-circle"></i>
           </div>
-          <p class="step-item__description">
+          <p [class.active]="pageName === '3'" class="step-item__description">
             To create an account for your organization kindly fill the
             information
           </p>
@@ -55,7 +76,7 @@
 
             <i class="bi bi-check-circle"></i>
           </div>
-          <p class="step-item__description">
+          <p [class.active]="pageName === '4'" class="step-item__description">
             To create an account for your organization kindly fill the
             information
           </p>
@@ -89,6 +110,12 @@
         >
         </app-rating-info>
       </ng-container>
+      <!-- <ng-container *ngIf="pageName == '4'">
+        <app-subscription-plans
+          (formSubmit)="handleSubscriptionDetails($event)"
+          [SubscriptionDetails]="SubscriptionDetails"
+        ></app-subscription-plans>
+      </ng-container> -->
       <!-- <div class="footer-btn-area">
         <button class="btn btn-primary mt-4">Continue</button>
       </div> -->

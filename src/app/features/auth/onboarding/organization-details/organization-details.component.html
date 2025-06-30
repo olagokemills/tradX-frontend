@@ -1,174 +1,226 @@
-<h5 class="fw-bold mb-4">Organization Details</h5>
-<form [formGroup]="OrganizationForm">
-  <div class="row g-4">
-    <div class="col-md-6">
-      <app-text-input
-        [controlName]="'companyName'"
-        [placeholder]="'Company Name'"
-        [type]="'text'"
-        [formGroup]="OrganizationForm"
-      ></app-text-input>
-    </div>
+<div class="form-container-section">
+  <h5 class="fw-bold mb-4">Organization Details</h5>
+  <p>All fields are required</p>
+  <form [formGroup]="OrganizationForm">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <app-text-input
+          [controlName]="'companyName'"
+          [placeholder]="'Company Name'"
+          [type]="'text'"
+          [formGroup]="OrganizationForm"
+        ></app-text-input>
+      </div>
 
-    <div class="col-md-6">
-      <app-text-input
-        [controlName]="'psuedoName'"
-        [placeholder]="'Pseudo Name'"
-        [type]="'text'"
-        [formGroup]="OrganizationForm"
-      ></app-text-input>
-    </div>
+      <div class="col-md-6">
+        <app-text-input
+          [controlName]="'preferredName'"
+          [placeholder]="'Preferred Name'"
+          [type]="'text'"
+          [formGroup]="OrganizationForm"
+        ></app-text-input>
+      </div>
 
-    <div class="col-md-6">
-      <app-text-input
-        [controlName]="'primaryDomain'"
-        [placeholder]="'Primary Domain/ Server'"
-        [type]="'text'"
-        [formGroup]="OrganizationForm"
-      ></app-text-input>
-    </div>
+      <div class="col-md-6">
+        <app-text-input
+          [controlName]="'primaryDomain'"
+          [placeholder]="'Primary Domain/ Server'"
+          [type]="'text'"
+          [formGroup]="OrganizationForm"
+        ></app-text-input>
+      </div>
 
-    <div class="col-md-6">
-      <label class="form-label">Country</label>
-      <select class="form-select">
-        <option selected disabled>Select Option</option>
-      </select>
-    </div>
-
-    <div class="col-md-6">
-      <app-text-input
-        [controlName]="'companyAddress'"
-        [placeholder]="'Company Address'"
-        [type]="'text'"
-        [formGroup]="OrganizationForm"
-      ></app-text-input>
-    </div>
-
-    <div class="col-md-6">
-      <app-text-input
-        [controlName]="'postCode'"
-        [placeholder]="'Zip code or Postcode'"
-        [type]="'text'"
-        [formGroup]="OrganizationForm"
-      ></app-text-input>
-    </div>
-
-    <div class="col-md-6">
-      <label class="form-label">Number of employees</label>
-      <select class="form-select">
-        <option selected disabled>Select Option</option>
-      </select>
-    </div>
-
-    <div class="col-md-6">
-      <label class="form-label">Estimated Annual Turnover</label>
-      <select class="form-select">
-        <option selected disabled>Select Option</option>
-      </select>
-    </div>
-
-    <div class="col-md-6">
-      <label class="form-label">Is the company listed on any exchange</label>
-      <div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="exchangeListed"
-            id="exchangeYes"
-            value="yes"
-          />
-          <label class="form-check-label" for="exchangeYes">Yes</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="exchangeListed"
-            id="exchangeNo"
-            value="no"
-          />
-          <label class="form-check-label" for="exchangeNo">No</label>
+      <div class="col-md-6">
+        <label class="form-label">Country</label>
+        <select class="form-select" formControlName="countryId" [class.is-invalid]="orgForm['countryId'].touched && orgForm['countryId'].invalid">
+          <option value="">Select Option</option>
+          <option *ngFor="let item of Countries" [value]="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+        <div class="invalid-feedback" *ngIf="orgForm['countryId'].touched && orgForm['countryId'].errors?.['required']">
+          Please select a country
         </div>
       </div>
-    </div>
 
-    <div class="col-md-6">
-      <label class="form-label">If yes, please select the stock exchange</label>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Please separate each insertion with (,)"
-      />
-    </div>
+      <div class="col-md-6">
+        <app-text-input
+          [controlName]="'address'"
+          [placeholder]="'Company Address'"
+          [type]="'text'"
+          [formGroup]="OrganizationForm"
+        ></app-text-input>
+      </div>
 
-    <div class="col-md-6">
-      <label class="form-label"
-        >Is the company part of a group of company?</label
-      >
-      <div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="groupCompany"
-            id="groupYes"
-            value="yes"
-          />
-          <label class="form-check-label" for="groupYes">Yes</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="groupCompany"
-            id="groupNo"
-            value="no"
-          />
-          <label class="form-check-label" for="groupNo">No</label>
+      <div class="col-md-6">
+        <app-text-input
+          [controlName]="'zipCode'"
+          [placeholder]="'Zip code or Postcode'"
+          [type]="'text'"
+          [formGroup]="OrganizationForm"
+        ></app-text-input>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Number of employees</label>
+        <select class="form-select" formControlName="numberOfEmployees">
+          <option selected disabled>Select Option</option>
+          <option *ngFor="let item of numberOfEmployees" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Estimated Annual Turnover</label>
+        <select class="form-select" formControlName="annualTurnOver">
+          <option selected disabled>Select Option</option>
+          <option *ngFor="let item of annualTurnOver" [value]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label mb-2">Is the company listed on any exchange</label>
+        <div class="radio-group">
+          <div class="custom-radio">
+            <input
+              class="custom-radio-input"
+              type="radio"
+              name="exchangeListed"
+              id="exchangeYes"
+              formControlName="exchangeListed"
+              value="true"
+            />
+            <label class="custom-radio-label" for="exchangeYes">Yes</label>
+          </div>
+          <div class="custom-radio">
+            <input
+              class="custom-radio-input"
+              type="radio"
+              name="exchangeListed"
+              id="exchangeNo"
+              formControlName="exchangeListed"
+              value="false"
+            />
+            <label class="custom-radio-label" for="exchangeNo">No</label>
+          </div>
         </div>
       </div>
-    </div>
+      <div *ngIf="orgForm['exchangeListed']?.value == 'true'" class="col-md-6">
+        <label class="form-label"
+          >If yes, please select the stock exchange</label
+        >
+        <mat-form-field appearance="outline" class="small-height-input">
+          <mat-label>Select Stock Exchange</mat-label>
+          <mat-select [formControlName]="'exchangesList'" multiple>
+            <mat-option *ngFor="let item of exchangeList" [value]="item.id">{{
+              item.name
+            }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
 
-    <div class="col-md-6">
-      <label class="form-label">Industry</label>
-      <select class="form-select">
-        <option selected disabled>Select Option</option>
-      </select>
-    </div>
-
-    <div class="col-md-6">
-      <label class="form-label"
-        >Is this account for the group or individual company?</label
-      >
-      <div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="accountType"
-            id="accountGroup"
-            value="group"
-          />
-          <label class="form-check-label" for="accountGroup">Group</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input
-            class="form-check-input"
-            type="radio"
-            name="accountType"
-            id="accountIndividual"
-            value="individual"
-          />
-          <label class="form-check-label" for="accountIndividual"
-            >Individual</label
-          >
+      <div class="col-md-6">
+        <label class="form-label">Industry</label>
+        <select class="form-select" formControlName="industry">
+          <option selected disabled>Select Option</option>
+          <option *ngFor="let item of industry" [value]="item.id">
+            {{ item.name }}
+          </option>
+        </select>
+      </div>      <div class="col-md-6">
+        <label class="form-label mb-2"
+          >Is the company part of a group of company?</label
+        >
+        <div class="radio-group">
+          <div class="custom-radio">
+            <input
+              class="custom-radio-input"
+              type="radio"
+              name="groupCompany"
+              id="groupYes"
+              value="true"
+              formControlName="groupMember"
+            />
+            <label class="custom-radio-label" for="groupYes">Yes</label>
+          </div>
+          <div class="custom-radio">
+            <input
+              class="custom-radio-input"
+              type="radio"
+              name="groupCompany"
+              id="groupNo"
+              value="false"
+              formControlName="groupMember"
+            />
+            <label class="custom-radio-label" for="groupNo">No</label>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <div class="footer-btn-area">
+      <!-- Group Organizations Form Array -->
+      <ng-container *ngIf="orgForm['groupMember']?.value === 'true'">
+        <div formArrayName="groupOrganizations" class="col-12 mt-3">
+          <div class="group-organizations-container">
+            <h6 class="mb-3 fw-bold">Group Companies</h6>
+            <p class="text-muted mb-4">Add the details of all companies that are part of this group</p>
+            
+            <div *ngFor="let groupOrg of groupOrganizations.controls; let i = index" [formGroupName]="i" class="group-organization-item mb-4 p-4 border rounded shadow-sm">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="mb-0">Company #{{i+1}}</h6>
+                <button type="button" class="btn btn-sm btn-outline-danger"
+                        *ngIf="groupOrganizations.length > 1"
+                        (click)="removeGroupOrganization(i)">
+                  <i class="bi bi-trash"></i> Remove
+                </button>
+              </div>
+              
+              <div class="row g-4">
+                <div class="col-md-6">
+                  <label class="form-label">Group Company Name</label>
+                  <app-text-input
+                    [controlName]="'groupOrganizationName'"
+                    [placeholder]="'Enter group company name'"
+                    [type]="'text'"
+                    [formGroup]="getGroupOrganizationForm(i)"
+                  ></app-text-input>
+                  <div *ngIf="groupOrg.get('groupOrganizationName')?.touched && groupOrg.get('groupOrganizationName')?.errors" class="text-danger small mt-1">
+                    <span *ngIf="groupOrg.get('groupOrganizationName')?.errors?.['required']">Group company name is required</span>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label">Company Relationship</label>
+                  <select class="form-select" formControlName="companyRelationType" [class.is-invalid]="groupOrg.get('companyRelationType')?.touched && groupOrg.get('companyRelationType')?.errors">
+                    <option value="">Select relationship type</option>
+                    <option value="main">Main Company</option>
+                    <option value="subsidiary">Subsidiary Company</option>
+                  </select>
+                  <small class="text-muted d-block mt-1">
+                    Select whether this company is the main company or a subsidiary in the group
+                  </small>
+                  <div *ngIf="groupOrg.get('companyRelationType')?.touched && groupOrg.get('companyRelationType')?.errors" class="text-danger small mt-1">
+                    <span *ngIf="groupOrg.get('companyRelationType')?.errors?.['required']">Please select the company relationship type</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add More Button -->
+            <div class="text-center mt-4">
+              <button type="button" class="btn btn-outline-primary" (click)="addGroupOrganization()">
+                <i class="bi bi-plus-circle me-1"></i> Add Another Company
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </form>
+
+  <div class="footer-btn-area mb-3">
     <button
       class="btn btn-primary mt-4"
       (click)="handleSubmit(OrganizationForm.value)"
@@ -176,4 +228,4 @@
       Next
     </button>
   </div>
-</form>
+</div>
