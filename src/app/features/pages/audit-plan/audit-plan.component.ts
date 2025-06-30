@@ -22,7 +22,7 @@ export class AuditPlanComponent implements OnInit {
   auditData = [];
   currentYearAudit = [];
   selectedItem: any;
-  constructor(private api: AuditService, private helper: EncryptionService) {}
+  constructor(private api: AuditService, private helper: EncryptionService) { }
   ngOnInit(): void {
     this.GetDetails();
     this.getAuditYearList();
@@ -77,18 +77,18 @@ export class AuditPlanComponent implements OnInit {
       this.fetchAuditList();
     });
   }
-  viewAudit() {}
+  viewAudit() { }
   removeAudit() {
     const dialogRef = this.dialog.open(RemoveAuditComponent, {
       width: '500px',
     });
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
   updateAudit() {
     const dialogRef = this.dialog.open(UpdateStatusComponent, {
       width: '500px',
     });
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => { });
   }
 
   fetchAuditPlans(yearId: string) {
@@ -153,6 +153,20 @@ export class AuditPlanComponent implements OnInit {
       data: {
         auditYear: this.selectedAuditYear?.yearId,
         organizationId: this.OrgId,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchAuditList();
+    });
+  }
+  editAuditPlan(audit: any) {
+    const dialogRef = this.dialog.open(AddAuditComponent, {
+      width: '500px',
+      data: {
+        audit,
+        auditYear: this.selectedAuditYear?.yearId,
+        organizationId: this.OrgId,
+        mode: 'edit',
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
