@@ -68,4 +68,16 @@ export class AuditService {
   FetchAuditList() {
     return this.http.get<any>(`${this.baseUrl}audit-plan/audit-list`);
   }
+  ModifyAuditTiming({
+    auditPlanId,
+    proposedTiming,
+  }: {
+    auditPlanId: string;
+    proposedTiming: string;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}audit-plan/modify-proposed-timing`,
+      { auditPlanId, proposedTiming }
+    );
+  }
 }

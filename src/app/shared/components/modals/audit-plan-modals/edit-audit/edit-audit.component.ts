@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnChanges, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuditService } from 'src/app/core/services/audit/audit-services.service';
 import { UserService } from 'src/app/core/services/users.service';
 import { GenericService } from 'src/app/core/utils/generic-service.service';
@@ -16,15 +16,20 @@ import {
 })
 export class EditAuditComponent implements OnInit, OnChanges {
   EditForm!: FormGroup;
-  @Input() data: any = null;
   loading: boolean = false;
+  pageName: string = '';
   Departments!: Department[];
+  newProposedTiming: string = '';
   constructor(
     private fb: FormBuilder,
     private api: AuditService,
     private utils: GenericService,
-    private dept: UserService
-  ) {}
+    private dept: UserService,
+    public dialogRef: MatDialogRef<EditAuditComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    console.log(data, 'fata form modal');
+  }
 
   ngOnChanges() {
     console.log(this.data, 'thanksss');
@@ -32,7 +37,6 @@ export class EditAuditComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    console.log('are yuouf ');
     this.GetDepts();
     this.EditForm = this.fb.group({
       department: [''],
@@ -43,7 +47,6 @@ export class EditAuditComponent implements OnInit, OnChanges {
   }
 
   UpdateFormFields() {
-    console.log(this.data.userData, 'data in formmmmm');
     const auditData = this.data;
     this.EditForm.patchValue({
       auditTitle: auditData.auditTitle || '',
@@ -68,5 +71,26 @@ export class EditAuditComponent implements OnInit, OnChanges {
         this.utils.toastr.success(res.data.message);
       }
     });
+  }
+  modifyAuditTiming() {
+    this.loading = true;
+    const body = {
+      auditPlanId: this.data.auditId,
+      proposedTiming: new Date(this.newProposedTiming).toISOString(),
+    };
+    this.api.ModifyAuditTiming(body).subscribe((res) => {
+      this.loading = false;
+      if (res.isSuccess) {
+        this.utils.toastr.success(res.data.message);
+        this.loading = false;
+        this.dismissModal();
+      } else {
+        this.utils.toastr.error(res.responseMessage);
+      }
+    });
+  }
+
+  dismissModal() {
+    this.dialogRef.close();
   }
 }

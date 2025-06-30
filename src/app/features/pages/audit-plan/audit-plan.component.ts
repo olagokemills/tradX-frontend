@@ -4,6 +4,7 @@ import { AuditService } from 'src/app/core/services/audit/audit-services.service
 import { EncryptionService } from 'src/app/core/utils/encryption.service';
 import { AddAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/add-audit/add-audit.component';
 import { AddPlanComponent } from 'src/app/shared/components/modals/audit-plan-modals/add-plan/add-plan.component';
+import { EditAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/edit-audit/edit-audit.component';
 import { RemoveAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/remove-audit/remove-audit.component';
 import { UpdateStatusComponent } from 'src/app/shared/components/modals/audit-plan-modals/update-status/update-status.component';
 
@@ -58,6 +59,18 @@ export class AuditPlanComponent implements OnInit {
       width: '500px',
       data: {
         organizationId: this.OrgId,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchAuditList();
+    });
+  }
+  modifyTiming(item: string) {
+    const dialogRef = this.dialog.open(EditAuditComponent, {
+      width: '500px',
+      data: {
+        auditId: item,
+        action: 'Modify Timing',
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
