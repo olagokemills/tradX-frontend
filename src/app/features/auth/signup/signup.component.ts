@@ -23,7 +23,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private utils: GenericService,
     private store: Store
-  ) {}
+  ) { }
   ngOnInit(): void {
     this.SignUpForm = this.fb.group(
       {
@@ -36,23 +36,28 @@ export class SignupComponent implements OnInit, OnDestroy {
       },
       { validators: passwordMatchValidator() }
     );
-    this.signupSub = this.store.select(selectSignup).subscribe(
-      (signup) => {
-        if (signup.response && signup.response.isSuccess) {
-          this.utils.toastr.success(
-            signup.response.responseMessage,
-            'Please proceed to login'
-          );
-          setTimeout(() => {
-            this.utils.router.navigate(['/auth/login']);
-          }, 2000);
+    this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
+      if (signup.response && signup.response.isSuccess) {
+        // Store the organization ID in localStorage
+        const organizationId = signup.response.data?.organizationId;
+        if (organizationId) {
+          localStorage.setItem('organizationId', organizationId);
+          // console.log('Organization ID stored in localStorage after signup:', organizationId);
         }
-      },
-      (error) => {
-        this.loading = false;
-        this.utils.toastr.error(error.responseMessage, 'Error Occurred');
+
+        this.utils.toastr.success(
+          signup.response.responseMessage,
+          'Please proceed to login'
+        );
+        setTimeout(() => {
+          this.utils.router.navigate(['/auth/login']);
+        }, 2000);
       }
-    );
+      if (signup.error) {
+        this.utils.toastr.error(signup.error, 'Signup Error');
+      }
+      this.loading = false;
+    });
   }
   Register(data: RegisterPayload) {
     this.loading = true;

@@ -41,6 +41,23 @@ mat-form-field {
 //   overflow-x: hidden;
 // }
 
+.group-organizations-container {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.group-organization-item {
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
 .radio-group {
   display: flex;
   gap: 1.5rem;

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RatingOption, RatingScale } from 'src/app/shared/models/appData.model';
+import { LoginService } from 'src/app/core/services/auth/login.service';
 
 @Component({
   selector: 'app-rating-info',
@@ -323,7 +324,7 @@ export class RatingInfoComponent {
       ],
     },
   ];
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private api: LoginService) { }
   ngOnInit(): void {
     this.populateForm();
   }
@@ -357,7 +358,7 @@ export class RatingInfoComponent {
     // }
   }
   handleSubmit(data: any) {
-    this.formSubmit.emit(this.RatingInfo);
+    this.submitConfiguration();
   }
 
   onReportScaleChange(): void {
@@ -435,13 +436,33 @@ export class RatingInfoComponent {
   submitConfiguration() {
     const reportConfig = this.getRatingConfiguration();
     const auditConfig = this.getAuditConfiguration();
-    console.log('Submitting configuration:', reportConfig, auditConfig);
+    const organizationId = localStorage.getItem('organizationId') || '';
 
-    // Example API call structure
-    // this.http.post('/api/audit-rating-config', config).subscribe(
-    //   response => console.log('Success:', response),
-    //   error => console.error('Error:', error)
-    // );
+    // Map options to API format
+    const mapOptions = (options: any[], scale: any) =>
+      options.map(opt => ({
+        ratingScaleId: opt.rating,
+        scaleDefinition: scale.scaleName,
+        colourCode: opt.color
+      }));
+
+    const payload = {
+      organizationId,
+      auditRatingScaleRequests: mapOptions(auditConfig.options, auditConfig),
+      reportRatingScaleRequests: mapOptions(reportConfig.options, reportConfig)
+    };
+
+    this.api.submitRatingsConfig(payload).subscribe({
+      next: (res) => {
+        if (res.isSuccess) {
+          this.formSubmit.emit('success');
+        }
+      },
+      error: (err) => {
+        console.error('API error:', err);
+        // Do not emit success on error
+      }
+    });
 
     return { reportConfig, auditConfig };
   }

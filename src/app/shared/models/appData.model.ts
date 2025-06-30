@@ -88,7 +88,7 @@ export interface OrganizationPayload {
   companyName: string;
   preferredName: string;
   exchangeListed: boolean;
-  exchangeName: [string];
+  exchangesList: number[];
   primaryDomain: string;
   countryId: number;
   address: string;
@@ -97,8 +97,13 @@ export interface OrganizationPayload {
   zipCode: string;
   industry: string;
   groupMember: boolean;
-  groupOrganizationName: string;
+  groupOrganizations: GroupOrganization[];
   individualCompany: boolean;
+}
+
+interface GroupOrganization {
+  isGroup: boolean;
+  groupOrganizationName: string;
 }
 export interface OrganizationResponse {
   data: OrganizationPayloadResponse;
@@ -212,4 +217,40 @@ export interface UserModel {
   phoneNumber: string;
   roleId: string;
   organizationRoleId: number;
+}
+export interface ContactInformationPayload {
+  organizationId: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  countryId: number;
+  phoneNumber: string;
+  roleId: string;
+  organizationRoleId: number;
+}
+
+export interface ContactInformationResponse extends GenericApiResponse {
+  data: {
+    organizationId: string;
+    message: string;
+  };
+}
+
+export interface RatingScaleRequest {
+  ratingScaleId: number;
+  scaleDefinition: string;
+  colourCode: string;
+}
+
+export interface RatingsPayload {
+  organizationId: string;
+  auditRatingScaleRequests: RatingScaleRequest[];
+  reportRatingScaleRequests: RatingScaleRequest[];
+}
+
+export interface RatingsResponse extends GenericApiResponse {
+  data: {
+    organizationId: string;
+    message: string;
+  };
 }
