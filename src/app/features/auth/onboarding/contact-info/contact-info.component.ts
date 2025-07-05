@@ -21,6 +21,7 @@ export class ContactInfoComponent implements OnInit {
   OrgRoles!: any;
   logoPreview: string | null = null;
   maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -86,9 +87,12 @@ export class ContactInfoComponent implements OnInit {
       ],
       roleId: [
         this.ContactInfo?.role || '',
-        [Validators.minLength(6), Validators.required],
+        [Validators.required],
       ],
-      organizationRoleId: [0, [Validators.minLength(6), Validators.required]],
+      organizationRoleId: [
+        0,
+        [Validators.required],
+      ],
       logo: [null],
     });
 
@@ -103,8 +107,9 @@ export class ContactInfoComponent implements OnInit {
     }
   }
   handleSubmit(data: any) {
+    this.loading = true;
     // Get organizationId from localStorage or fallback to user details
-    const organizationId = localStorage.getItem('organizationId') || this.Details.organizationId;
+    const organizationId = localStorage.getItem('organizationId') || '';
 
     const payload: ContactInformationPayload = {
       countryId: 1,
@@ -126,10 +131,14 @@ export class ContactInfoComponent implements OnInit {
             this.uploadLogo(data.logo, this.Details.organizationId);
           } else {
             this.formSubmit.emit('success');
+            this.loading = false;
           }
+        } else {
+          this.loading = false;
         }
       },
       error: (err) => {
+        this.loading = false;
         console.error('Error saving contact information:', err);
         // Do not emit success on error
       }
@@ -160,16 +169,19 @@ export class ContactInfoComponent implements OnInit {
         next: (response) => {
           console.log('Logo uploaded successfully:', response);
           this.formSubmit.emit('success');
+          this.loading = false;
         },
         error: (error) => {
           console.error('Error uploading logo:', error);
           this.formSubmit.emit(this.ContactInfo);
+          this.loading = false;
         }
       });
     };
     reader.onerror = (error) => {
       console.error('Error reading file:', error);
       this.formSubmit.emit(this.ContactInfo);
+      this.loading = false;
     };
   }
   onFileSelected(event: any) {

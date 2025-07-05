@@ -324,6 +324,8 @@ export class RatingInfoComponent {
       ],
     },
   ];
+  loading: boolean = false;
+
   constructor(private fb: FormBuilder, private api: LoginService) { }
   ngOnInit(): void {
     this.populateForm();
@@ -434,6 +436,7 @@ export class RatingInfoComponent {
 
   // Method to submit to API
   submitConfiguration() {
+    this.loading = true;
     const reportConfig = this.getRatingConfiguration();
     const auditConfig = this.getAuditConfiguration();
     const organizationId = localStorage.getItem('organizationId') || '';
@@ -454,11 +457,13 @@ export class RatingInfoComponent {
 
     this.api.submitRatingsConfig(payload).subscribe({
       next: (res) => {
+        this.loading = false;
         if (res.isSuccess) {
           this.formSubmit.emit('success');
         }
       },
       error: (err) => {
+        this.loading = false;
         console.error('API error:', err);
         // Do not emit success on error
       }

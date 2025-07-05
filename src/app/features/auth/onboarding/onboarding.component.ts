@@ -64,7 +64,7 @@ export class OnboardingComponent {
       // If you have a 4th step, advance to it here
       // this.pageName = '4';
       // refresh the page
-      window.location.reload();
+      this.router.navigate(['/user-management']);
     }
   }
 
@@ -77,5 +77,14 @@ export class OnboardingComponent {
 
   handlePageChange(page: string) {
     this.pageName = page;
+  }
+
+  logout() {
+    // Clear session and local storage
+    sessionStorage.clear();
+    localStorage.clear();
+    // Optionally, clear any other app state here
+    // Redirect to login
+    this.router.navigate(['/auth/login']);
   }
 }

@@ -20,6 +20,7 @@ export class OrganizationDetailsComponent {
   numberOfEmployees: string[] = ['1 - 50', '50 - 100', '101 - 200'];
   annualTurnOver: string[] = ['50m', '100m', '200m'];
   industry: Array<any> = [];
+  loading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -142,7 +143,7 @@ export class OrganizationDetailsComponent {
     this.OrgId = localStorage.getItem('organizationId') || '';
   }
   handleSubmit(data: any) {
-    console.log(this.OrganizationForm, 'organization details form data');
+    this.loading = true;
     if (!this.OrganizationForm.valid) {
       Object.keys(this.OrganizationForm.controls).forEach(key => {
         const control = this.OrganizationForm.get(key);
@@ -150,6 +151,7 @@ export class OrganizationDetailsComponent {
           control.markAsTouched();
         }
       });
+      this.loading = false;
       return;
     }
 
@@ -180,15 +182,15 @@ export class OrganizationDetailsComponent {
         })) : []
     };
 
-    // console.log(body, 'final submission');
-
     this.api.SaveCompanyOnboardingInfo(body).subscribe({
       next: (res) => {
+        this.loading = false;
         if (res.isSuccess) {
           this.formSubmit.emit('success');
         }
       },
       error: (error) => {
+        this.loading = false;
         console.error('Error saving company info:', error);
       }
     });

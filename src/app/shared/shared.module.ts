@@ -16,6 +16,7 @@ import { AddAuditComponent } from './components/modals/audit-plan-modals/add-aud
 import { AddPlanComponent } from './components/modals/audit-plan-modals/add-plan/add-plan.component';
 import { FullCanvasComponent } from './components/modals/full-canvas/full-canvas.component';
 import { DigitInputComponent } from './components/digit-input/digit-input.component';
+import { LoaderButtonComponent } from './components/loader-button/loader-button.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { DigitInputComponent } from './components/digit-input/digit-input.compon
     AddPlanComponent,
     FullCanvasComponent,
     DigitInputComponent,
+    LoaderButtonComponent,
   ],
   imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
   exports: [
@@ -45,6 +47,7 @@ import { DigitInputComponent } from './components/digit-input/digit-input.compon
     FullCanvasComponent,
     AddAuditComponent,
     DigitInputComponent,
+    LoaderButtonComponent,
   ],
 })
 export class SharedModule { }

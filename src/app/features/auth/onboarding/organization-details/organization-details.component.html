@@ -166,7 +166,7 @@
           <div class="group-organizations-container">
             <h6 class="mb-3 fw-bold">Group Companies</h6>
             <p class="text-muted mb-4">Add the details of all companies that are part of this group</p>
-            
+
             <div *ngFor="let groupOrg of groupOrganizations.controls; let i = index" [formGroupName]="i" class="group-organization-item mb-4 p-4 border rounded shadow-sm">
               <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="mb-0">Company #{{i+1}}</h6>
@@ -176,7 +176,7 @@
                   <i class="bi bi-trash"></i> Remove
                 </button>
               </div>
-              
+
               <div class="row g-4">
                 <div class="col-md-6">
                   <label class="form-label">Group Company Name</label>
@@ -190,7 +190,7 @@
                     <span *ngIf="groupOrg.get('groupOrganizationName')?.errors?.['required']">Group company name is required</span>
                   </div>
                 </div>
-                
+
                 <div class="col-md-6">
                   <label class="form-label">Company Relationship</label>
                   <select class="form-select" formControlName="companyRelationType" [class.is-invalid]="groupOrg.get('companyRelationType')?.touched && groupOrg.get('companyRelationType')?.errors">
@@ -221,11 +221,14 @@
   </form>
 
   <div class="footer-btn-area mb-3">
-    <button
-      class="btn btn-primary mt-4"
+    <app-loader-button
+      [loading]="loading"
+      [disabled]="OrganizationForm.invalid"
+      [text]="'Next'"
+      [loaderText]="'Saving...'"
+      btnClass="btn btn-primary mt-4 w-100"
       (click)="handleSubmit(OrganizationForm.value)"
-    >
-      Next
-    </button>
+      type="button"
+    ></app-loader-button>
   </div>
 </div>

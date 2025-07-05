@@ -12,7 +12,7 @@
 <div class="container" *ngIf="!isLoading">
   <div class="d-flex justify-content-between align-items-center py-3">
     <img src="assets/images/brand/logo.svg" alt="Trusted Advisor" height="30" />
-    <button class="btn btn-outline-dark logout-btn">
+    <button class="btn btn-outline-dark logout-btn" (click)="logout()">
       Logout
       <span>
         <img src="assets/images/utils/logout.svg" alt="Logout" />

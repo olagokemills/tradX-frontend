@@ -14,7 +14,7 @@ import {
 export class AuditService {
   baseUrl: string = 'https://lab386.com.ng/api/v1/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   FetchAuditPlans(yearId: string, organizationId: string): Observable<any> {
     return this.http.get<any>(
