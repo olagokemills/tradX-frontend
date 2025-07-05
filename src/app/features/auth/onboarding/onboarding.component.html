@@ -95,6 +95,7 @@
         <app-organization-details
           (formSubmit)="handleOrganizationDetails($event)"
           [OrganizationDetails]="organizationDetails"
+          [companyInformation]="companyInformation"
         ></app-organization-details>
       </ng-container>
       <ng-container *ngIf="pageName == '2'">

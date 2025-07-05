@@ -233,7 +233,7 @@ export interface ContactInformationPayload {
   emailAddress: string;
   countryId: number;
   phoneNumber: string;
-  roleId: string;
+  department: string;
   organizationRoleId: number;
 }
 

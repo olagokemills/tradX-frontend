@@ -10,7 +10,7 @@ import { EncryptionService } from 'src/app/core/utils/encryption.service';
 @Component({
   selector: 'app-2fa',
   templateUrl: './2fa.component.html',
-  styleUrls: ['./2fa.component.scss']
+  styleUrls: ['./2fa.component.scss'],
 })
 export class TwoFaComponent implements OnDestroy {
   otpForm: FormGroup;
@@ -29,7 +29,7 @@ export class TwoFaComponent implements OnDestroy {
     private helper: EncryptionService
   ) {
     this.otpForm = this.fb.group({
-      otp: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]]
+      otp: ['', [Validators.required, Validators.pattern(/^\d{5}$/)]],
     });
 
     // Get email from encrypted storage
@@ -71,13 +71,13 @@ export class TwoFaComponent implements OnDestroy {
     this.resendCooldown = 30;
 
     // Start resend cooldown timer
-    interval(1000).pipe(
-      take(31)
-    ).subscribe(() => {
-      if (this.resendCooldown > 0) {
-        this.resendCooldown--;
-      }
-    });
+    interval(1000)
+      .pipe(take(31))
+      .subscribe(() => {
+        if (this.resendCooldown > 0) {
+          this.resendCooldown--;
+        }
+      });
 
     this.startTimer();
 
@@ -91,7 +91,7 @@ export class TwoFaComponent implements OnDestroy {
     this.errorMsg = '';
     const payload: ValidateOtpPayload = {
       emailAddress: this.emailAddress,
-      otp: this.otpForm.value.otp
+      otp: this.otpForm.value.otp,
     };
     this.loginService.validateOtp(payload).subscribe({
       next: (res) => {
@@ -101,11 +101,13 @@ export class TwoFaComponent implements OnDestroy {
         } else {
           this.errorMsg = res.errorMessage || 'Invalid OTP';
         }
+        console.log('OTP validation response:', res);
       },
       error: (err) => {
+        console.error('Error validating OTP:', err);
         this.isLoading = false;
-        this.errorMsg = 'Network or server error';
-      }
+        this.errorMsg = err.error.responseMessage;
+      },
     });
   }
 }

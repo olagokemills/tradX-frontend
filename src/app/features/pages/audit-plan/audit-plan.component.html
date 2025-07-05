@@ -106,7 +106,7 @@
               <li>
                 <a
                   class="dropdown-item"
-                  (click)="removeAudit()"
+                  (click)="removeAudit(tableRow.auditPlanId)"
                   href="javascript:void(0)"
                 >
                   <small> Remove Audit </small>
@@ -221,7 +221,7 @@
                 <li>
                   <a
                     class="dropdown-item"
-                    (click)="removeAudit()"
+                    (click)="removeAudit(tableRow)"
                     href="javascript:void(0)"
                   >
                     <small> Remove Audit </small>

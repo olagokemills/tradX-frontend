@@ -84,6 +84,7 @@ export class UserManagementComponent implements OnInit {
     this.OpenModal({ body: data, action: 'Toggle' });
   }
   editUser(data: UserData) {
+    console.log(data);
     this.OpenModal({ body: data, action: 'Edit' });
   }
 }

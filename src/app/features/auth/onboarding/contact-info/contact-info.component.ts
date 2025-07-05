@@ -2,8 +2,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { LoginService } from 'src/app/core/services/auth/login.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EncryptionService } from 'src/app/core/utils/encryption.service';
-import { first } from 'rxjs';
-import { Role, ContactInformationPayload } from 'src/app/shared/models/appData.model';
+import { count, first } from 'rxjs';
+import {
+  Role,
+  ContactInformationPayload,
+} from 'src/app/shared/models/appData.model';
 import { UserService } from 'src/app/core/services/users.service';
 import { Store } from '@ngrx/store';
 @Component({
@@ -18,11 +21,12 @@ export class ContactInfoComponent implements OnInit {
   ContactForm!: FormGroup;
   fullName: string = '';
   roles!: Role[];
-  OrgRoles!: any;
+  Departments!: any;
   logoPreview: string | null = null;
   maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
   loading: boolean = false;
-
+  Countries: any[] = [];
+  selectedFile: File | null = null;
   constructor(
     private fb: FormBuilder,
     private api: LoginService,
@@ -35,16 +39,19 @@ export class ContactInfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateForm();
-    this.GetOrgRoles();
+    this.GetDeptList();
     this.GetRoles();
     this.getLoginState();
+    this.GetCountries();
   }
 
   getLoginState() {
     // Subscribe to the auth state from the store
-    this.store.select((state: any) => state['auth']).subscribe(authState => {
-      console.log('Current Auth State:', authState);
-    });
+    this.store
+      .select((state: any) => state['auth'])
+      .subscribe((authState) => {
+        console.log('Current Auth State:', authState);
+      });
   }
   GetDetails() {
     const details = this.helper.GetItem('user').data;
@@ -59,16 +66,16 @@ export class ContactInfoComponent implements OnInit {
         this.roles = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => { },
+      error: (err) => {},
     });
   }
-  GetOrgRoles() {
-    this.user.GetUserRoles().subscribe({
+  GetDeptList() {
+    this.user.GetDept().subscribe({
       next: (res: any) => {
-        this.OrgRoles = res.data;
-        console.log(res, 'roles here');
+        this.Departments = res.data;
+        console.log(res, 'departments here');
       },
-      error: (err) => { },
+      error: (err) => {},
     });
   }
   populateForm() {
@@ -85,24 +92,17 @@ export class ContactInfoComponent implements OnInit {
         this.ContactInfo?.phoneNumber || '',
         [Validators.minLength(6), Validators.required],
       ],
-      roleId: [
-        this.ContactInfo?.role || '',
-        [Validators.required],
-      ],
-      organizationRoleId: [
-        0,
-        [Validators.required],
-      ],
+      department: [this.ContactInfo?.department || '', [Validators.required]],
+      organizationRoleId: [0, [Validators.required]],
       logo: [null],
+      countryId: ['', [Validators.required]],
     });
 
     if (this.Details?.fullname) {
       // console.log(this.Details, 'details heer');
       this.ContactForm.patchValue({
         fullName: this.Details.fullname,
-
         emailAddress: this.Details.email || '',
-        countryId: 1,
       });
     }
   }
@@ -112,13 +112,13 @@ export class ContactInfoComponent implements OnInit {
     const organizationId = localStorage.getItem('organizationId') || '';
 
     const payload: ContactInformationPayload = {
-      countryId: 1,
+      countryId: Number(data.countryId),
       organizationId: organizationId,
-      firstName: this.Details.fullname || '',
-      lastName: this.Details.fullname || '',
+      firstName: this.Details.fullname.split(' ')[0] || '',
+      lastName: this.Details.fullname.split(' ')[1] || '',
       emailAddress: data.emailAddress,
       phoneNumber: data.phoneNumber,
-      roleId: data.roleId,
+      department: data.department,
       organizationRoleId: Number(data.organizationRoleId),
     };
 
@@ -127,8 +127,10 @@ export class ContactInfoComponent implements OnInit {
       next: (res) => {
         if (res.isSuccess) {
           // If contact info was saved successfully and we have a logo, upload it
-          if (data.logo) {
-            this.uploadLogo(data.logo, this.Details.organizationId);
+          if (this.selectedFile) {
+            setTimeout(() => {
+              this.uploadLogo(this.selectedFile!, payload.organizationId);
+            }, 900);
           } else {
             this.formSubmit.emit('success');
             this.loading = false;
@@ -141,7 +143,17 @@ export class ContactInfoComponent implements OnInit {
         this.loading = false;
         console.error('Error saving contact information:', err);
         // Do not emit success on error
-      }
+      },
+    });
+  }
+
+  get contactForm() {
+    return this.ContactForm?.controls;
+  }
+
+  GetCountries() {
+    this.api.GetCountries().subscribe((res) => {
+      this.Countries = res.data;
     });
   }
 
@@ -150,22 +162,18 @@ export class ContactInfoComponent implements OnInit {
    */
   uploadLogo(file: File, organizationId: string) {
     // Get organizationId from localStorage or use the provided fallback
-    const orgId = localStorage.getItem('organizationCode') || organizationId;
-
     // Convert the file to base64
+
+    console.log('Uploading logo for organization:', file);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
       // Get base64 string without the data:image prefix
       const base64String = reader.result as string;
-      const base64Content = base64String.split(',')[1]; // Remove the data:image/jpeg;base64, part
+      const base64Content = base64String; // Remove the data:image/jpeg;base64, part
 
       // Call the logo upload API
-      this.api.uploadLogo(
-        orgId,
-        base64Content,
-        file.name
-      ).subscribe({
+      this.api.uploadLogo(organizationId, base64Content, file.name).subscribe({
         next: (response) => {
           console.log('Logo uploaded successfully:', response);
           this.formSubmit.emit('success');
@@ -175,7 +183,7 @@ export class ContactInfoComponent implements OnInit {
           console.error('Error uploading logo:', error);
           this.formSubmit.emit(this.ContactInfo);
           this.loading = false;
-        }
+        },
       });
     };
     reader.onerror = (error) => {
@@ -229,6 +237,7 @@ export class ContactInfoComponent implements OnInit {
     const reader = new FileReader();
     reader.onload = (e: any) => {
       this.logoPreview = e.target.result;
+      this.selectedFile = file;
       this.ContactForm.patchValue({
         logo: file,
       });
@@ -238,6 +247,7 @@ export class ContactInfoComponent implements OnInit {
 
   removeLogo() {
     this.logoPreview = null;
+    this.selectedFile = null;
     this.ContactForm.patchValue({
       logo: null,
     });

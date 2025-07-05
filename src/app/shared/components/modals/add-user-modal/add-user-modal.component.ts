@@ -61,7 +61,9 @@ export class AddUserModalComponent implements OnInit {
         this.pageName = 'Toggle User';
       } else if (data?.action === 'Edit') {
         this.pageName = 'Edit User';
-        this.UpdateFormFields();
+        setTimeout(() => {
+          this.UpdateFormFields();
+        }, 3500);
       } else {
         this.pageName = 'Create User';
       }
@@ -144,20 +146,41 @@ export class AddUserModalComponent implements OnInit {
     this.addUserForm.patchValue({
       firstName: user.fullname.split(' ')[0] || '',
       lastName: user.fullname.split(' ')[1] || '',
-      phoneNumber: user.phoneNumber || '',
       emailAddress: user.email || '',
       password: user.password || '',
-      roleId: user.roleId || '',
-      department: user.department || '',
-      organizationRoleId: user.organizationRoleId || '',
+      roleId: this.returnMappedPermissins(user.permission) || '',
+      department: this.returnMappedDepartments(user.department) || '',
+      organizationRoleId: this.returnMappedRole(user.organizationRoleId) || '',
       countryId: 1,
+      phoneNumber: '07067980742',
     });
     this.addUserForm.get('password')?.removeValidators([Validators.required]);
+    this.addUserForm
+      .get('phoneNumber')
+      ?.removeValidators([Validators.required]);
     this.addUserForm.updateValueAndValidity();
-    console.log(this.addUserForm.value);
+    this.addUserForm.updateValueAndValidity();
+  }
+
+  returnMappedDepartments(deptName: string) {
+    const dept = this.Departments.find((d: any) => d.name === deptName);
+    return dept ? dept.id : '';
+  }
+  returnMappedRole(roleName: string) {
+    const role = this.roles.find((r: any) => r.name === roleName);
+    return role ? role.id : '';
+  }
+  returnMappedPermissins(permissionName: string) {
+    console.log(permissionName, 'permission name here');
+    const permission = this.OrgRoles.find(
+      (p: any) => p.roleName === permissionName
+    );
+    return permission ? permission.id : '';
   }
 
   modifyUser(data: any) {
+    console.log(data, 'data here');
+    this.loading = true;
     this.api.ModifyUser(data).subscribe(
       (res) => {
         console.log(res);
