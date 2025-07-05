@@ -162,4 +162,18 @@ export class AuditPlanComponent implements OnInit {
       this.fetchAuditList();
     });
   }
+  editAuditPlan(audit: any) {
+    const dialogRef = this.dialog.open(AddAuditComponent, {
+      width: '500px',
+      data: {
+        audit,
+        auditYear: this.selectedAuditYear?.yearId,
+        organizationId: this.OrgId,
+        mode: 'edit',
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchAuditList();
+    });
+  }
 }

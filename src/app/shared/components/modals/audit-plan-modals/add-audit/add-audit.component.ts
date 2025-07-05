@@ -42,6 +42,17 @@ export class AddAuditComponent implements OnInit {
       organizationId: this.OrgId,
       auditScopeSummary: ['', Validators.required],
     });
+
+    // Prefill form if in edit mode
+    if (this.data?.mode === 'edit' && this.data?.audit) {
+      const audit = this.data.audit;
+      this.AddAuditForm.patchValue({
+        departmentId: audit.departmentId,
+        auditTitle: audit.auditTitle,
+        proposedTiming: audit.proposedTiming ? new Date(audit.proposedTiming).toISOString().substring(0, 10) : '',
+        auditScopeSummary: audit.auditScopeSummary,
+      });
+    }
   }
 
   GetDetails() {
@@ -56,7 +67,7 @@ export class AddAuditComponent implements OnInit {
         this.Departments = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => {},
+      error: (err) => { },
     });
   }
 
@@ -83,5 +94,37 @@ export class AddAuditComponent implements OnInit {
         this.loading = false;
       },
     });
+  }
+
+  onSubmit() {
+    if (this.AddAuditForm.invalid) return;
+    const formValue = this.AddAuditForm.value;
+    if (this.data?.mode === 'edit' && this.data?.audit) {
+      // Edit mode: call update API
+      const payload = {
+        ...this.data.audit,
+        ...formValue,
+        organizationId: this.data.organizationId,
+        auditYear: this.data.auditYear,
+        proposedTiming: new Date(formValue.proposedTiming).toISOString(),
+      };
+      this.loading = true;
+      this.api.ModifyAudit(payload).subscribe({
+        next: (res: any) => {
+          this.loading = false;
+          if (res.isSuccess) {
+            this.utils.toastr.success('Audit updated successfully');
+            this.dialogRef.close(true);
+          }
+        },
+        error: (err) => {
+          this.utils.toastr.error(err.responseMessage || 'Update failed');
+          this.loading = false;
+        },
+      });
+    } else {
+      // Create mode
+      this.CreateNewAudit(formValue);
+    }
   }
 }
