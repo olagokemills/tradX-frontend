@@ -7,6 +7,7 @@ import { GenericService } from 'src/app/core/utils/generic-service.service';
 import {
   CreateAuditPayload,
   Department,
+  UpdateAuditPayload,
 } from 'src/app/shared/models/appData.model';
 
 @Component({
@@ -62,10 +63,10 @@ export class EditAuditComponent implements OnInit, OnChanges {
         this.Departments = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => {},
+      error: (err) => { },
     });
   }
-  onSubmit(data: CreateAuditPayload) {
+  onSubmit(data: UpdateAuditPayload) {
     this.api.ModifyAudit(data).subscribe((res) => {
       if (res.isSuccess) {
         this.utils.toastr.success(res.data.message);

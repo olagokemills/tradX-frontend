@@ -208,6 +208,14 @@ export interface CreateAuditPayload {
   auditYear: string;
   auditScopeSummary: string;
 }
+
+export interface UpdateAuditPayload {
+  auditPlanId: string;
+  auditTitle: string;
+  departmentId: number;
+  status: string;
+  proposedTiming: string;
+}
 export interface UserModel {
   organizationId: string;
   firstName: string;
@@ -225,7 +233,7 @@ export interface ContactInformationPayload {
   emailAddress: string;
   countryId: number;
   phoneNumber: string;
-  roleId: string;
+  department: string;
   organizationRoleId: number;
 }
 

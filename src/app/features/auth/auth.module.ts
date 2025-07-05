@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 
 import { MatSelectModule } from '@angular/material/select';
 import { TwoFaComponent } from './2fa/2fa.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 
 const routes: Routes = [
   {
@@ -46,6 +47,7 @@ const routes: Routes = [
     ContactInfoComponent,
     SubscriptionPlansComponent,
     TwoFaComponent,
+    ForgotPasswordComponent,
   ],
   imports: [
     CommonModule,

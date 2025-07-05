@@ -2,9 +2,14 @@
   display: flex;
   justify-content: flex-end;
   margin-top: 2rem;
-  .btn {
-    min-width: 200px;
-    margin-left: 1rem;
+  width: 100%;
+}
+
+::ng-deep {
+  app-loader-button {
+    .btn {
+      min-width: 200px;
+    }
   }
 }
 

@@ -14,7 +14,7 @@ import {
 export class AuditService {
   baseUrl: string = 'https://lab386.com.ng/api/v1/';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   FetchAuditPlans(yearId: string, organizationId: string): Observable<any> {
     return this.http.get<any>(
@@ -33,7 +33,13 @@ export class AuditService {
     );
   }
 
-  ModifyAudit(data: CreateAuditPayload): Observable<any> {
+  ModifyAudit(data: {
+    auditPlanId: string;
+    auditTitle: string;
+    departmentId: number;
+    status: string;
+    proposedTiming: string;
+  }): Observable<any> {
     return this.http.post<any>(
       `${this.baseUrl}${AuditPoints.modifyAudit}`,
       data

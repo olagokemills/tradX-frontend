@@ -7,11 +7,22 @@ label {
   display: flex;
   justify-content: flex-end;
   margin-top: 5rem;
+  width: 100%;
   .btn {
     min-width: 200px;
+    width: 100%;
     margin-left: 1rem;
   }
 }
+
+::ng-deep {
+  app-loader-button {
+    .btn {
+      min-width: 200px;
+    }
+  }
+}
+
 select {
   padding: 10px;
   font-size: 14px;

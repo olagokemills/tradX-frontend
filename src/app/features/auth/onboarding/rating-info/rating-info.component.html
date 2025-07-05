@@ -154,13 +154,15 @@
       >
         Previous
       </button>
-      <button
-        type="submit"
+      <app-loader-button
+        [loading]="loading"
+        [disabled]="!currentAuditReportRatingOptions.length || !currentAuditFindingRatingOptions.length"
+        [text]="'Continue'"
+        [loaderText]="'Saving...'"
+        btnClass="btn btn-primary px-4"
         (click)="submitConfiguration()"
-        class="btn btn-primary px-4"
-      >
-        Continue
-      </button>
+        type="button"
+      ></app-loader-button>
     </div>
   </div>
 </div>
