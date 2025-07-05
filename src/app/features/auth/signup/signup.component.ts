@@ -38,6 +38,8 @@ export class SignupComponent implements OnInit, OnDestroy {
     );
     this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
       if (signup.response && signup.response.isSuccess) {
+        this.loading = false;
+
         // Store the organization ID in localStorage
         const organizationId = signup.response.data?.organizationId;
         if (organizationId) {
