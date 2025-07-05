@@ -54,9 +54,9 @@ export class SignupComponent implements OnInit, OnDestroy {
         }, 2000);
       }
       if (signup.error) {
+        this.loading = false;
         this.utils.toastr.error(signup.error, 'Signup Error');
       }
-      this.loading = false;
     });
   }
   Register(data: RegisterPayload) {
