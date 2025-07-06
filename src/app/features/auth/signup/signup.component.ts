@@ -22,7 +22,7 @@ export class SignupComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private utils: GenericService,
     private store: Store
-  ) {}
+  ) { }
   ngOnInit(): void {
     this.SignUpForm = this.fb.group(
       {
@@ -36,7 +36,7 @@ export class SignupComponent implements OnInit, OnDestroy {
       { validators: passwordMatchValidator() }
     );
     this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
-      this.loading = true;
+      // this.loading = true;
       if (signup.response && signup.response.isSuccess) {
         this.loading = false;
 
