@@ -1,0 +1,109 @@
+<form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="add-report-form">
+  <div class="form-header">
+    <h2 class="form-title">Add Report</h2>
+    <p class="form-description">Fill details below to add a finding to a report</p>
+  </div>
+
+  <div class="form-content">
+    <div class="form-group">
+    <label for="reportNumber">Report Number</label>
+    <input
+      id="reportNumber"
+      type="text"
+      class="form-control"
+      placeholder="Enter Number"
+      formControlName="reportNumber"
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="reportDate">Report Date</label>
+    <input
+      id="reportDate"
+      type="date"
+      class="form-control"
+      placeholder="DD/MM/YYYY"
+      formControlName="reportDate"
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="entity">Entity</label>
+    <select
+      id="entity"
+      class="form-control"
+      formControlName="entity"
+    >
+      <option value="" disabled>Select Option</option>
+      <option *ngFor="let entity of entities" [value]="entity">
+        {{ entity }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="overallRating">Overall Rating</label>
+    <select
+      id="overallRating"
+      class="form-control"
+      formControlName="overallRating"
+    >
+      <option value="" disabled>Select Option</option>
+      <option *ngFor="let rating of ratings" [value]="rating">
+        {{ rating }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="otherUniqueIdentifier">Other Unique Identifier</label>
+    <input
+      id="otherUniqueIdentifier"
+      type="text"
+      class="form-control"
+      placeholder="Separate with commas"
+      formControlName="otherUniqueIdentifier"
+    >
+  </div>
+
+  <div class="form-group">
+    <label for="quarter">Quarter</label>
+    <select
+      id="quarter"
+      class="form-control"
+      formControlName="quarter"
+    >
+      <option value="" disabled>Select Quarter</option>
+      <option *ngFor="let quarter of quarters" [value]="quarter">
+        {{ quarter }}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="auditName">Audit Name</label>
+    <select
+      id="auditName"
+      class="form-control"
+      formControlName="auditName"
+    >
+      <option value="" disabled>Select option</option>
+      <option *ngFor="let name of auditNames" [value]="name">
+        {{ name }}
+      </option>
+    </select>
+    </div>
+  </div>
+
+  <div class="form-actions w-100">
+    <app-loader-button
+      type="submit"
+      [loading]="loading"
+      [disabled]="!reportForm.valid"
+      text="Add Report"
+      btnClass="btn btn-primary submit-btn w-100"
+      loaderText="Adding Report..."
+    >
+    </app-loader-button>
+  </div>
+</form>

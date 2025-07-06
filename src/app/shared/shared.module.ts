@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TextInputComponent } from './components/text-input/text-input.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './components/header/header.component';
@@ -31,12 +32,14 @@ import { EditColumnsDialogComponent } from './components/modals/edit-columns-dia
 import { FilterDialogComponent } from './components/modals/filter-dialog/filter-dialog.component';
 import { ViewFindingDialogComponent } from './components/modals/view-finding-dialog/view-finding-dialog.component';
 import { EditFindingDialogComponent } from './components/modals/edit-finding-dialog/edit-finding-dialog.component';
+import { SideModalComponent } from './components/side-modal/side-modal.component';
 
 @NgModule({
   declarations: [
     TextInputComponent,
     ReusableTableComponent,
     HeaderComponent,
+    SideModalComponent,
     AddUserModalComponent,
     SearchInputComponent,
     DropdownButtonComponent,
@@ -74,11 +77,17 @@ import { EditFindingDialogComponent } from './components/modals/edit-finding-dia
     TextInputComponent,
     ReusableTableComponent,
     HeaderComponent,
+    SideModalComponent,
+    AddUserModalComponent,
     SearchInputComponent,
     DropdownButtonComponent,
+    RemoveAuditComponent,
+    UpdateStatusComponent,
     EditAuditComponent,
-    FullCanvasComponent,
+    SelectInputComponent,
     AddAuditComponent,
+    AddPlanComponent,
+    FullCanvasComponent,
     DigitInputComponent,
     LoaderButtonComponent,
     ConfirmDialogComponent,
@@ -86,6 +95,6 @@ import { EditFindingDialogComponent } from './components/modals/edit-finding-dia
     FilterDialogComponent,
     ViewFindingDialogComponent,
     EditFindingDialogComponent,
-  ],
+  ]
 })
 export class SharedModule { }

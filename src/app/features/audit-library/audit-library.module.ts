@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AuditFindingsComponent } from './audit-findings/audit-findings.component';
@@ -15,14 +16,19 @@ const routes: Routes = [
   { path: 'saved-findings', component: SavedFindingsComponent },
 ];
 
+import { AddReportFormComponent } from './components/add-report-form/add-report-form.component';
+
 @NgModule({
   declarations: [
     AuditFindingsComponent,
     AuditReportLibraryComponent,
-    SavedFindingsComponent
+    SavedFindingsComponent,
+    AddReportFormComponent
   ],
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     SharedModule,
     RouterModule.forChild(routes),
     MatMenuModule,
