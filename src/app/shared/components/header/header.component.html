@@ -12,15 +12,42 @@
   </div>
 
   <nav class="nav-links d-none d-lg-flex gap-3">
-    <a
-      *ngFor="let item of navItems"
-      class="nav-item gap-3"
-      [routerLink]="item.route"
-      routerLinkActive="active"
-    >
-      <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
-      {{ item.label }}
-    </a>
+    <div *ngFor="let item of navItems" class="nav-item-container position-relative">
+      <a
+        *ngIf="!item.hasDropdown"
+        class="nav-item gap-3"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+      >
+        <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
+        {{ item.label }}
+      </a>
+      <div
+        *ngIf="item.hasDropdown"
+        class="nav-item gap-3 cursor-pointer"
+        [class.active]="activeDropdown === item.label"
+        (click)="toggleDropdown(item.label)"
+      >
+        <img [src]="'assets/images/utils/' + item.icon" [alt]="item.label" />
+        {{ item.label }}
+        <i class="bi bi-chevron-down ms-1"></i>
+        
+        <!-- Dropdown Menu -->
+        <div
+          class="dropdown-menu shadow-sm"
+          [class.show]="activeDropdown === item.label"
+        >
+          <a
+            *ngFor="let dropdownItem of item.dropdownItems"
+            class="dropdown-item"
+            [routerLink]="dropdownItem.route"
+            routerLinkActive="active"
+          >
+            {{ dropdownItem.label }}
+          </a>
+        </div>
+      </div>
+    </div>
   </nav>
 
   <div class="d-flex align-items-center gap-3">

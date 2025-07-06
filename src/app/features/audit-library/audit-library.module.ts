@@ -1,0 +1,33 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { AuditFindingsComponent } from './audit-findings/audit-findings.component';
+import { AuditReportLibraryComponent } from './audit-report-library/audit-report-library.component';
+import { SavedFindingsComponent } from './saved-findings/saved-findings.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+
+const routes: Routes = [
+  { path: 'findings', component: AuditFindingsComponent },
+  { path: 'reports', component: AuditReportLibraryComponent },
+  { path: 'saved-findings', component: SavedFindingsComponent },
+];
+
+@NgModule({
+  declarations: [
+    AuditFindingsComponent,
+    AuditReportLibraryComponent,
+    SavedFindingsComponent
+  ],
+  imports: [
+    CommonModule,
+    SharedModule,
+    RouterModule.forChild(routes),
+    MatMenuModule,
+    MatDialogModule,
+    MatButtonModule
+  ]
+})
+export class AuditLibraryModule { }
