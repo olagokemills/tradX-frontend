@@ -35,6 +35,10 @@ const routes: Routes = [
     path: '2fa',
     component: TwoFaComponent,
   },
+  {
+    path: 'forgot-password',
+    component: ForgotPasswordComponent,
+  },
 ];
 
 @NgModule({
@@ -61,4 +65,4 @@ const routes: Routes = [
     FormsModule,
   ],
 })
-export class AuthModule { }
+export class AuthModule {}

@@ -1,21 +1,51 @@
 <div class="main container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Update Status</h5>
-      <button (click)="onClose()" type="button" class="btn-close" aria-label="Close"></button>
-    </div>
-  
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0">{{ pageName }}</h5>
+    <button
+      (click)="onClose()"
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+    ></button>
+  </div>
+
+  <ng-container *ngIf="pageName === 'Update Audit'; else templateName">
     <h6 class="mb-4 text-muted">Fill details below</h6>
-  
+
     <div class="mb-3">
       <label class="form-label">Status</label>
-      <select class="form-select mb-2 w-100">
+      <select class="form-select mb-2 w-100" [(ngModel)]="status">
         <option selected disabled>Select Option</option>
-        <option>Planning</option>
+        <option value="Planning">Planning</option>
+        <option value="Fieldwork Phase">Ongoing - Fieldwork Phase</option>
+        <option value="Reporting Phase">Ongoing - Reporting Phase</option>
+        <option value="Completed">Completed</option>
       </select>
     </div>
 
-    <div class="w-100">
-      <button class="btn btn-primary w-100">Update</button>
+    <div class="d-flex gap-3 w-100">
+      <button class="btn btn-primary p-2 flex-fill" (click)="onConfirm()">
+        <div class="spinner-border" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <ng-container *ngIf="!loading">Update</ng-container>
+      </button>
+      <button class="btn btn-outline-danger p-2 flex-fill">Cancel</button>
     </div>
-  </div>
-  
+  </ng-container>
+  <ng-template #templateName>
+    <h6 class="mb-4 text-muted text-center">
+      Are you sure you want to freeze this audit?
+    </h6>
+
+    <div class="d-flex gap-3 w-100">
+      <button class="btn btn-danger p-2 flex-fill" (click)="onFreezeAudit()">
+        <div class="spinner-border" role="status" *ngIf="loading">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <ng-container *ngIf="!loading">Continue</ng-container>
+      </button>
+      <button class="btn btn-outline-danger p-2 flex-fill">Cancel</button>
+    </div>
+  </ng-template>
+</div>

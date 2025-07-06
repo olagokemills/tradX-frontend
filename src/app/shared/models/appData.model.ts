@@ -151,8 +151,22 @@ export interface UserPayload {
   pageNumber: number;
   pageSize: number;
   searchQuery: string;
+  organizationId: string;
 }
 export interface Role {
+  roleId: any;
+  id: number;
+  roleName: string;
+}
+
+export interface UserRoles {
+  roleId: string;
+  roleName: string;
+  description: string;
+  permissionsSet: boolean;
+}
+
+export interface OrganizationsRoles {
   id: number;
   roleName: string;
 }

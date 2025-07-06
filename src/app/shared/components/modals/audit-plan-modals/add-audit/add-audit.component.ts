@@ -49,7 +49,11 @@ export class AddAuditComponent implements OnInit {
       this.AddAuditForm.patchValue({
         departmentId: audit.departmentId,
         auditTitle: audit.auditTitle,
-        proposedTiming: audit.proposedTiming ? new Date(audit.proposedTiming).toISOString().substring(0, 10) : '',
+        proposedTiming: audit.proposedTiming
+          ? new Date(`${audit.proposedTiming}-${audit.auditYear}`)
+              .toISOString()
+              .substring(0, 10)
+          : '',
         auditScopeSummary: audit.auditScopeSummary,
       });
     }
@@ -67,7 +71,7 @@ export class AddAuditComponent implements OnInit {
         this.Departments = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => { },
+      error: (err) => {},
     });
   }
 
@@ -87,6 +91,7 @@ export class AddAuditComponent implements OnInit {
         this.loading = false;
         if (res.isSuccess) {
           this.utils.toastr.success(res.data.message);
+          this.dialogRef.close();
         }
       },
       error: (err) => {
@@ -107,6 +112,7 @@ export class AddAuditComponent implements OnInit {
         departmentId: Number(formValue.departmentId),
         status: this.data.audit.status,
         proposedTiming: new Date(formValue.proposedTiming).toISOString(),
+        auditScopeSummary: formValue.auditScopeSummary,
       };
       this.loading = true;
       this.api.ModifyAudit(payload).subscribe({

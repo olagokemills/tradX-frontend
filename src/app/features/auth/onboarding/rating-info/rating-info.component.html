@@ -4,7 +4,9 @@
     <!-- Report Rating Section -->
     <div class="audit-rating-container bg-white p-4 mb-4">
       <div class="form-group mb-4">
-        <label for="ratingScale" class="form-label fw-medium mb-2">Select Report Rating Scale:</label>
+        <label for="ratingScale" class="form-label fw-medium mb-2"
+          >Select Report Rating Scale:</label
+        >
         <select
           id="ratingScale"
           [(ngModel)]="selectedReportScale"
@@ -22,13 +24,19 @@
       </div>
 
       <div
-        *ngIf="currentAuditReportRatingOptions && currentAuditReportRatingOptions.length > 0"
+        *ngIf="
+          currentAuditReportRatingOptions &&
+          currentAuditReportRatingOptions.length > 0
+        "
         class="rating-options"
       >
         <h6 class="fw-bold mb-4">Configure Rating Colors</h6>
         <div class="rating-grid">
           <div
-            *ngFor="let option of currentAuditReportRatingOptions; trackBy: trackByRating"
+            *ngFor="
+              let option of currentAuditReportRatingOptions;
+              trackBy: trackByRating
+            "
             class="rating-row"
           >
             <div class="rating-content">
@@ -76,7 +84,9 @@
     <div class="audit-rating-container bg-white p-4 mb-4">
       <!-- Same structure as above but for findings -->
       <div class="form-group mb-4">
-        <label for="findingScale" class="form-label fw-medium mb-2">Select Finding Rating Scale:</label>
+        <label for="findingScale" class="form-label fw-medium mb-2"
+          >Select Finding Rating Scale:</label
+        >
         <select
           id="findingScale"
           [(ngModel)]="selectedFindingScale"
@@ -94,13 +104,19 @@
       </div>
 
       <div
-        *ngIf="currentAuditFindingRatingOptions && currentAuditFindingRatingOptions.length > 0"
+        *ngIf="
+          currentAuditFindingRatingOptions &&
+          currentAuditFindingRatingOptions.length > 0
+        "
         class="rating-options"
       >
         <h6 class="fw-bold mb-4">Configure Rating Colors</h6>
         <div class="rating-grid">
           <div
-            *ngFor="let option of currentAuditFindingRatingOptions; trackBy: trackByRating"
+            *ngFor="
+              let option of currentAuditFindingRatingOptions;
+              trackBy: trackByRating
+            "
             class="rating-row"
           >
             <div class="rating-content">
@@ -144,19 +160,25 @@
 
     <!-- Action Buttons -->
     <div
-      *ngIf="currentAuditReportRatingOptions && currentAuditReportRatingOptions.length > 0"
+      *ngIf="
+        currentAuditReportRatingOptions &&
+        currentAuditReportRatingOptions.length > 0
+      "
       class="d-flex justify-content-end gap-3 mt-4"
     >
-      <button
+      <!-- <button
         (click)="logCurrentConfig()"
         type="button"
         class="btn btn-outline-primary px-4"
       >
         Previous
-      </button>
+      </button> -->
       <app-loader-button
         [loading]="loading"
-        [disabled]="!currentAuditReportRatingOptions.length || !currentAuditFindingRatingOptions.length"
+        [disabled]="
+          !currentAuditReportRatingOptions.length ||
+          !currentAuditFindingRatingOptions.length
+        "
         [text]="'Continue'"
         [loaderText]="'Saving...'"
         btnClass="btn btn-primary px-4"

@@ -28,12 +28,9 @@ export class EditAuditComponent implements OnInit, OnChanges {
     private dept: UserService,
     public dialogRef: MatDialogRef<EditAuditComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-    console.log(data, 'fata form modal');
-  }
+  ) {}
 
   ngOnChanges() {
-    console.log(this.data, 'thanksss');
     this.UpdateFormFields();
   }
 
@@ -44,16 +41,19 @@ export class EditAuditComponent implements OnInit, OnChanges {
       auditTitle: [''],
       proposedTiming: [''],
       auditType: [''],
+      auditScopeSummary: [''],
     });
   }
 
   UpdateFormFields() {
     const auditData = this.data;
+    console.log(auditData, 'audit data here');
     this.EditForm.patchValue({
       auditTitle: auditData.auditTitle || '',
       department: auditData.department || '',
-      proposedTiming: auditData.organizationRoleId || '',
+      proposedTiming: auditData.proposedTiming || '',
       auditType: auditData.auditType || '',
+      auditScopeSummary: auditData.auditScopeSummary || '',
     });
     console.log(this.EditForm.value, 'edit form here');
   }
@@ -63,7 +63,7 @@ export class EditAuditComponent implements OnInit, OnChanges {
         this.Departments = res.data;
         console.log(res, 'roles here');
       },
-      error: (err) => { },
+      error: (err) => {},
     });
   }
   onSubmit(data: UpdateAuditPayload) {

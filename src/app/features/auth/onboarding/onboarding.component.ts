@@ -86,6 +86,7 @@ export class OnboardingComponent {
   handleSubscriptionDetails(data: Record<string, any>) {}
 
   handlePageChange(page: string) {
+    return null;
     this.pageName = page;
   }
 
