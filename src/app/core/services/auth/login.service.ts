@@ -105,7 +105,7 @@ export class LoginService {
    * Get user by ID (returns user details and organizations)
    */
   getUserById(userId: string): Observable<UserResponse> {
-    return this.http.get<UserResponse>(`${this.baseUrl}user/organization/${userId}`);
+    return this.http.get<UserResponse>(`${this.baseUrl}user/user/${userId}`);
   }
 
   /**

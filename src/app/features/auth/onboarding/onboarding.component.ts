@@ -22,7 +22,7 @@ export class OnboardingComponent {
     private api: LoginService,
     private helper: EncryptionService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // Get user details from encrypted local/session storage
@@ -83,7 +83,7 @@ export class OnboardingComponent {
       this.pageName = '2';
     }
   }
-  handleSubscriptionDetails(data: Record<string, any>) {}
+  handleSubscriptionDetails(data: Record<string, any>) { }
 
   handlePageChange(page: string) {
     return null;
