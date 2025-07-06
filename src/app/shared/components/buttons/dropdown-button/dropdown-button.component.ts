@@ -10,8 +10,17 @@ export class DropdownButtonComponent {
   @Input() items: { label: string; value: any }[] = [];
 
   @Output() itemClicked = new EventEmitter<any>();
-
+  constructor() {
+    console.log(this.buttonLabel);
+  }
   handleSelect(value: any) {
     this.itemClicked.emit(value);
+  }
+
+  returnStrippedValue(value: any): string {
+    if (!value) {
+      return '';
+    }
+    return value.split(' ')[1];
   }
 }

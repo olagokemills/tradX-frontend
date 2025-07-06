@@ -19,7 +19,7 @@ export class UserService {
 
   GetUsers(data: UserPayload): Observable<UserResponse> {
     return this.http.get<any>(
-      `${this.baseUrl}${EndPoints.getUsers}?pageNumber=${data.pageNumber}&pageSize=${data.pageSize}&searchQuery=${data.searchQuery}`
+      `${this.baseUrl}${EndPoints.getUsers}/${data.organizationId}?pageNumber=${data.pageNumber}&pageSize=${data.pageSize}&searchQuery=${data.searchQuery}`
     );
   }
 
@@ -51,5 +51,15 @@ export class UserService {
   }
   ModifyUserStatus(body: ModifyStatusPayload): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}user/modify-user-status`, body);
+  }
+  FetchOrganizationLogo(organizationId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}user/organization-logo/${organizationId}`
+    );
+  }
+  DeleteUser(userId: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}user/delete-user`, {
+      userId: userId,
+    });
   }
 }

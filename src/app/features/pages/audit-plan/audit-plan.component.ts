@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuditService } from 'src/app/core/services/audit/audit-services.service';
 import { EncryptionService } from 'src/app/core/utils/encryption.service';
+import { GenericService } from 'src/app/core/utils/generic-service.service';
 import { AddAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/add-audit/add-audit.component';
 import { AddPlanComponent } from 'src/app/shared/components/modals/audit-plan-modals/add-plan/add-plan.component';
 import { EditAuditComponent } from 'src/app/shared/components/modals/audit-plan-modals/edit-audit/edit-audit.component';
@@ -22,10 +23,17 @@ export class AuditPlanComponent implements OnInit {
   auditData = [];
   currentYearAudit = [];
   selectedItem: any;
-  constructor(private api: AuditService, private helper: EncryptionService) {}
+  removedAudits: Array<any> = [];
+  constructor(
+    private api: AuditService,
+    private helper: EncryptionService,
+    private gVars: GenericService
+  ) {}
   ngOnInit(): void {
     this.GetDetails();
     this.getAuditYearList();
+    this.fetchCurrentYearAudit();
+    this.fetchRemovedAudits();
   }
 
   handleActionClick(action: any) {
@@ -62,7 +70,7 @@ export class AuditPlanComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.fetchAuditList();
+      this.fetchPageData();
     });
   }
   modifyTiming(item: string) {
@@ -74,7 +82,7 @@ export class AuditPlanComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.fetchAuditList();
+      this.fetchPageData();
     });
   }
   viewAudit() {}
@@ -85,13 +93,35 @@ export class AuditPlanComponent implements OnInit {
         auditId: data,
       },
     });
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchPageData();
+    });
   }
-  updateAudit() {
+  updateAudit(data: string) {
     const dialogRef = this.dialog.open(UpdateStatusComponent, {
       width: '500px',
+      data: {
+        auditId: data,
+        action: 'Update Audit',
+      },
     });
-    dialogRef.afterClosed().subscribe((result) => {});
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchPageData();
+    });
+  }
+
+  freezeAudit(auditId: string) {
+    const dialogRef = this.dialog.open(UpdateStatusComponent, {
+      width: '500px',
+      data: {
+        auditId: auditId,
+        action: 'Freeze Audit',
+        organizationId: this.OrgId,
+      },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      this.fetchPageData();
+    });
   }
 
   fetchAuditPlans(yearId: string) {
@@ -101,6 +131,7 @@ export class AuditPlanComponent implements OnInit {
   }
 
   handleYearClick(data: any) {
+    this.gVars.toastr.info(`Fetching Audit Plans for Year ${data}`, 'Info');
     this.selectedAuditYear = {
       yearId: data,
       yearName: `Year ${data}`,
@@ -137,17 +168,6 @@ export class AuditPlanComponent implements OnInit {
   }
   selectAuditItem(data: any) {
     this.selectedItem = data;
-    console.log(data, 'got vsllrf? d');
-  }
-
-  fetchAuditList() {
-    // this.api.FetchAuditList(this.OrgId).subscribe((res) => {
-    //   if (res.isSuccess) {
-    //     this.auditData = res.data;
-    //   } else {
-    //     console.error('Failed to fetch audit list:', res.responseMessage);
-    //   }
-    // });
   }
 
   openAddAuditModal() {
@@ -159,7 +179,7 @@ export class AuditPlanComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.fetchAuditList();
+      this.fetchPageData();
     });
   }
   editAuditPlan(audit: any) {
@@ -173,7 +193,33 @@ export class AuditPlanComponent implements OnInit {
       },
     });
     dialogRef.afterClosed().subscribe((result) => {
-      this.fetchAuditList();
+      this.fetchPageData();
+    });
+  }
+
+  fetchPageData() {
+    this.getAuditYearList();
+    setTimeout(() => {
+      this.fetchAuditPlans(this.selectedAuditYear?.yearId || '');
+    }, 900);
+  }
+
+  fetchCurrentYearAudit() {
+    this.api.FetchCurrentYearAudit(this.OrgId).subscribe((res) => {
+      if (res.isSuccess) {
+        this.currentYearAudit = res.data;
+      } else {
+        this.gVars.toastr.error('Failed to fetch current year audits.');
+      }
+    });
+  }
+  fetchRemovedAudits() {
+    this.api.FetchRemovedAudits(this.OrgId).subscribe((res) => {
+      if (res.isSuccess) {
+        this.removedAudits = res.data;
+      } else {
+        this.gVars.toastr.error('Failed to fetch removed audits.');
+      }
     });
   }
 }

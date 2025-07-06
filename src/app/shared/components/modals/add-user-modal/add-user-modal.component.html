@@ -2,7 +2,10 @@
   <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
       <h5 class="fw-bold">{{ pageName }}</h5>
-      <p class="text-muted m-0">
+      <p
+        class="text-muted m-0"
+        *ngIf="pageName === 'Edit User' || pageName === 'Create User'"
+      >
         {{
           pageName == "Edit User"
             ? "Edit user details"
@@ -12,7 +15,12 @@
     </div>
     <button type="button" class="btn-close" (click)="onClose()"></button>
   </div>
-  <ng-container *ngIf="pageName !== 'Toggle User'; else ToggleUser">
+  <ng-container
+    *ngIf="
+      pageName === 'Create User' || pageName === 'Edit User';
+      else ToggleUser
+    "
+  >
     <form
       class="add-user-form"
       [formGroup]="addUserForm"
@@ -131,30 +139,53 @@
   </ng-container>
 
   <ng-template #ToggleUser>
-    <div class="d-flex flex-column align-items-center justify-content-center">
-      <i class="bi img-icon text-danger h1 bi-exclamation-circle"> </i>
-      <h6 class="mb-4 text-muted text-center">
-        Select an Action for this User
-      </h6>
-      <select class="form-select mb-3 w-100" [(ngModel)]="userStatus">
-        <option disabled selected>Select Status</option>
-        <option value="Deactivated">Deactivate</option>
-        <option value="UserLocked">Lock</option>
-        <option value="Suspended">Suspend</option>
-        <option value="Blacklisted">Blacklist</option>
-      </select>
-      <div class="d-flex gap-3 w-100">
-        <button
-          class="btn btn-primary p-2 flex-fill"
-          (click)="onUserStatusChange()"
-        >
-          <div class="spinner-border" role="status" *ngIf="loading">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <ng-container *ngIf="!loading"> Continue </ng-container>
-        </button>
-        <button class="btn btn-outline-danger p-2 flex-fill">Cancel</button>
+    <ng-container *ngIf="pageName === 'Toggle User'">
+      <div class="d-flex flex-column align-items-center justify-content-center">
+        <i class="bi img-icon text-danger h1 bi-exclamation-circle"> </i>
+        <h6 class="mb-4 text-muted text-center">
+          Select an Action for this User
+        </h6>
+        <select class="form-select mb-3 w-100" [(ngModel)]="userStatus">
+          <option disabled ngSelect>Select Status</option>
+          <option value="Deactivated">Deactivate</option>
+          <option value="UserLocked">Lock</option>
+          <option value="Suspended">Suspend</option>
+          <option value="Blacklisted">Blacklist</option>
+          <option value="Active">Activate</option>
+        </select>
+        <div class="d-flex gap-3 w-100">
+          <button
+            class="btn btn-primary p-2 flex-fill"
+            (click)="onUserStatusChange()"
+          >
+            <div class="spinner-border" role="status" *ngIf="loading">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <ng-container *ngIf="!loading"> Continue </ng-container>
+          </button>
+          <button class="btn btn-outline-danger p-2 flex-fill">Cancel</button>
+        </div>
       </div>
-    </div>
+    </ng-container>
+    <ng-container *ngIf="pageName === 'Delete User'">
+      <div class="d-flex flex-column align-items-center justify-content-center">
+        <i class="bi img-icon text-danger h1 bi-exclamation-circle"> </i>
+        <h6 class="mb-4 text-muted text-center">
+          Are you sure you want to delete this user?
+        </h6>
+
+        <div class="d-flex gap-3 w-100">
+          <button class="btn btn-danger p-2 flex-fill" (click)="onDeleteUser()">
+            <div class="spinner-border" role="status" *ngIf="loading">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <ng-container *ngIf="!loading"> Yes, Delete </ng-container>
+          </button>
+          <button class="btn btn-outline-primary p-2 flex-fill">
+            No, Cancel
+          </button>
+        </div>
+      </div>
+    </ng-container>
   </ng-template>
 </div>

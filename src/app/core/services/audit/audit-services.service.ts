@@ -14,7 +14,7 @@ import {
 export class AuditService {
   baseUrl: string = 'https://lab386.com.ng/api/v1/';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   FetchAuditPlans(yearId: string, organizationId: string): Observable<any> {
     return this.http.get<any>(
@@ -48,6 +48,11 @@ export class AuditService {
   FetchCurrentYearAudit(orgId: string): Observable<any> {
     return this.http.get<any>(
       `${this.baseUrl}${AuditPoints.currentYearPlans}${orgId}`
+    );
+  }
+  FetchRemovedAudits(orgId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}audit-plan/deleted-audit-plans/organization/${orgId}`
     );
   }
   // DeleteAuditPlan(data: number) {
@@ -96,6 +101,31 @@ export class AuditService {
     return this.http.post<any>(`${this.baseUrl}audit-plan/delete-audit-plan`, {
       auditId,
       organizationId,
+    });
+  }
+  UpdateAuditStatus({
+    status,
+    auditPlanId,
+  }: {
+    status: string;
+    auditPlanId: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/modify-audit-plan`, {
+      status,
+      auditPlanId,
+    });
+  }
+  FreezeAudit({
+    auditPlanId,
+    organizationId,
+  }: {
+    auditPlanId: string;
+    organizationId: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/freeze-audit-plan`, {
+      auditPlanId,
+      organizationId,
+      freezePlan: true,
     });
   }
 }

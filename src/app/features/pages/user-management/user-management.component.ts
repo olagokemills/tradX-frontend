@@ -19,8 +19,13 @@ export class UserManagementComponent implements OnInit {
   searchQuery: string = '';
   UsersList!: UserData[];
   searchSubject: Subject<string> = new Subject();
-
-  constructor(private api: UserService) {}
+  OrgId: string = '';
+  constructor(private api: UserService) {
+    const Org = JSON.parse(sessionStorage.getItem('organizationInfo')!);
+    console.log(Org, 'org here');
+    this.OrgId = Org?.data.organizationCode;
+    console.log(this.OrgId, 'org id here');
+  }
   ngOnInit(): void {
     this.GetUsers();
     this.handleSearchInput();
@@ -56,6 +61,7 @@ export class UserManagementComponent implements OnInit {
     const payload: UserPayload = {
       pageNumber: 1,
       pageSize: 20,
+      organizationId: this.OrgId,
       searchQuery: this.searchQuery,
     };
     observable = this.api.GetUsers(payload);
@@ -84,7 +90,9 @@ export class UserManagementComponent implements OnInit {
     this.OpenModal({ body: data, action: 'Toggle' });
   }
   editUser(data: UserData) {
-    console.log(data);
     this.OpenModal({ body: data, action: 'Edit' });
+  }
+  deleteUser(data: UserData) {
+    this.OpenModal({ body: data, action: 'Delete' });
   }
 }
