@@ -15,7 +15,7 @@
       <div class="col-md-6">
         <app-text-input
           [controlName]="'preferredName'"
-          [placeholder]="'Preferred Name'"
+          [placeholder]="'Pseudo Name'"
           [type]="'text'"
           [formGroup]="OrganizationForm"
         ></app-text-input>
@@ -32,13 +32,22 @@
 
       <div class="col-md-6">
         <label class="form-label">Country</label>
-        <select class="form-select" formControlName="countryId" [class.is-invalid]="orgForm['countryId'].touched && orgForm['countryId'].invalid">
+        <select
+          class="form-select"
+          formControlName="countryId"
+          [class.is-invalid]="
+            orgForm['countryId'].touched && orgForm['countryId'].invalid
+          "
+        >
           <option value="">Select Option</option>
           <option *ngFor="let item of Countries" [value]="item.id">
             {{ item.name }}
           </option>
         </select>
-        <div class="invalid-feedback" *ngIf="orgForm['countryId'].touched && orgForm['countryId'].errors?.['required']">
+        <div
+          class="invalid-feedback"
+          *ngIf="orgForm['countryId'].touched && orgForm['countryId'].errors?.['required']"
+        >
           Please select a country
         </div>
       </div>
@@ -82,7 +91,9 @@
       </div>
 
       <div class="col-md-6">
-        <label class="form-label mb-2">Is the company listed on any exchange</label>
+        <label class="form-label mb-2"
+          >Is the company listed on any exchange</label
+        >
         <div class="radio-group">
           <div class="custom-radio">
             <input
@@ -130,7 +141,8 @@
             {{ item.name }}
           </option>
         </select>
-      </div>      <div class="col-md-6">
+      </div>
+      <div class="col-md-6">
         <label class="form-label mb-2"
           >Is the company part of a group of company?</label
         >
@@ -165,18 +177,32 @@
         <div formArrayName="groupOrganizations" class="col-12 mt-3">
           <div class="group-organizations-container">
             <h6 class="mb-3 fw-bold">Group Companies</h6>
-            <p class="text-muted mb-4">Add the details of all companies that are part of this group</p>
-            
-            <div *ngFor="let groupOrg of groupOrganizations.controls; let i = index" [formGroupName]="i" class="group-organization-item mb-4 p-4 border rounded shadow-sm">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="mb-0">Company #{{i+1}}</h6>
-                <button type="button" class="btn btn-sm btn-outline-danger"
-                        *ngIf="groupOrganizations.length > 1"
-                        (click)="removeGroupOrganization(i)">
+            <p class="text-muted mb-4">
+              Add the details of all companies that are part of this group
+            </p>
+
+            <div
+              *ngFor="
+                let groupOrg of groupOrganizations.controls;
+                let i = index
+              "
+              [formGroupName]="i"
+              class="group-organization-item mb-4 p-4 border rounded shadow-sm"
+            >
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <h6 class="mb-0">Company #{{ i + 1 }}</h6>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger"
+                  *ngIf="groupOrganizations.length > 1"
+                  (click)="removeGroupOrganization(i)"
+                >
                   <i class="bi bi-trash"></i> Remove
                 </button>
               </div>
-              
+
               <div class="row g-4">
                 <div class="col-md-6">
                   <label class="form-label">Group Company Name</label>
@@ -186,23 +212,46 @@
                     [type]="'text'"
                     [formGroup]="getGroupOrganizationForm(i)"
                   ></app-text-input>
-                  <div *ngIf="groupOrg.get('groupOrganizationName')?.touched && groupOrg.get('groupOrganizationName')?.errors" class="text-danger small mt-1">
-                    <span *ngIf="groupOrg.get('groupOrganizationName')?.errors?.['required']">Group company name is required</span>
+                  <div
+                    *ngIf="
+                      groupOrg.get('groupOrganizationName')?.touched &&
+                      groupOrg.get('groupOrganizationName')?.errors
+                    "
+                    class="text-danger small mt-1"
+                  >
+                    <span
+                      *ngIf="groupOrg.get('groupOrganizationName')?.errors?.['required']"
+                      >Group company name is required</span
+                    >
                   </div>
                 </div>
-                
+
                 <div class="col-md-6">
+                  <div>&nbsp;</div>
                   <label class="form-label">Company Relationship</label>
-                  <select class="form-select" formControlName="companyRelationType" [class.is-invalid]="groupOrg.get('companyRelationType')?.touched && groupOrg.get('companyRelationType')?.errors">
+                  <select
+                    class="form-select"
+                    formControlName="companyRelationType"
+                    [class.is-invalid]="
+                      groupOrg.get('companyRelationType')?.touched &&
+                      groupOrg.get('companyRelationType')?.errors
+                    "
+                  >
                     <option value="">Select relationship type</option>
                     <option value="main">Main Company</option>
                     <option value="subsidiary">Subsidiary Company</option>
                   </select>
-                  <small class="text-muted d-block mt-1">
-                    Select whether this company is the main company or a subsidiary in the group
-                  </small>
-                  <div *ngIf="groupOrg.get('companyRelationType')?.touched && groupOrg.get('companyRelationType')?.errors" class="text-danger small mt-1">
-                    <span *ngIf="groupOrg.get('companyRelationType')?.errors?.['required']">Please select the company relationship type</span>
+                  <div
+                    *ngIf="
+                      groupOrg.get('companyRelationType')?.touched &&
+                      groupOrg.get('companyRelationType')?.errors
+                    "
+                    class="text-danger small mt-1"
+                  >
+                    <span
+                      *ngIf="groupOrg.get('companyRelationType')?.errors?.['required']"
+                      >Please select the company relationship type</span
+                    >
                   </div>
                 </div>
               </div>
@@ -210,7 +259,11 @@
 
             <!-- Add More Button -->
             <div class="text-center mt-4">
-              <button type="button" class="btn btn-outline-primary" (click)="addGroupOrganization()">
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="addGroupOrganization()"
+              >
                 <i class="bi bi-plus-circle me-1"></i> Add Another Company
               </button>
             </div>
@@ -221,11 +274,14 @@
   </form>
 
   <div class="footer-btn-area mb-3">
-    <button
-      class="btn btn-primary mt-4"
+    <app-loader-button
+      [loading]="loading"
+      [disabled]="OrganizationForm.invalid"
+      [text]="'Next'"
+      [loaderText]="'Saving...'"
+      btnClass="btn btn-primary mt-4 w-100"
       (click)="handleSubmit(OrganizationForm.value)"
-    >
-      Next
-    </button>
+      type="button"
+    ></app-loader-button>
   </div>
 </div>

@@ -1,0 +1,12 @@
+<button
+  [type]="type"
+  [class]="btnClass"
+  [disabled]="loading || disabled"
+>
+  <span *ngIf="loading" [class]="spinnerClass" role="status" aria-hidden="true"></span>
+  <ng-container *ngIf="icon && !loading">
+    <i [class]="icon" aria-hidden="true"></i>
+  </ng-container>
+  <ng-container *ngIf="!loading">{{ text }}</ng-container>
+  <ng-container *ngIf="loading">{{ loaderText }}</ng-container>
+</button>

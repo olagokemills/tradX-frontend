@@ -15,16 +15,21 @@ export class OnboardingComponent {
   organizationDetails: any | null = null;
   contactInfo: any | null = null;
   SubscriptionDetails: any | null = null;
-  isLoading: boolean = true;  // Add loading state
+  isLoading: boolean = true; // Add loading state
+  companyInformation: any | null = null; // add data or get from store later
 
-  constructor(private api: LoginService, private helper: EncryptionService, private router: Router) { }
+  constructor(
+    private api: LoginService,
+    private helper: EncryptionService,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     // Get user details from encrypted local/session storage
     const details = this.helper.GetItem('user')?.data;
     const userId = details?.user?.userId || details?.userId;
     if (userId) {
-      this.isLoading = true;  // Start loading
+      this.isLoading = true; // Start loading
       this.api.getUserById(userId).subscribe({
         next: (res: any) => {
           // API returns organizations array inside data
@@ -42,16 +47,21 @@ export class OnboardingComponent {
             }
             // else, stay on onboarding
           }
-          this.isLoading = false;  // Stop loading once we've processed the response
+          this.isLoading = false; // Stop loading once we've processed the response
         },
         error: (err) => {
           console.error('Error fetching user by ID:', err);
-          this.isLoading = false;  // Stop loading on error
-        }
+          this.isLoading = false; // Stop loading on error
+        },
       });
     } else {
-      this.isLoading = false;  // Stop loading if no userId
+      this.isLoading = false; // Stop loading if no userId
     }
+    // Get organization details from session storage
+    this.companyInformation = JSON.parse(
+      sessionStorage.getItem('organizationInfo') || '{}'
+    );
+    console.log('Company Information:', this.companyInformation);
   }
   handleContactInfo(event: any) {
     if (event === 'success') {
@@ -64,7 +74,7 @@ export class OnboardingComponent {
       // If you have a 4th step, advance to it here
       // this.pageName = '4';
       // refresh the page
-      window.location.reload();
+      this.router.navigate(['/user-management']);
     }
   }
 
@@ -76,6 +86,16 @@ export class OnboardingComponent {
   handleSubscriptionDetails(data: Record<string, any>) { }
 
   handlePageChange(page: string) {
+    return null;
     this.pageName = page;
+  }
+
+  logout() {
+    // Clear session and local storage
+    sessionStorage.clear();
+    localStorage.clear();
+    // Optionally, clear any other app state here
+    // Redirect to login
+    this.router.navigate(['/auth/login']);
   }
 }

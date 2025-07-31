@@ -33,7 +33,13 @@ export class AuditService {
     );
   }
 
-  ModifyAudit(data: CreateAuditPayload): Observable<any> {
+  ModifyAudit(data: {
+    auditPlanId: string;
+    auditTitle: string;
+    departmentId: number;
+    status: string;
+    proposedTiming: string;
+  }): Observable<any> {
     return this.http.post<any>(
       `${this.baseUrl}${AuditPoints.modifyAudit}`,
       data
@@ -42,6 +48,11 @@ export class AuditService {
   FetchCurrentYearAudit(orgId: string): Observable<any> {
     return this.http.get<any>(
       `${this.baseUrl}${AuditPoints.currentYearPlans}${orgId}`
+    );
+  }
+  FetchRemovedAudits(orgId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.baseUrl}audit-plan/deleted-audit-plans/organization/${orgId}`
     );
   }
   // DeleteAuditPlan(data: number) {
@@ -79,5 +90,42 @@ export class AuditService {
       `${this.baseUrl}audit-plan/modify-proposed-timing`,
       { auditPlanId, proposedTiming }
     );
+  }
+  removeAudit({
+    auditId,
+    organizationId,
+  }: {
+    auditId: string;
+    organizationId: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/delete-audit-plan`, {
+      auditId,
+      organizationId,
+    });
+  }
+  UpdateAuditStatus({
+    status,
+    auditPlanId,
+  }: {
+    status: string;
+    auditPlanId: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/modify-audit-plan`, {
+      status,
+      auditPlanId,
+    });
+  }
+  FreezeAudit({
+    auditPlanId,
+    organizationId,
+  }: {
+    auditPlanId: string;
+    organizationId: string;
+  }): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}audit-plan/freeze-audit-plan`, {
+      auditPlanId,
+      organizationId,
+      freezePlan: true,
+    });
   }
 }

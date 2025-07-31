@@ -151,8 +151,22 @@ export interface UserPayload {
   pageNumber: number;
   pageSize: number;
   searchQuery: string;
+  organizationId: string;
 }
 export interface Role {
+  roleId: any;
+  id: number;
+  roleName: string;
+}
+
+export interface UserRoles {
+  roleId: string;
+  roleName: string;
+  description: string;
+  permissionsSet: boolean;
+}
+
+export interface OrganizationsRoles {
   id: number;
   roleName: string;
 }
@@ -208,6 +222,14 @@ export interface CreateAuditPayload {
   auditYear: string;
   auditScopeSummary: string;
 }
+
+export interface UpdateAuditPayload {
+  auditPlanId: string;
+  auditTitle: string;
+  departmentId: number;
+  status: string;
+  proposedTiming: string;
+}
 export interface UserModel {
   organizationId: string;
   firstName: string;
@@ -225,7 +247,7 @@ export interface ContactInformationPayload {
   emailAddress: string;
   countryId: number;
   phoneNumber: string;
-  roleId: string;
+  department: string;
   organizationRoleId: number;
 }
 

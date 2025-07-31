@@ -16,7 +16,10 @@ import {
   RatingsResponse,
   UserResponse,
 } from 'src/app/shared/models/appData.model';
-import { ValidateOtpPayload, ValidateOtpResponse } from 'src/app/shared/models/validate-otp.model';
+import {
+  ValidateOtpPayload,
+  ValidateOtpResponse,
+} from 'src/app/shared/models/validate-otp.model';
 @Injectable({
   providedIn: 'root',
 })
@@ -58,7 +61,9 @@ export class LoginService {
       data
     );
   }
-  saveContactInformation(data: ContactInformationPayload): Observable<ContactInformationResponse> {
+  saveContactInformation(
+    data: ContactInformationPayload
+  ): Observable<ContactInformationResponse> {
     return this.http.post<ContactInformationResponse>(
       `${this.baseUrl}${AuthPoints.contactInfo}`,
       data
@@ -100,9 +105,7 @@ export class LoginService {
    * Get user by ID (returns user details and organizations)
    */
   getUserById(userId: string): Observable<UserResponse> {
-    return this.http.get<UserResponse>(
-      `${this.baseUrl}user/user/${userId}`
-    );
+    return this.http.get<UserResponse>(`${this.baseUrl}user/user/${userId}`);
   }
 
   /**
@@ -117,5 +120,22 @@ export class LoginService {
 
   GetOrganizationDetails(userId: string): Observable<string> {
     return this.http.get<string>(`${this.baseUrl}user/user/${userId}`);
+  }
+
+  ResetPassword(email: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}auth/request-password-reset`, {
+      emailAddress: email,
+    });
+  }
+  CompleteResetPassword(
+    emailAddress: string,
+    token: string,
+    newPassword: string
+  ): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}auth/complete-password-reset`, {
+      emailAddress,
+      token,
+      newPassword,
+    });
   }
 }

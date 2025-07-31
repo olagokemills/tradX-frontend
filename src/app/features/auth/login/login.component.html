@@ -43,22 +43,22 @@
       </div>
 
       <div class="mb-3">
-        <small href="#" class="text-decoration-none font-semibold pointer"
+        <small
+          [routerLink]="['/auth/forgot-password']"
+          class="text-decoration-none font-semibold pointer"
           >Having trouble in sign in?</small
         >
       </div>
 
       <div class="d-grid mb-3">
-        <button
-          type="submit"
-          class="btn btn-primary submit-btn"
+        <app-loader-button
+          [loading]="loading"
           [disabled]="LoginForm.invalid"
-        >
-          <div class="spinner-border" role="status" *ngIf="loading">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <ng-container *ngIf="!loading">Login</ng-container>
-        </button>
+          [text]="'Login'"
+          [loaderText]="'Signing in...'"
+          btnClass="btn btn-primary submit-btn w-100"
+          type="submit"
+        ></app-loader-button>
       </div>
     </form>
 

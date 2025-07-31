@@ -65,18 +65,15 @@
           [formGroup]="SignUpForm"
         ></app-text-input>
       </div>
-
       <div class="d-grid mb-3">
-        <button
-          type="submit"
-          class="btn btn-primary submit-btn"
+        <app-loader-button
+          [loading]="loading"
           [disabled]="SignUpForm.invalid"
-        >
-          <div class="spinner-border" role="status" *ngIf="loading">
-            <span class="visually-hidden">Loading...</span>
-          </div>
-          <ng-container *ngIf="!loading"> Create Account</ng-container>
-        </button>
+          [text]="'Create Account'"
+          [loaderText]="'Registering...'"
+          btnClass="btn btn-primary submit-btn w-100"
+          type="submit"
+        ></app-loader-button>
       </div>
     </form>
 

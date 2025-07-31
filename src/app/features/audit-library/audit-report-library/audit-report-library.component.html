@@ -1,0 +1,122 @@
+<div class="audit-report-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <h1 class="page-title">Audit Report Library</h1>
+    <button class="btn btn-add-report" [matMenuTriggerFor]="addMenu">
+      <i class="bi bi-plus"></i>
+      Add Report
+    </button>
+    <mat-menu #addMenu="matMenu" class="add-report-menu">
+      <button mat-menu-item (click)="onUploadReport()">
+        <i class="bi bi-upload me-2"></i>
+        Upload Report
+      </button>
+      <button mat-menu-item (click)="onCreateReport()">
+        <i class="bi bi-pencil-square me-2"></i>
+        Create Report
+      </button>
+    </mat-menu>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="controls-section">
+    <div class="search-wrapper">
+      <div class="search-input-group">
+        <i class="bi bi-search search-icon"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        >
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-filter" (click)="onFilter()">
+        <i class="bi bi-funnel"></i>
+        Filter
+      </button>
+      <button class="btn btn-download" (click)="onDownloadReport()">
+        <i class="bi bi-download"></i>
+        Download Report
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-container">
+    <div class="table-wrapper">
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th class="col-report">Report</th>
+            <th class="col-entity">Entity</th>
+            <th class="col-rating">Overall Rating</th>
+            <th class="col-identifier">Other Unique Identifier</th>
+            <th class="col-quarter">Quarter</th>
+            <th class="col-audit-name">Audit Name</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let report of getCurrentPageReports()" class="table-row">
+            <td class="report-cell">
+              <div class="report-info">
+                <div class="report-id">{{ report.id }}</div>
+                <div class="report-date">{{ report.date }}</div>
+              </div>
+            </td>
+            <td class="entity-cell">{{ report.entity }}</td>
+            <td class="rating-cell">
+              <span class="rating-badge" [ngClass]="getRatingClass(report.ratingType)">
+                <span class="rating-dot">•</span>
+                {{ report.overallRating }}
+              </span>
+            </td>
+            <td class="identifier-cell">{{ report.otherUniqueIdentifier }}</td>
+            <td class="quarter-cell">{{ report.quarter }}</td>
+            <td class="audit-name-cell">{{ report.auditName }}</td>
+            <td class="actions-cell">
+              <button class="btn-more" (click)="onMoreOptions(report)">
+                <i class="bi bi-three-dots-vertical"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination Section -->
+  <div class="d-flex justify-content-between align-items-center mt-4">
+    <button
+      class="btn btn-outline-secondary me-2"
+      [disabled]="currentPage === 1"
+      (click)="onPreviousPage()">
+      Previous
+    </button>
+    <div class="pagination-info">
+      <span class="text-muted">Page {{ currentPage }} of {{ totalPages }}</span>
+    </div>
+    <button
+      class="btn btn-outline-secondary"
+      [disabled]="currentPage === totalPages"
+      (click)="onNextPage()">
+      Next
+    </button>
+  </div>
+
+  <!-- Add Report Modal -->
+  <app-side-modal
+    [isOpen]="showAddReportModal"
+    title="Add Report"
+    description="Fill details below to add a finding to a report"
+    (close)="onAddReportClose()">
+    <app-add-report-form
+      (submit)="onAddReportSubmit($event)"
+      (close)="onAddReportClose()">
+    </app-add-report-form>
+  </app-side-modal>
+</div>

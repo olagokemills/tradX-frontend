@@ -24,6 +24,10 @@ const routes: Routes = [
     path: 'audit-plan',
     component: AuditPlanComponent,
   },
+  {
+    path: 'audit-library',
+    loadChildren: () => import('../audit-library/audit-library.module').then(m => m.AuditLibraryModule)
+  },
 ];
 @NgModule({
   declarations: [UserManagementComponent, AuditPlanComponent],
@@ -34,4 +38,4 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
 })
-export class PagesModule {}
+export class PagesModule { }

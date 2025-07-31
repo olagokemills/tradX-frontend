@@ -324,7 +324,9 @@ export class RatingInfoComponent {
       ],
     },
   ];
-  constructor(private fb: FormBuilder, private api: LoginService) { }
+  loading: boolean = false;
+
+  constructor(private fb: FormBuilder, private api: LoginService) {}
   ngOnInit(): void {
     this.populateForm();
   }
@@ -434,34 +436,34 @@ export class RatingInfoComponent {
 
   // Method to submit to API
   submitConfiguration() {
+    this.loading = true;
     const reportConfig = this.getRatingConfiguration();
     const auditConfig = this.getAuditConfiguration();
     const organizationId = localStorage.getItem('organizationId') || '';
-
     // Map options to API format
     const mapOptions = (options: any[], scale: any) =>
-      options.map(opt => ({
+      options.map((opt) => ({
         ratingScaleId: opt.rating,
-        scaleDefinition: scale.scaleName,
-        colourCode: opt.color
+        scaleDefinition: opt.description,
+        colourCode: opt.color,
       }));
 
     const payload = {
       organizationId,
       auditRatingScaleRequests: mapOptions(auditConfig.options, auditConfig),
-      reportRatingScaleRequests: mapOptions(reportConfig.options, reportConfig)
+      reportRatingScaleRequests: mapOptions(reportConfig.options, reportConfig),
     };
 
     this.api.submitRatingsConfig(payload).subscribe({
       next: (res) => {
+        this.loading = false;
         if (res.isSuccess) {
           this.formSubmit.emit('success');
         }
       },
       error: (err) => {
-        console.error('API error:', err);
-        // Do not emit success on error
-      }
+        this.loading = false;
+      },
     });
 
     return { reportConfig, auditConfig };

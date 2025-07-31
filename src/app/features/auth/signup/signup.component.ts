@@ -18,7 +18,6 @@ export class SignupComponent implements OnInit, OnDestroy {
   SignUpForm!: FormGroup;
   loading: boolean = false;
   signupSub!: Subscription;
-
   constructor(
     private fb: FormBuilder,
     private utils: GenericService,
@@ -28,21 +27,23 @@ export class SignupComponent implements OnInit, OnDestroy {
     this.SignUpForm = this.fb.group(
       {
         emailAddress: [, [Validators.email, Validators.required]],
-        firstName: ['', [Validators.minLength(6), Validators.required]],
-        lastName: ['', [Validators.minLength(6), Validators.required]],
-        businessName: ['', [Validators.minLength(6), Validators.required]],
+        firstName: ['', [Validators.minLength(3), Validators.required]],
+        lastName: ['', [Validators.minLength(3), Validators.required]],
+        businessName: ['', [Validators.minLength(3), Validators.required]],
         password: ['', passwordValidator],
         confirmPassword: [''],
       },
       { validators: passwordMatchValidator() }
     );
     this.signupSub = this.store.select(selectSignup).subscribe((signup) => {
+      // this.loading = true;
       if (signup.response && signup.response.isSuccess) {
+        this.loading = false;
+
         // Store the organization ID in localStorage
         const organizationId = signup.response.data?.organizationId;
         if (organizationId) {
           localStorage.setItem('organizationId', organizationId);
-          // console.log('Organization ID stored in localStorage after signup:', organizationId);
         }
 
         this.utils.toastr.success(
@@ -54,9 +55,9 @@ export class SignupComponent implements OnInit, OnDestroy {
         }, 2000);
       }
       if (signup.error) {
+        this.loading = false;
         this.utils.toastr.error(signup.error, 'Signup Error');
       }
-      this.loading = false;
     });
   }
   Register(data: RegisterPayload) {

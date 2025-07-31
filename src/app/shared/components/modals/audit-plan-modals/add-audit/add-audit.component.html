@@ -1,7 +1,7 @@
 <div class="main">
   <h6 class="mb-4 text-muted">Fill details below</h6>
   <form
-    (ngSubmit)="CreateNewAudit(AddAuditForm.value)"
+    (ngSubmit)="onSubmit()"
     [formGroup]="AddAuditForm"
   >
     <div class="mb-3">
@@ -47,7 +47,7 @@
         <div class="spinner-border" role="status" *ngIf="loading">
           <span class="visually-hidden">Loading...</span>
         </div>
-        <ng-container *ngIf="!loading"> Add Audit</ng-container>
+        <ng-container *ngIf="!loading">{{ data?.mode === 'edit' ? 'Update Audit' : 'Add Audit' }}</ng-container>
       </button>
     </div>
   </form>

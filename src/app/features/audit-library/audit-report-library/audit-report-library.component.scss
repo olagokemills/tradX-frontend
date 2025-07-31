@@ -1,0 +1,475 @@
+// Container Styles
+.audit-report-container {
+  background-color: #ffffff;
+  min-height: 100vh;
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+// Header Section
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+
+  .page-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+  }
+
+  .btn-add-report {
+    background-color: #ffffff;
+    border: 1px solid #e1e5e9;
+    color: #374151;
+    padding: 0px 16px;
+    height: 44px !important;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: #f8f9fa;
+      border-color: #d1d5db;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    i {
+      font-size: 16px;
+    }
+  }
+}
+
+// Controls Section
+.controls-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+
+  .search-wrapper {
+    .search-input-group {
+      position: relative;
+      width: 300px;
+
+      .search-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        font-size: 14px;
+        z-index: 1;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: 10px 12px 10px 36px;
+        border: 1px solid #e1e5e9;
+        border-radius: 6px;
+        font-size: 14px;
+        background-color: #ffffff;
+        transition: border-color 0.2s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #007bff;
+          box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        &::placeholder {
+          color: #9ca3af;
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 12px;
+
+    .btn {
+      padding: 10px 16px;
+      border: 1px solid #e1e5e9;
+      border-radius: 6px;
+      background-color: #ffffff;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #f8f9fa;
+        border-color: #d1d5db;
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      i {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+// Table Section
+.table-container {
+  background-color: #ffffff;
+  // border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  overflow: hidden;
+  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 24px;
+
+  .table-wrapper {
+    overflow-x: auto;
+  }
+
+  .audit-table {
+    width: 100%;
+    // border-collapse: collapse;
+    font-size: 14px;
+
+    thead {
+      background-color: transparent;
+
+      th {
+        padding: 16px 12px;
+        text-align: left;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 1px solid #e1e5e9;
+        white-space: nowrap;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &.col-report {
+          width: 180px;
+        }
+        &.col-entity {
+          width: 100px;
+        }
+        &.col-rating {
+          width: 140px;
+        }
+        &.col-identifier {
+          width: 200px;
+        }
+        &.col-quarter {
+          width: 80px;
+        }
+        &.col-audit-name {
+          width: 140px;
+        }
+        &.col-actions {
+          width: 50px;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #f1f3f4;
+        transition: background-color 0.1s ease;
+
+        &:hover {
+          background-color: #f8f9fa;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        td {
+          padding: 16px 12px;
+          vertical-align: middle;
+          color: #374151;
+        }
+
+        .report-cell {
+          .report-info {
+            .report-id {
+              font-weight: 600;
+              color: #1a1a1a;
+              font-size: 14px;
+              margin-bottom: 4px;
+            }
+
+            .report-date {
+              font-size: 12px;
+              color: #6b7280;
+            }
+          }
+        }
+
+        .entity-cell {
+          font-weight: 500;
+          color: #374151;
+        }
+
+        .rating-cell {
+          .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            font-size: 13px;
+
+            .rating-dot {
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              display: inline-block;
+            }
+
+            &.rating-strong {
+              color: #059669;
+              .rating-dot {
+                background-color: #059669;
+              }
+            }
+
+            &.rating-weak {
+              color: #dc2626;
+              .rating-dot {
+                background-color: #dc2626;
+              }
+            }
+          }
+        }
+
+        .identifier-cell {
+          color: #6b7280;
+          font-size: 13px;
+        }
+
+        .quarter-cell {
+          font-weight: 500;
+          color: #374151;
+        }
+
+        .audit-name-cell {
+          color: #6b7280;
+          font-size: 13px;
+        }
+
+        .actions-cell {
+          text-align: center;
+
+          .btn-more {
+            background: none;
+            border: none;
+            color: #6b7280;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+              background-color: #f3f4f6;
+              color: #374151;
+            }
+
+            i {
+              font-size: 16px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Pagination Section
+.pagination-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+
+  .pagination-info {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+
+    span {
+      font-size: 14px;
+      color: #6c757d;
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
+    gap: 8px;
+
+    .btn-pagination {
+      padding: 8px 16px;
+      border: 1px solid #e1e5e9;
+      border-radius: 6px;
+      background-color: #ffffff;
+      color: #374151;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        background-color: #f8f9fa;
+        border-color: #d1d5db;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background-color: #f9fafb;
+        color: #9ca3af;
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+    }
+  }
+}
+
+// Pagination Styles
+.btn-outline-secondary {
+  border: 1px solid #e1e5e9;
+  background-color: #ffffff;
+  color: #374151;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background-color: #f8f9fa;
+    border-color: #d1d5db;
+    color: #374151;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .audit-report-container {
+    padding: 16px;
+  }
+
+  .header-section {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+
+  .controls-section {
+    flex-direction: column;
+    gap: 16px;
+
+    .search-wrapper {
+      .search-input-group {
+        width: 100%;
+      }
+    }
+
+    .action-buttons {
+      justify-content: center;
+    }
+  }
+
+  .table-container {
+    .table-wrapper {
+      overflow-x: scroll;
+    }
+  }
+
+  .pagination-section {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+}
+
+// Animation and Transitions
+.table-row {
+  transition: all 0.2s ease;
+}
+
+.btn {
+  transition: all 0.2s ease;
+}
+
+// Focus States
+.search-input:focus,
+.btn:focus,
+.btn-more:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+// Loading States (if needed)
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+// Status Colors
+.status-active {
+  color: #059669;
+}
+
+.status-inactive {
+  color: #dc2626;
+}
+
+.status-pending {
+  color: #d97706;
+}
+
+::ng-deep {
+  .add-report-menu {
+    .mat-menu-content {
+      padding: 0;
+    }
+
+    .mat-menu-item {
+      font-size: 14px;
+      line-height: 36px;
+      height: 36px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      color: #374151;
+
+      i {
+        font-size: 16px;
+      }
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+}

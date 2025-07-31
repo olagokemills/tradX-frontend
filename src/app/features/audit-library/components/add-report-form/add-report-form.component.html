@@ -1,0 +1,52 @@
+<form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="add-report-form">
+  <div class="form-content">
+    <div class="form-group">
+    <app-text-input id="reportNumber" [formGroup]="reportForm" [controlName]="'reportNumber'" placeholder="Report Number"></app-text-input>
+  </div>
+
+  <div class="form-group">
+    <app-text-input id="reportDate" [formGroup]="reportForm" [controlName]="'reportDate'" type="date" placeholder="Report Date"></app-text-input>
+  </div>
+
+  <div class="form-group">
+    <app-select-input id="entity" formControlName="entity" [options]="entities" label="Entity" (selectChange)="onEntityChange($event)"></app-select-input>
+  </div>
+
+  <div class="form-group">
+    <app-select-input id="overallRating" formControlName="overallRating" [options]="ratings" label="Overall Rating"></app-select-input>
+  </div>
+
+
+  <div class="form-group">
+    <app-text-input id="auditYear" [formGroup]="reportForm" [controlName]="'auditYear'" placeholder="Audit Year"></app-text-input>
+  </div>
+
+  <div class="form-group">
+    <app-text-input id="summaryScope" [formGroup]="reportForm" [controlName]="'summaryScope'" placeholder="Summary Scope"></app-text-input>
+  </div>
+
+  <div class="form-group">
+    <app-text-input id="otherUniqueIdentifier" [formGroup]="reportForm" [controlName]="'otherUniqueIdentifier'" placeholder="Other UniqueIdentifier"></app-text-input>
+  </div>
+
+  <div class="form-group">
+    <app-select-input id="quarter" formControlName="quarter" [options]="quarters" label="Quarter"></app-select-input>
+  </div>
+
+  <div class="form-group">
+    <app-select-input id="auditName" formControlName="auditName" [options]="auditNames" label="Audit Name"></app-select-input>
+  </div>
+  </div>
+
+  <div class="form-actions w-100">
+    <app-loader-button
+      type="submit"
+      [loading]="loading"
+      [disabled]="!reportForm.valid"
+      text="Add Report"
+      btnClass="btn btn-primary submit-btn w-100"
+      loaderText="Adding Report..."
+    >
+    </app-loader-button>
+  </div>
+</form>
