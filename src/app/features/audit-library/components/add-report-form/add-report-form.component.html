@@ -1,98 +1,41 @@
 <form [formGroup]="reportForm" (ngSubmit)="onSubmit()" class="add-report-form">
-  <div class="form-header">
-    <h2 class="form-title">Add Report</h2>
-    <p class="form-description">Fill details below to add a finding to a report</p>
-  </div>
-
   <div class="form-content">
     <div class="form-group">
-    <label for="reportNumber">Report Number</label>
-    <input
-      id="reportNumber"
-      type="text"
-      class="form-control"
-      placeholder="Enter Number"
-      formControlName="reportNumber"
-    >
+    <app-text-input id="reportNumber" [formGroup]="reportForm" [controlName]="'reportNumber'" placeholder="Report Number"></app-text-input>
   </div>
 
   <div class="form-group">
-    <label for="reportDate">Report Date</label>
-    <input
-      id="reportDate"
-      type="date"
-      class="form-control"
-      placeholder="DD/MM/YYYY"
-      formControlName="reportDate"
-    >
+    <app-text-input id="reportDate" [formGroup]="reportForm" [controlName]="'reportDate'" type="date" placeholder="Report Date"></app-text-input>
   </div>
 
   <div class="form-group">
-    <label for="entity">Entity</label>
-    <select
-      id="entity"
-      class="form-control"
-      formControlName="entity"
-    >
-      <option value="" disabled>Select Option</option>
-      <option *ngFor="let entity of entities" [value]="entity">
-        {{ entity }}
-      </option>
-    </select>
+    <app-select-input id="entity" formControlName="entity" [options]="entities" label="Entity" (selectChange)="onEntityChange($event)"></app-select-input>
   </div>
 
   <div class="form-group">
-    <label for="overallRating">Overall Rating</label>
-    <select
-      id="overallRating"
-      class="form-control"
-      formControlName="overallRating"
-    >
-      <option value="" disabled>Select Option</option>
-      <option *ngFor="let rating of ratings" [value]="rating">
-        {{ rating }}
-      </option>
-    </select>
+    <app-select-input id="overallRating" formControlName="overallRating" [options]="ratings" label="Overall Rating"></app-select-input>
+  </div>
+
+
+  <div class="form-group">
+    <app-text-input id="auditYear" [formGroup]="reportForm" [controlName]="'auditYear'" placeholder="Audit Year"></app-text-input>
   </div>
 
   <div class="form-group">
-    <label for="otherUniqueIdentifier">Other Unique Identifier</label>
-    <input
-      id="otherUniqueIdentifier"
-      type="text"
-      class="form-control"
-      placeholder="Separate with commas"
-      formControlName="otherUniqueIdentifier"
-    >
+    <app-text-input id="summaryScope" [formGroup]="reportForm" [controlName]="'summaryScope'" placeholder="Summary Scope"></app-text-input>
   </div>
 
   <div class="form-group">
-    <label for="quarter">Quarter</label>
-    <select
-      id="quarter"
-      class="form-control"
-      formControlName="quarter"
-    >
-      <option value="" disabled>Select Quarter</option>
-      <option *ngFor="let quarter of quarters" [value]="quarter">
-        {{ quarter }}
-      </option>
-    </select>
+    <app-text-input id="otherUniqueIdentifier" [formGroup]="reportForm" [controlName]="'otherUniqueIdentifier'" placeholder="Other UniqueIdentifier"></app-text-input>
   </div>
 
   <div class="form-group">
-    <label for="auditName">Audit Name</label>
-    <select
-      id="auditName"
-      class="form-control"
-      formControlName="auditName"
-    >
-      <option value="" disabled>Select option</option>
-      <option *ngFor="let name of auditNames" [value]="name">
-        {{ name }}
-      </option>
-    </select>
-    </div>
+    <app-select-input id="quarter" formControlName="quarter" [options]="quarters" label="Quarter"></app-select-input>
+  </div>
+
+  <div class="form-group">
+    <app-select-input id="auditName" formControlName="auditName" [options]="auditNames" label="Audit Name"></app-select-input>
+  </div>
   </div>
 
   <div class="form-actions w-100">

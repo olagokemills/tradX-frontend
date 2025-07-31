@@ -1,3 +1,17 @@
+export interface ReportRating {
+  id: number;
+  organizationId: string;
+  scaleDefinition: string;
+  colourCode: string;
+}
+
+export interface ReportRatingResponse {
+  data: ReportRating[];
+  errorMessage: string;
+  responseMessage: string;
+  responseCode: number;
+  isSuccess: boolean;
+}
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -15,7 +29,7 @@ import {
 })
 export class UserService {
   baseUrl: string = 'https://lab386.com.ng/api/v1/';
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   GetUsers(data: UserPayload): Observable<UserResponse> {
     return this.http.get<any>(
@@ -61,5 +75,9 @@ export class UserService {
     return this.http.post<any>(`${this.baseUrl}user/delete-user`, {
       userId: userId,
     });
+  }
+
+  GetReportRatings(organizationId: string): Observable<ReportRatingResponse> {
+    return this.http.get<ReportRatingResponse>(`${this.baseUrl}user/report-rating/${organizationId}`);
   }
 }

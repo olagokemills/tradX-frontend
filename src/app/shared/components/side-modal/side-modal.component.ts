@@ -18,6 +18,7 @@ import { trigger, transition, style, animate } from '@angular/animations';
   ]
 })
 export class SideModalComponent {
+  @Input() description?: string;
   @Input() isOpen: boolean = false;
   @Input() title: string = '';
   @Output() close = new EventEmitter<void>();

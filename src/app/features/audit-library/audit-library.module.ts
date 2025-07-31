@@ -16,14 +16,18 @@ const routes: Routes = [
   { path: 'saved-findings', component: SavedFindingsComponent },
 ];
 
+
+
 import { AddReportFormComponent } from './components/add-report-form/add-report-form.component';
+import { AddFindingFormComponent } from './components/add-finding-form/add-finding-form.component';
 
 @NgModule({
   declarations: [
     AuditFindingsComponent,
     AuditReportLibraryComponent,
     SavedFindingsComponent,
-    AddReportFormComponent
+    AddReportFormComponent,
+    AddFindingFormComponent
   ],
   imports: [
     CommonModule,

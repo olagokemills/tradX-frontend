@@ -18,6 +18,30 @@ export class AuditFindingsComponent implements OnInit {
   findings: Finding[] = [];
   currentPage: number = 1;
   totalPages: number = 12;
+  showAddFindingModal = false;
+  onAddFinding(finding: any) {
+    // Add the new finding to the findings list (mock implementation)
+    this.findings = [
+      {
+        id: finding.sn,
+        closureDate: finding.closureDate,
+        priority: finding.priority,
+        title: finding.title,
+        category: finding.category,
+        description: finding.description,
+        recommendation: finding.recommendation,
+        status: 'Open',
+        issueOwner: finding.issueOwner,
+        managementActionPlan: finding.managementActionPlan,
+        typeOfClosure: '',
+        dateRemediated: undefined,
+        rationalForClosingIssue: '',
+        bookmarked: false
+      },
+      ...this.findings
+    ];
+    this.showAddFindingModal = false;
+  }
 
   constructor(
     private dialog: MatDialog,

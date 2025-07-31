@@ -111,6 +111,8 @@
   <!-- Add Report Modal -->
   <app-side-modal
     [isOpen]="showAddReportModal"
+    title="Add Report"
+    description="Fill details below to add a finding to a report"
     (close)="onAddReportClose()">
     <app-add-report-form
       (submit)="onAddReportSubmit($event)"

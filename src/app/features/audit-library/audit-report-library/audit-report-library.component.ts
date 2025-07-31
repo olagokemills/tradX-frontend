@@ -175,9 +175,9 @@ export class AuditReportLibraryComponent implements OnInit {
   }
 
   onAddReportSubmit(report: any): void {
-    console.log('New report data:', report);
+    // console.log('New report data:', report);
     // Implement the API call to save the report
-    this.showAddReportModal = false;
+    // this.showAddReportModal = false;
   }
 
   onPreviousPage(): void {
