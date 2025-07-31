@@ -1,17 +1,4 @@
-export interface ReportRating {
-  id: number;
-  organizationId: string;
-  scaleDefinition: string;
-  colourCode: string;
-}
-
-export interface ReportRatingResponse {
-  data: ReportRating[];
-  errorMessage: string;
-  responseMessage: string;
-  responseCode: number;
-  isSuccess: boolean;
-}
+import { ReportRating, ReportRatingResponse } from 'src/app/shared/models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

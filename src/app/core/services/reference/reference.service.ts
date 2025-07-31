@@ -1,10 +1,4 @@
-export interface QuartersResponse {
-  data: string[];
-  errorMessage: string;
-  responseMessage: string;
-  responseCode: number;
-  isSuccess: boolean;
-}
+import { QuartersResponse } from 'src/app/shared/models/reference.model';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
