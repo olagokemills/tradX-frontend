@@ -2,32 +2,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+
 import { Injectable } from '@angular/core';
-
-interface CreateAuditReportPayload {
-  organizationId: string | number;
-  reportNumber: string;
-  reportDate: string;
-  entity: string | number;
-  overallRating: string;
-  otherUniqueIdentifier: string;
-  quarter: string;
-  auditName: string;
-  auditYear: string;
-  summaryScope: string;
-}
-
-export interface FreezeAuditReportPayload {
-  auditReportId: string;
-  organizationId: string;
-  freezeReport: boolean;
-}
-
-export interface BookmarkAuditReportPayload {
-  auditReportId: string;
-  organizationId: string;
-  bookmark: boolean;
-}
+import {
+  CreateAuditReportPayload,
+  FreezeAuditReportPayload,
+  BookmarkAuditReportPayload
+} from 'src/app/shared/models/audit-report.model';
 
 
 @Injectable({
