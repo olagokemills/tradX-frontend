@@ -1,22 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AuditLibraryService } from 'src/app/core/services/audit/audit-library.service';
-import { AuditReport } from 'src/app/shared/models/audit-report.model';
+import { AuditReport, AuditReportResponse } from 'src/app/shared/models/audit-report.model';
 import { ConfirmDialogComponent } from 'src/app/shared/components/modals/confirm-dialog/confirm-dialog.component';
 import { GenericService } from 'src/app/core/utils/generic-service.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-audit-report-library',
   templateUrl: './audit-report-library.component.html',
   styleUrls: ['./audit-report-library.component.scss']
 })
-export class AuditReportLibraryComponent implements OnInit {
+export class AuditReportLibraryComponent implements OnInit, OnDestroy {
   reports: AuditReport[] = [];
   filteredReports: AuditReport[] = [];
   searchTerm: string = '';
   currentPage: number = 1;
-  totalPages: number = 2;
-  itemsPerPage: number = 8;
+  totalPages: number = 1;
+  totalCount: number = 0;
+  itemsPerPage: number = 10;
+  isLoadingReports: boolean = false;
+
+  // Search functionality
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  // Server-side pagination data
+  hasNextPage: boolean = false;
+  hasPreviousPage: boolean = false;
 
   // Rating color map based on the provided data
   ratingColorMap: Record<string, string> = {
@@ -35,49 +47,75 @@ export class AuditReportLibraryComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.setupSearchDebounce();
     this.loadReports();
-    const orgId = localStorage.getItem('organizationId') as string;
-    this.auditLibraryService.GetAuditReports(
-      {
-        organizationId: orgId
-      }
-    ).subscribe({
-      next: (res) => {
-        this.reports = res.data || [];
-        this.filteredReports = [...this.reports];
-      },
-      error: (err) => {
-        // Error handling without console log
-      }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupSearchDebounce(): void {
+    this.searchSubject.pipe(
+      debounceTime(500), // Wait 500ms after user stops typing
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(searchTerm => {
+      this.searchTerm = searchTerm;
+      this.currentPage = 1; // Reset to first page when searching
+      this.loadReports();
     });
   }
 
   private loadReports(): void {
-    // Mock data that matches the design exactly
-    this.reports = [];
+    this.isLoadingReports = true;
+    const orgId = localStorage.getItem('organizationId') as string;
 
-    this.filteredReports = [...this.reports];
+    const params = {
+      organizationId: orgId,
+      pageNumber: this.currentPage,
+      pageSize: this.itemsPerPage,
+      ...(this.searchTerm && { searchQuery: this.searchTerm })
+    };
+
+    this.auditLibraryService.GetAuditReports(params).subscribe({
+      next: (res: AuditReportResponse) => {
+        this.reports = res.data || [];
+        this.totalCount = res.totalCount;
+        this.totalPages = res.totalPages;
+        this.hasNextPage = res.hasNextPage;
+        this.hasPreviousPage = res.hasPreviousPage;
+        this.currentPage = res.pageNumber;
+        this.itemsPerPage = res.pageSize;
+        this.isLoadingReports = false;
+      },
+      error: (err) => {
+        this.isLoadingReports = false;
+        this.utils.toastr.error('Failed to load reports', 'Error');
+      }
+    });
   }
 
   onSearch(): void {
-    if (!this.searchTerm.trim()) {
-      this.filteredReports = [...this.reports];
-      return;
-    }
+    this.searchSubject.next(this.searchTerm);
+  }
 
-    const searchLower = this.searchTerm.toLowerCase();
-    this.filteredReports = this.reports.filter(report =>
-      report.auditReportId.toLowerCase().includes(searchLower) ||
-      report.entity.toLowerCase().includes(searchLower) ||
-      report.overallRating.toLowerCase().includes(searchLower) ||
-      report.otherUniqueIdentifier.toLowerCase().includes(searchLower) ||
-      report.quarter.toLowerCase().includes(searchLower) ||
-      report.auditName.toLowerCase().includes(searchLower)
-    );
+  onClearSearch(): void {
+    this.searchTerm = '';
+    this.searchSubject.next('');
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.itemsPerPage = newSize;
+    this.currentPage = 1; // Reset to first page
+    this.loadReports();
   }
 
   onFilter(): void {
-    // Implement filter functionality
+    // For now, just reload data to show loading state
+    // You can implement actual filter logic here later
+    this.loadReports();
   }
 
   onDownloadReport(): void {
@@ -143,8 +181,8 @@ export class AuditReportLibraryComponent implements OnInit {
   }
 
   onAddComment(report: AuditReport): void {
-    // Implement add comment functionality
-    // You can open a comment modal or navigate to comment section
+    this.selectedReportForComment = report;
+    this.showCommentModal = true;
   }
 
   onUploadReport(): void {
@@ -152,8 +190,10 @@ export class AuditReportLibraryComponent implements OnInit {
   }
 
   showAddReportModal = false;
+  showCommentModal = false;
   isEditMode = false;
   selectedReportForEdit: AuditReport | null = null;
+  selectedReportForComment: AuditReport | null = null;
 
   onCreateReport(): void {
     this.isEditMode = false;
@@ -167,6 +207,11 @@ export class AuditReportLibraryComponent implements OnInit {
     this.selectedReportForEdit = null;
   }
 
+  onCommentClose(): void {
+    this.showCommentModal = false;
+    this.selectedReportForComment = null;
+  }
+
   onAddReportSubmit(report: any): void {
     // Refresh the audit reports after a successful add
     this.refreshReports();
@@ -175,28 +220,20 @@ export class AuditReportLibraryComponent implements OnInit {
 
   // Helper method to refresh reports from API
   private refreshReports(): void {
-    const orgId = localStorage.getItem('organizationId') as string;
-    this.auditLibraryService.GetAuditReports({ organizationId: orgId }).subscribe({
-      next: (res) => {
-        this.reports = res.data || [];
-        this.filteredReports = [...this.reports];
-        this.updatePagination();
-      },
-      error: (err) => {
-        this.utils.toastr.error('Failed to refresh reports', 'Error');
-      }
-    });
+    this.loadReports();
   }
 
   onPreviousPage(): void {
-    if (this.currentPage > 1) {
+    if (this.hasPreviousPage && this.currentPage > 1) {
       this.currentPage--;
+      this.loadReports();
     }
   }
 
   onNextPage(): void {
-    if (this.currentPage < this.totalPages) {
+    if (this.hasNextPage && this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.loadReports();
     }
   }
 
@@ -204,19 +241,9 @@ export class AuditReportLibraryComponent implements OnInit {
     return `rating-${ratingType}`;
   }
 
-  // Utility method to get current page reports
+  // Utility method to get current page reports (now returns all reports since pagination is server-side)
   getCurrentPageReports(): AuditReport[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredReports.slice(startIndex, endIndex);
-  }
-
-  // Method to calculate total pages based on filtered results
-  updatePagination(): void {
-    this.totalPages = Math.ceil(this.filteredReports.length / this.itemsPerPage);
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = 1;
-    }
+    return this.reports;
   }
 
   // Extract rating type from full scale definition

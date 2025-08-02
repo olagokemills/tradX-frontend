@@ -20,6 +20,7 @@ const routes: Routes = [
 
 import { AddReportFormComponent } from './components/add-report-form/add-report-form.component';
 import { AddFindingFormComponent } from './components/add-finding-form/add-finding-form.component';
+import { AuditLibraryCommentComponent } from './components/audit-library-comment/audit-library-comment.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { AddFindingFormComponent } from './components/add-finding-form/add-findi
     AuditReportLibraryComponent,
     SavedFindingsComponent,
     AddReportFormComponent,
-    AddFindingFormComponent
+    AddFindingFormComponent,
+    AuditLibraryCommentComponent
   ],
   imports: [
     CommonModule,

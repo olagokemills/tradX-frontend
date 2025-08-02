@@ -19,6 +19,7 @@ export class AuditFindingsComponent implements OnInit {
   currentPage: number = 1;
   totalPages: number = 12;
   showAddFindingModal = false;
+  isLoadingFindings: boolean = false;
   onAddFinding(finding: any) {
     // Add the new finding to the findings list (mock implementation)
     this.findings = [

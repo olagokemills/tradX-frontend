@@ -26,10 +26,18 @@
         <input
           type="text"
           class="search-input"
-          placeholder="Search"
+          placeholder="Search reports..."
           [(ngModel)]="searchTerm"
           (input)="onSearch()"
         >
+        <button
+          *ngIf="searchTerm"
+          class="clear-search-btn"
+          type="button"
+          (click)="onClearSearch()"
+          title="Clear search">
+          <i class="bi bi-x-circle"></i>
+        </button>
       </div>
     </div>
 
@@ -47,7 +55,17 @@
 
   <!-- Table Section -->
   <div class="table-section">
-    <app-reusable-table [tableData]="getCurrentPageReports()">
+    <app-reusable-table 
+      [tableData]="getCurrentPageReports()" 
+      [isLoading]="isLoadingReports"
+      [currentPage]="currentPage"
+      [totalPages]="totalPages"
+      [totalCount]="totalCount"
+      [hasNextPage]="hasNextPage"
+      [hasPreviousPage]="hasPreviousPage"
+      [showPagination]="true"
+      (nextPage)="onNextPage()"
+      (previousPage)="onPreviousPage()">
       <ng-template #headers>
         <th>
           <span>Report</span>
@@ -138,27 +156,7 @@
     </app-reusable-table>
   </div>
 
-  <!-- Pagination Section -->
-  <div class="d-flex justify-content-between align-items-center mt-4">
-    <button
-      class="btn btn-outline-secondary me-2"
-      [disabled]="currentPage === 1"
-      (click)="onPreviousPage()">
-      Previous
-    </button>
-    <div class="pagination-info">
-      <span class="text-muted">Page {{ currentPage }} of {{ totalPages }}</span>
-    </div>
-    <button
-      class="btn btn-outline-secondary"
-      [disabled]="currentPage === totalPages"
-      (click)="onNextPage()">
-      Next
-    </button>
-  </div>
-
-  <!-- Add Report Modal -->
-    <!-- Add/Edit Report Modal -->
+  <!-- Add/Edit Report Modal -->
   <app-side-modal
     [isOpen]="showAddReportModal"
     [title]="isEditMode ? 'Edit Report' : 'Add Report'"
@@ -170,5 +168,16 @@
       (submit)="onAddReportSubmit($event)"
       (close)="onAddReportClose()">
     </app-add-report-form>
+  </app-side-modal>
+
+  <!-- Comment Modal -->
+  <app-side-modal
+    [isOpen]="showCommentModal"
+    [title]="'Comments'"
+    (close)="onCommentClose()">
+    <app-audit-library-comment
+      [report]="selectedReportForComment"
+      (close)="onCommentClose()">
+    </app-audit-library-comment>
   </app-side-modal>
 </div>

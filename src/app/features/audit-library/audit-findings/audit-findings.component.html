@@ -39,7 +39,7 @@
   </div>
 
   <!-- Table Section -->
-  <app-reusable-table [tableData]="findings">
+  <app-reusable-table [tableData]="findings" [isLoading]="isLoadingFindings">
     <ng-template #headers>
       <th>
         <div class="form-check">
