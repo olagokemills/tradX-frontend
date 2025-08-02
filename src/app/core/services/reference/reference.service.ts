@@ -1,7 +1,8 @@
-import { QuartersResponse } from 'src/app/shared/models/reference.model';
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { QuartersResponse, DepartmentResponse } from 'src/app/shared/models/reference.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,5 +14,9 @@ export class ReferenceService {
 
   getQuarters(): Observable<QuartersResponse> {
     return this.http.get<QuartersResponse>(`${this.baseUrl}reference-data/quarters`);
+  }
+
+  getDepartments(): Observable<DepartmentResponse> {
+    return this.http.get<DepartmentResponse>(`${this.baseUrl}reference-data/departments`);
   }
 }

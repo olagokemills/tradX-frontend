@@ -46,47 +46,96 @@
   </div>
 
   <!-- Table Section -->
-  <div class="table-container">
-    <div class="table-wrapper">
-      <table class="audit-table">
-        <thead>
-          <tr>
-            <th class="col-report">Report</th>
-            <th class="col-entity">Entity</th>
-            <th class="col-rating">Overall Rating</th>
-            <th class="col-identifier">Other Unique Identifier</th>
-            <th class="col-quarter">Quarter</th>
-            <th class="col-audit-name">Audit Name</th>
-            <th class="col-actions"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let report of getCurrentPageReports()" class="table-row">
-            <td class="report-cell">
-              <div class="report-info">
-                <div class="report-id">{{ report.id }}</div>
-                <div class="report-date">{{ report.date }}</div>
-              </div>
-            </td>
-            <td class="entity-cell">{{ report.entity }}</td>
-            <td class="rating-cell">
-              <span class="rating-badge" [ngClass]="getRatingClass(report.ratingType)">
-                <span class="rating-dot">•</span>
-                {{ report.overallRating }}
-              </span>
-            </td>
-            <td class="identifier-cell">{{ report.otherUniqueIdentifier }}</td>
-            <td class="quarter-cell">{{ report.quarter }}</td>
-            <td class="audit-name-cell">{{ report.auditName }}</td>
-            <td class="actions-cell">
-              <button class="btn-more" (click)="onMoreOptions(report)">
-                <i class="bi bi-three-dots-vertical"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="table-section">
+    <app-reusable-table [tableData]="getCurrentPageReports()">
+      <ng-template #headers>
+        <th>
+          <span>Report</span>
+        </th>
+        <th>
+          <span>Entity</span>
+        </th>
+        <th>
+          <span>Overall Rating</span>
+        </th>
+        <th>
+          <span>Other Unique Identifier</span>
+        </th>
+        <th>
+          <span>Quarter</span>
+        </th>
+        <th>
+          <span>Audit Name</span>
+        </th>
+        <th>
+          <span>Action</span>
+        </th>
+      </ng-template>
+
+      <ng-template #rows let-report>
+        <td>
+          <div class="report-info">
+            <div class="report-id">{{ report.reportNumber }}</div>
+            <div class="report-date">{{ report.reportDate | dateFormat }}</div>
+          </div>
+        </td>
+        <td>
+          {{ report.entity || "--" }}
+        </td>
+        <td>
+          <span class="rating-badge" [style.color]="getRatingColor(report.overallRating)">
+            <span class="rating-dot">●</span>
+            {{ getRatingType(report.overallRating) }}
+          </span>
+        </td>
+        <td>
+          {{ report.otherUniqueIdentifier || "--" }}
+        </td>
+        <td>
+          {{ report.quarter || "--" }}
+        </td>
+        <td>
+          {{ report.auditName || "--" }}
+        </td>
+        <td>
+          <div class="dropdown">
+            <a
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-three-dots-vertical"></i>
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="onEditReport(report)"
+                  href="javascript:void(0)"
+                >
+                  <small>Edit report</small>
+                </a>
+                <a
+                  class="dropdown-item"
+                  (click)="onFreezeReport(report)"
+                  href="javascript:void(0)"
+                >
+                  <small>Restrict viewing/ Freeze report</small>
+                </a>
+                <a
+                  class="dropdown-item"
+                  (click)="onAddComment(report)"
+                  href="javascript:void(0)"
+                >
+                  <small>Add comment</small>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </td>
+      </ng-template>
+    </app-reusable-table>
   </div>
 
   <!-- Pagination Section -->
@@ -109,12 +158,15 @@
   </div>
 
   <!-- Add Report Modal -->
+    <!-- Add/Edit Report Modal -->
   <app-side-modal
     [isOpen]="showAddReportModal"
-    title="Add Report"
+    [title]="isEditMode ? 'Edit Report' : 'Add Report'"
     description="Fill details below to add a finding to a report"
     (close)="onAddReportClose()">
     <app-add-report-form
+      [reportData]="selectedReportForEdit"
+      [isEditMode]="isEditMode"
       (submit)="onAddReportSubmit($event)"
       (close)="onAddReportClose()">
     </app-add-report-form>

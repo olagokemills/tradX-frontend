@@ -1,6 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { UserService } from 'src/app/core/services/users.service';
 import { LoginService } from 'src/app/core/services/auth/login.service';
+import { EncryptionService } from 'src/app/core/utils/encryption.service';
 
 @Component({
   selector: 'app-header',
@@ -38,7 +39,8 @@ export class HeaderComponent {
 
   constructor(
     private userService: UserService,
-    private loginService: LoginService
+    private loginService: LoginService,
+    private encryptionService: EncryptionService
   ) {
     // Initialization logic if needed
     this.fetchUserLogo();
@@ -67,7 +69,7 @@ export class HeaderComponent {
 
   fetchUserDetails() {
     // Get userId from localStorage or sessionStorage
-    const userId = localStorage.getItem('organizationId') || sessionStorage.getItem('organizationId');
+    const userId = this.encryptionService.GetItem('user')?.data?.user?.userId;
 
     if (!userId) {
       console.warn('No user ID found in storage');

@@ -7,7 +7,8 @@ import { Injectable } from '@angular/core';
 import {
   CreateAuditReportPayload,
   FreezeAuditReportPayload,
-  BookmarkAuditReportPayload
+  BookmarkAuditReportPayload,
+  AuditReportResponse
 } from 'src/app/shared/models/audit-report.model';
 
 
@@ -70,7 +71,7 @@ export class AuditLibraryService {
     if (pageSize !== undefined) q.push(`pageSize=${pageSize}`);
     if (searchQuery) q.push(`searchQuery=${encodeURIComponent(searchQuery)}`);
     if (q.length) query = '?' + q.join('&');
-    return this.http.get<any>(`${this.baseUrl}audit-report/audit-reports/${organizationId}${query}`);
+    return this.http.get<AuditReportResponse>(`${this.baseUrl}audit-report/audit-reports/${organizationId}${query}`);
   }
 
   // POST /api/v1/audit-report/modify-audit-report

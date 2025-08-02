@@ -1,0 +1,58 @@
+.confirm-dialog {
+  padding: 1.5rem;
+  min-width: 400px;
+  max-width: 500px;
+
+  .dialog-header {
+    h5 {
+      color: #1a1a1a;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 14px;
+      line-height: 1.5;
+      color: #6c757d;
+    }
+  }
+
+  .dialog-actions {
+    .btn {
+      padding: 0.5rem 1rem;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      min-width: 80px;
+
+      &.btn-outline-secondary {
+        border-color: #e1e5e9;
+        color: #374151;
+
+        &:hover {
+          background-color: #f8f9fa;
+          border-color: #d1d5db;
+        }
+      }
+
+      &.btn-danger {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        color: white;
+
+        &:hover {
+          background-color: #c82333;
+          border-color: #bd2130;
+        }
+      }
+    }
+  }
+}
+
+// Override Material Dialog styles
+::ng-deep .mat-mdc-dialog-container {
+  .mdc-dialog__surface {
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+}

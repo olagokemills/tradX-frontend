@@ -33,6 +33,7 @@ import { FilterDialogComponent } from './components/modals/filter-dialog/filter-
 import { ViewFindingDialogComponent } from './components/modals/view-finding-dialog/view-finding-dialog.component';
 import { EditFindingDialogComponent } from './components/modals/edit-finding-dialog/edit-finding-dialog.component';
 import { SideModalComponent } from './components/side-modal/side-modal.component';
+import { DateFormatPipe } from './pipes/date-format.pipe';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { SideModalComponent } from './components/side-modal/side-modal.component
     FilterDialogComponent,
     ViewFindingDialogComponent,
     EditFindingDialogComponent,
+    DateFormatPipe,
   ],
   imports: [
     CommonModule,
@@ -95,6 +97,7 @@ import { SideModalComponent } from './components/side-modal/side-modal.component
     FilterDialogComponent,
     ViewFindingDialogComponent,
     EditFindingDialogComponent,
+    DateFormatPipe,
   ]
 })
 export class SharedModule { }
