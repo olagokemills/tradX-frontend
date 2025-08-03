@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 
+type SelectOption = string | { label: string; value: any };
 @Component({
   selector: 'app-select-input',
   templateUrl: './select-input.component.html',
@@ -15,14 +16,14 @@ import { ControlValueAccessor, FormGroup, NG_VALUE_ACCESSOR } from '@angular/for
 })
 export class SelectInputComponent implements ControlValueAccessor {
   @Input() label: string = '';
-  @Input() options: string[] = [];
+  @Input() options: SelectOption[] = [];
   @Input() placeholder: string = 'Select Option';
   @Input() controlName: string = '';
   @Input() formGroup!: FormGroup;
 
   @Output() selectChange = new EventEmitter<string>();
 
-  value: string = '';
+  value: any = '';
   disabled = false;
 
   onChange: any = () => { };
@@ -50,5 +51,9 @@ export class SelectInputComponent implements ControlValueAccessor {
     this.onChange(selectedValue);
     this.onTouched();
     this.selectChange.emit(selectedValue);
+  }
+
+  isObjectOption(option: SelectOption): option is { label: string; value: any } {
+    return typeof option === 'object' && option !== null && 'value' in option && 'label' in option;
   }
 }

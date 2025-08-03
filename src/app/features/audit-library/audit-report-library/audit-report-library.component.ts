@@ -1,194 +1,249 @@
-import { Component, OnInit } from '@angular/core';
-
-interface AuditReport {
-  id: string;
-  date: string;
-  entity: string;
-  overallRating: string;
-  ratingType: 'strong' | 'weak';
-  otherUniqueIdentifier: string;
-  quarter: string;
-  auditName: string;
-}
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { AuditLibraryService } from 'src/app/core/services/audit/audit-library.service';
+import { AuditReport, AuditReportResponse } from 'src/app/shared/models/audit-report.model';
+import { ConfirmDialogComponent } from 'src/app/shared/components/modals/confirm-dialog/confirm-dialog.component';
+import { GenericService } from 'src/app/core/utils/generic-service.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-audit-report-library',
   templateUrl: './audit-report-library.component.html',
   styleUrls: ['./audit-report-library.component.scss']
 })
-export class AuditReportLibraryComponent implements OnInit {
+export class AuditReportLibraryComponent implements OnInit, OnDestroy {
   reports: AuditReport[] = [];
   filteredReports: AuditReport[] = [];
   searchTerm: string = '';
   currentPage: number = 1;
-  totalPages: number = 2;
-  itemsPerPage: number = 8;
+  totalPages: number = 1;
+  totalCount: number = 0;
+  itemsPerPage: number = 10;
+  isLoadingReports: boolean = false;
 
-  constructor() { }
+  // Search functionality
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  // Server-side pagination data
+  hasNextPage: boolean = false;
+  hasPreviousPage: boolean = false;
+
+  // Rating color map based on the provided data
+  ratingColorMap: Record<string, string> = {
+    'Unsatisfactory': '#dc3545',
+    'Weak': '#fd7e14',
+    'Needs Improvement': '#ffc107',
+    'Satisfactory': '#20c997',
+    'Strong': '#28a745',
+    'Exemplary': '#007bff'
+  };
+
+  constructor(
+    private auditLibraryService: AuditLibraryService,
+    private dialog: MatDialog,
+    private router: Router,
+    private utils: GenericService
+  ) { }
 
   ngOnInit(): void {
+    this.setupSearchDebounce();
     this.loadReports();
   }
 
-  private loadReports(): void {
-    // Mock data that matches the design exactly
-    this.reports = [
-      {
-        id: '#97174',
-        date: '15 May 2020 8:00 am',
-        entity: 'Nigeria',
-        overallRating: 'Weak',
-        ratingType: 'weak',
-        otherUniqueIdentifier: 'Sharply Africa, Sharply',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#39635',
-        date: '15 May 2020 9:30 am',
-        entity: 'Nigeria',
-        overallRating: 'Strong',
-        ratingType: 'strong',
-        otherUniqueIdentifier: 'Sharply Nigeria,Sharply Africa',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#43178',
-        date: '15 May 2020 8:30 am',
-        entity: 'Nigeria',
-        overallRating: 'Weak',
-        ratingType: 'weak',
-        otherUniqueIdentifier: 'Sharply, Sharply Africa',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#70668',
-        date: '15 May 2020 9:30 am',
-        entity: 'Nigeria',
-        overallRating: 'Strong',
-        ratingType: 'strong',
-        otherUniqueIdentifier: 'Sharply',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#22739',
-        date: '15 May 2020 8:30 am',
-        entity: 'Nigeria',
-        overallRating: 'Strong',
-        ratingType: 'strong',
-        otherUniqueIdentifier: 'Sharply Africa',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#43756',
-        date: '15 May 2020 9:30 am',
-        entity: 'Nigeria',
-        overallRating: 'Weak',
-        ratingType: 'weak',
-        otherUniqueIdentifier: 'Sharply Africa',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#97174',
-        date: '15 May 2020 9:00 am',
-        entity: 'Nigeria',
-        overallRating: 'Weak',
-        ratingType: 'weak',
-        otherUniqueIdentifier: 'Sharply Nigeria',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      },
-      {
-        id: '#22739',
-        date: '15 May 2020 8:00 am',
-        entity: 'Nigeria',
-        overallRating: 'Weak',
-        ratingType: 'weak',
-        otherUniqueIdentifier: 'Sharply Africa',
-        quarter: 'Q1',
-        auditName: 'Lorem Ipsum'
-      }
-    ];
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
-    this.filteredReports = [...this.reports];
+  private setupSearchDebounce(): void {
+    this.searchSubject.pipe(
+      debounceTime(500), // Wait 500ms after user stops typing
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(searchTerm => {
+      this.searchTerm = searchTerm;
+      this.currentPage = 1; // Reset to first page when searching
+      this.loadReports();
+    });
+  }
+
+  private loadReports(): void {
+    this.isLoadingReports = true;
+    const orgId = localStorage.getItem('organizationId') as string;
+
+    const params = {
+      organizationId: orgId,
+      pageNumber: this.currentPage,
+      pageSize: this.itemsPerPage,
+      ...(this.searchTerm && { searchQuery: this.searchTerm })
+    };
+
+    this.auditLibraryService.GetAuditReports(params).subscribe({
+      next: (res: AuditReportResponse) => {
+        this.reports = res.data || [];
+        this.totalCount = res.totalCount;
+        this.totalPages = res.totalPages;
+        this.hasNextPage = res.hasNextPage;
+        this.hasPreviousPage = res.hasPreviousPage;
+        this.currentPage = res.pageNumber;
+        this.itemsPerPage = res.pageSize;
+        this.isLoadingReports = false;
+      },
+      error: (err) => {
+        this.isLoadingReports = false;
+        this.utils.toastr.error('Failed to load reports', 'Error');
+      }
+    });
   }
 
   onSearch(): void {
-    if (!this.searchTerm.trim()) {
-      this.filteredReports = [...this.reports];
-      return;
-    }
+    this.searchSubject.next(this.searchTerm);
+  }
 
-    const searchLower = this.searchTerm.toLowerCase();
-    this.filteredReports = this.reports.filter(report =>
-      report.id.toLowerCase().includes(searchLower) ||
-      report.entity.toLowerCase().includes(searchLower) ||
-      report.overallRating.toLowerCase().includes(searchLower) ||
-      report.otherUniqueIdentifier.toLowerCase().includes(searchLower) ||
-      report.quarter.toLowerCase().includes(searchLower) ||
-      report.auditName.toLowerCase().includes(searchLower)
-    );
+  onClearSearch(): void {
+    this.searchTerm = '';
+    this.searchSubject.next('');
+  }
+
+  onReportRowClick(report: AuditReport): void {
+    // Store the selected report data for the findings component to access
+    sessionStorage.setItem('selectedAuditReport', JSON.stringify(report));
+
+    // Navigate to findings page with the report ID
+    this.router.navigate(['/audit-library/findings', report.auditReportId]);
+  }
+
+  onPageSizeChange(newSize: number): void {
+    this.itemsPerPage = newSize;
+    this.currentPage = 1; // Reset to first page
+    this.loadReports();
   }
 
   onFilter(): void {
-    // Implement filter functionality
-    console.log('Opening filter options');
-    // You can add modal or dropdown filter logic here
+    // For now, just reload data to show loading state
+    // You can implement actual filter logic here later
+    this.loadReports();
   }
 
   onDownloadReport(): void {
     // Implement download functionality
-    console.log('Downloading report');
-    // You can add CSV/Excel export logic here
   }
 
   onAddReport(): void {
     // Implement add report functionality
-    console.log('Adding new report');
-    // You can add modal or navigation logic here
   }
 
   onMoreOptions(report: AuditReport): void {
     // Implement more options functionality
-    console.log('More options for report:', report.id);
-    // You can add dropdown menu or modal logic here
+  }
+
+  onEditReport(report: AuditReport): void {
+    this.isEditMode = true;
+    this.selectedReportForEdit = report;
+    this.showAddReportModal = true;
+  }
+
+  onFreezeReport(report: AuditReport): void {
+    // Show confirmation dialog before freezing
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '400px',
+      data: {
+        title: 'Freeze Report',
+        message: `Are you sure you want to freeze report "${report.reportNumber}"? This will restrict viewing access to the report.`,
+        confirmText: 'Freeze Report',
+        cancelText: 'Cancel'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.freezeReportConfirmed(report);
+      }
+    });
+  }
+
+  private freezeReportConfirmed(report: AuditReport): void {
+    const orgId = localStorage.getItem('organizationId') as string;
+
+    if (!orgId) {
+      this.utils.toastr.error('Organization ID not found', 'Error');
+      return;
+    }
+
+    const payload = {
+      auditReportId: report.auditReportId,
+      organizationId: orgId,
+      freezeReport: true
+    };
+
+    this.auditLibraryService.FreezeAuditReport(payload).subscribe({
+      next: (res) => {
+        this.utils.toastr.success(`Report "${report.reportNumber}" has been frozen successfully`, 'Report Frozen');
+        this.refreshReports();
+      },
+      error: (err) => {
+        this.utils.toastr.error('Failed to freeze report. Please try again.', 'Error');
+      }
+    });
+  }
+
+  onAddComment(report: AuditReport): void {
+    this.selectedReportForComment = report;
+    this.showCommentModal = true;
   }
 
   onUploadReport(): void {
-    console.log('Opening upload report dialog');
     // Implement upload report logic here
   }
 
   showAddReportModal = false;
+  showCommentModal = false;
+  isEditMode = false;
+  selectedReportForEdit: AuditReport | null = null;
+  selectedReportForComment: AuditReport | null = null;
 
   onCreateReport(): void {
+    this.isEditMode = false;
+    this.selectedReportForEdit = null;
     this.showAddReportModal = true;
   }
 
   onAddReportClose(): void {
     this.showAddReportModal = false;
+    this.isEditMode = false;
+    this.selectedReportForEdit = null;
+  }
+
+  onCommentClose(): void {
+    this.showCommentModal = false;
+    this.selectedReportForComment = null;
   }
 
   onAddReportSubmit(report: any): void {
-    // console.log('New report data:', report);
-    // Implement the API call to save the report
-    // this.showAddReportModal = false;
+    // Refresh the audit reports after a successful add
+    this.refreshReports();
+    // Don't close modal here - let the child component handle closing
+  }
+
+  // Helper method to refresh reports from API
+  private refreshReports(): void {
+    this.loadReports();
   }
 
   onPreviousPage(): void {
-    if (this.currentPage > 1) {
+    if (this.hasPreviousPage && this.currentPage > 1) {
       this.currentPage--;
+      this.loadReports();
     }
   }
 
   onNextPage(): void {
-    if (this.currentPage < this.totalPages) {
+    if (this.hasNextPage && this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.loadReports();
     }
   }
 
@@ -196,18 +251,21 @@ export class AuditReportLibraryComponent implements OnInit {
     return `rating-${ratingType}`;
   }
 
-  // Utility method to get current page reports
+  // Utility method to get current page reports (now returns all reports since pagination is server-side)
   getCurrentPageReports(): AuditReport[] {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    return this.filteredReports.slice(startIndex, endIndex);
+    return this.reports;
   }
 
-  // Method to calculate total pages based on filtered results
-  updatePagination(): void {
-    this.totalPages = Math.ceil(this.filteredReports.length / this.itemsPerPage);
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = 1;
-    }
+  // Extract rating type from full scale definition
+  getRatingType(fullRating: string): string {
+    if (!fullRating) return '';
+    const parts = fullRating.split(' - ');
+    return parts.length > 0 ? parts[0].trim() : fullRating;
+  }
+
+  // Get color for rating type
+  getRatingColor(fullRating: string): string {
+    const ratingType = this.getRatingType(fullRating);
+    return this.ratingColorMap[ratingType] || '#6c757d'; // Default gray if not found
   }
 }

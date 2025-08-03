@@ -5,9 +5,14 @@
         <h2 class="modal-title mb-0">{{ title }}</h2>
         <div *ngIf="description" class="modal-description text-muted">{{ description }}</div>
       </div>
-      <button class="btn-close ms-2" (click)="onClose()" aria-label="Close">
-        <i class="bi bi-x"></i>
-      </button>
+      <div class="actions d-flex align-items-center">
+        <!-- Custom actions projection -->
+        <ng-content select="[slot=actions]"></ng-content>
+
+        <button class="btn-close ms-2" (click)="onClose()" aria-label="Close">
+          <i class="bi bi-x"></i>
+        </button>
+      </div>
     </div>
     <div class="modal-body">
       <ng-content></ng-content>

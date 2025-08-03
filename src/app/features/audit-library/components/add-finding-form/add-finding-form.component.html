@@ -1,29 +1,60 @@
 <form [formGroup]="findingForm" (ngSubmit)="onSubmit()" class="add-finding-form">
+  <!-- Loading indicator -->
+  <div *ngIf="loadingData" class="loading-overlay">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Form fields -->
   <div class="form-group">
-    <app-text-input id="sn" [formGroup]="findingForm" formControlName="sn" placeholder="SN"></app-text-input>
+    <label for="serialNumber">Serial Number</label>
+    <input id="serialNumber" formControlName="serialNumber" placeholder="Serial Number" class="form-control" type="text" />
   </div>
   <div class="form-group">
-    <app-text-input id="closureDate" [formGroup]="findingForm" type="date" class="form-control" formControlName="closureDate" placeholder="Agreed Closure Date"></app-text-input>
+    <label for="agreedClosureDate">Agreed Closure Date</label>
+    <input id="agreedClosureDate" formControlName="agreedClosureDate" type="date" placeholder="Agreed Closure Date" class="form-control" />
   </div>
   <div class="form-group">
-    <app-select-input id="priority" formControlName="priority" [options]="priorityOptions" label="Priority Level"></app-select-input>
+    <label for="priorityLevel" class="form-label mb-1">Priority Level</label>
+    <select id="priorityLevel" formControlName="priorityLevel" class="form-select w-100">
+      <option value="" disabled>Select Priority Level</option>
+      <option *ngFor="let option of priorityOptions" [value]="option">{{ option }}</option>
+    </select>
   </div>
   <div class="form-group">
-    <app-text-input id="title" [formGroup]="findingForm" formControlName="title" placeholder="Finding Title"></app-text-input>
+    <label for="findingTitle">Finding Title</label>
+    <input id="findingTitle" formControlName="findingTitle" placeholder="Finding Title" class="form-control" type="text" />
   </div>
   <div class="form-group">
-    <app-select-input id="category" formControlName="category" [options]="categoryOptions" label="Finding Category"></app-select-input>
+    <label for="findingCategory" class="form-label mb-1">Finding Category</label>
+    <select id="findingCategory" formControlName="findingCategory" class="form-select w-100">
+      <option value="" disabled>Select Finding Category</option>
+      <option *ngFor="let option of categoryOptions" [value]="option">{{ option }}</option>
+    </select>
   </div>
   <div class="form-group">
-    <label for="description">Description Of Audit Observation</label>
-    <textarea id="description" class="form-control" formControlName="description" placeholder="Enter details" rows="3"></textarea>
+    <label for="auditObservation">Description Of Audit Observation</label>
+    <textarea id="auditObservation" class="form-control" formControlName="auditObservation" placeholder="Enter details" rows="3"></textarea>
   </div>
   <div class="form-group">
     <label for="recommendation">Recommendation</label>
     <textarea id="recommendation" class="form-control" formControlName="recommendation" placeholder="Enter details" rows="3"></textarea>
   </div>
   <div class="form-group">
-    <app-text-input id="issueOwner" [formGroup]="findingForm" formControlName="issueOwner" placeholder="Issue Owner"></app-text-input>
+    <label for="rootCause">Root Cause</label>
+    <textarea id="rootCause" class="form-control" formControlName="rootCause" placeholder="Enter root cause details" rows="3"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="findingImpact">Finding Impact</label>
+    <textarea id="findingImpact" class="form-control" formControlName="findingImpact" placeholder="Enter finding impact details" rows="3"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="issueOwner" class="form-label mb-1">Issue Owner</label>
+    <select id="issueOwner" formControlName="issueOwner" class="form-select w-100">
+      <option value="" disabled>Select Issue Owner</option>
+      <option *ngFor="let option of userOptions" [value]="option.value">{{ option.label }}</option>
+    </select>
   </div>
   <div class="form-group">
     <label for="managementActionPlan">Management Action Plan</label>
@@ -31,24 +62,28 @@
   </div>
   <div class="form-row d-flex gap-3">
     <div class="form-group flex-fill">
-      <app-select-input id="reminder" formControlName="reminder" [options]="reminderOptions" label="Reminder"></app-select-input>
+      <label for="reminder" class="form-label mb-1">Reminder</label>
+      <select id="reminder" formControlName="reminder" class="form-select w-100">
+        <option value="" disabled>Select Reminder</option>
+        <option *ngFor="let option of reminderOptions" [value]="option">{{ option }}</option>
+      </select>
     </div>
     <div class="form-group flex-fill">
-      <app-select-input id="user" formControlName="user" [options]="userOptions" label="User"></app-select-input>
+      <label for="reminderUser" class="form-label mb-1">Reminder User</label>
+      <select id="reminderUser" formControlName="reminderUser" class="form-select w-100">
+        <option value="" disabled>Select User for Reminder</option>
+        <option *ngFor="let option of userOptions" [value]="option.value">{{ option.label }}</option>
+      </select>
     </div>
   </div>
-  <div class="form-group d-flex align-items-center gap-2 mt-2">
-    <input type="checkbox" id="addNotification" formControlName="addNotification">
-    <label for="addNotification" class="mb-0">Add notification</label>
-  </div>
-  <div class="form-group mt-4">
+  <div class="form-group mt-4 d-flex gap-2">
     <app-loader-button
       type="submit"
       [loading]="loading"
-      [disabled]="!findingForm.valid"
-      text="Save Finding"
-      btnClass="btn btn-primary submit-btn w-100"
-      loaderText="Saving...">
+      [disabled]="!findingForm.valid || loadingData"
+      [text]="isEditMode ? 'Update Finding' : 'Create Finding'"
+      btnClass="btn btn-primary submit-btn flex-grow-1"
+      [loaderText]="isEditMode ? 'Updating...' : 'Creating...'">
     </app-loader-button>
   </div>
 </form>

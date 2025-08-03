@@ -34,7 +34,11 @@
   </div>
 
   <div class="form-group">
-    <app-select-input id="auditName" formControlName="auditName" [options]="auditNames" label="Audit Name"></app-select-input>
+      <app-text-input id="auditName" [formGroup]="reportForm" [controlName]="'auditName'" placeholder="Audit Name"></app-text-input>
+  </div>
+
+    <div class="form-group">
+    <app-select-input id="department" formControlName="department" [options]="departments" label="Department"></app-select-input>
   </div>
   </div>
 
@@ -43,7 +47,7 @@
       type="submit"
       [loading]="loading"
       [disabled]="!reportForm.valid"
-      text="Add Report"
+      [text]="isEditMode ? 'Update Report' : 'Add Report'"
       btnClass="btn btn-primary submit-btn w-100"
       loaderText="Adding Report..."
     >

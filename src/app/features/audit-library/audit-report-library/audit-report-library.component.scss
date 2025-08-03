@@ -2,7 +2,7 @@
 .audit-report-container {
   background-color: #ffffff;
   min-height: 100vh;
-  padding: 24px;
+  padding: 24px 0px !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
@@ -74,7 +74,7 @@
 
       .search-input {
         width: 100%;
-        padding: 10px 12px 10px 36px;
+        padding: 10px 40px 10px 36px;
         border: 1px solid #e1e5e9;
         border-radius: 6px;
         font-size: 14px;
@@ -89,6 +89,36 @@
 
         &::placeholder {
           color: #9ca3af;
+        }
+      }
+
+      .clear-search-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #6c757d;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+
+        &:hover {
+          color: #dc3545;
+          background-color: rgba(220, 53, 69, 0.1);
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
         }
       }
     }
@@ -129,227 +159,71 @@
 }
 
 // Table Section
-.table-container {
+.table-section {
   background-color: #ffffff;
-  // border: 1px solid #e1e5e9;
   border-radius: 8px;
   overflow: hidden;
-  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
 
-  .table-wrapper {
-    overflow-x: auto;
+  // Essential table styling
+  th {
+    color: #757171;
+    font-weight: 500;
+    font-size: 15px;
   }
 
-  .audit-table {
-    width: 100%;
-    // border-collapse: collapse;
+  td {
+    color: #757171;
+    font-weight: 400;
     font-size: 14px;
+    padding: 10px;
+  }
 
-    thead {
-      background-color: transparent;
-
-      th {
-        padding: 16px 12px;
-        text-align: left;
-        font-weight: 600;
-        color: #374151;
-        border-bottom: 1px solid #e1e5e9;
-        white-space: nowrap;
-        font-size: 13px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-
-        &.col-report {
-          width: 180px;
-        }
-        &.col-entity {
-          width: 100px;
-        }
-        &.col-rating {
-          width: 140px;
-        }
-        &.col-identifier {
-          width: 200px;
-        }
-        &.col-quarter {
-          width: 80px;
-        }
-        &.col-audit-name {
-          width: 140px;
-        }
-        &.col-actions {
-          width: 50px;
-        }
-      }
+  // Custom styles for report info
+  .report-info {
+    .report-id {
+      font-weight: 500;
+      color: #1a1a1a;
+      font-size: 14px;
     }
 
-    tbody {
-      tr {
-        border-bottom: 1px solid #f1f3f4;
-        transition: background-color 0.1s ease;
-
-        &:hover {
-          background-color: #f8f9fa;
-        }
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        td {
-          padding: 16px 12px;
-          vertical-align: middle;
-          color: #374151;
-        }
-
-        .report-cell {
-          .report-info {
-            .report-id {
-              font-weight: 600;
-              color: #1a1a1a;
-              font-size: 14px;
-              margin-bottom: 4px;
-            }
-
-            .report-date {
-              font-size: 12px;
-              color: #6b7280;
-            }
-          }
-        }
-
-        .entity-cell {
-          font-weight: 500;
-          color: #374151;
-        }
-
-        .rating-cell {
-          .rating-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 500;
-            font-size: 13px;
-
-            .rating-dot {
-              width: 6px;
-              height: 6px;
-              border-radius: 50%;
-              display: inline-block;
-            }
-
-            &.rating-strong {
-              color: #059669;
-              .rating-dot {
-                background-color: #059669;
-              }
-            }
-
-            &.rating-weak {
-              color: #dc2626;
-              .rating-dot {
-                background-color: #dc2626;
-              }
-            }
-          }
-        }
-
-        .identifier-cell {
-          color: #6b7280;
-          font-size: 13px;
-        }
-
-        .quarter-cell {
-          font-weight: 500;
-          color: #374151;
-        }
-
-        .audit-name-cell {
-          color: #6b7280;
-          font-size: 13px;
-        }
-
-        .actions-cell {
-          text-align: center;
-
-          .btn-more {
-            background: none;
-            border: none;
-            color: #6b7280;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-
-            &:hover {
-              background-color: #f3f4f6;
-              color: #374151;
-            }
-
-            i {
-              font-size: 16px;
-            }
-          }
-        }
-      }
+    .report-date {
+      color: #6b7280;
+      font-size: 12px;
+      margin-top: 2px;
     }
   }
-}
 
-// Pagination Section
-.pagination-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 24px;
-
-  .pagination-info {
-    font-size: 14px;
-    color: #6b7280;
+  // Rating badge styles
+  .rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
     font-weight: 500;
 
-    span {
-      font-size: 14px;
-      color: #6c757d;
+    .rating-dot {
+      font-size: 8px;
     }
   }
 
-  .pagination-controls {
-    display: flex;
-    gap: 8px;
+  // Clickable cell styles
+  .clickable-cell {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 
-    .btn-pagination {
-      padding: 8px 16px;
-      border: 1px solid #e1e5e9;
-      border-radius: 6px;
-      background-color: #ffffff;
-      color: #374151;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover:not(:disabled) {
-        background-color: #f8f9fa;
-        border-color: #d1d5db;
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background-color: #f9fafb;
-        color: #9ca3af;
-      }
-
-      &:active:not(:disabled) {
-        transform: translateY(0);
-      }
+    &:hover {
+      background-color: #f8f9fa !important;
     }
   }
-}
 
-// Pagination Styles
+  // Table row hover effect
+  tbody tr:hover {
+    .clickable-cell {
+      background-color: #f8f9fa;
+    }
+  }
+} // Pagination Styles
 .btn-outline-secondary {
   border: 1px solid #e1e5e9;
   background-color: #ffffff;
@@ -398,33 +272,16 @@
       justify-content: center;
     }
   }
-
-  .table-container {
-    .table-wrapper {
-      overflow-x: scroll;
-    }
-  }
-
-  .pagination-section {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
 }
 
 // Animation and Transitions
-.table-row {
-  transition: all 0.2s ease;
-}
-
 .btn {
   transition: all 0.2s ease;
 }
 
 // Focus States
 .search-input:focus,
-.btn:focus,
-.btn-more:focus {
+.btn:focus {
   outline: 2px solid #007bff;
   outline-offset: 2px;
 }

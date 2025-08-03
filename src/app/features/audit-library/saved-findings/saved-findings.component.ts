@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Finding } from '../../../shared/models/finding.model';
@@ -7,74 +7,119 @@ import { FilterDialogComponent } from '../../../shared/components/modals/filter-
 import { ViewFindingDialogComponent } from '../../../shared/components/modals/view-finding-dialog/view-finding-dialog.component';
 import { EditFindingDialogComponent } from '../../../shared/components/modals/edit-finding-dialog/edit-finding-dialog.component';
 import { ConfirmDialogComponent } from '../../../shared/components/modals/confirm-dialog/confirm-dialog.component';
+import { AuditFindingsService } from '../../../core/services/audit/audit-findings.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-saved-findings',
   templateUrl: './saved-findings.component.html',
   styleUrls: ['./saved-findings.component.scss']
 })
-export class SavedFindingsComponent implements OnInit {
+export class SavedFindingsComponent implements OnInit, OnDestroy {
   findings: Finding[] = [];
   currentPage: number = 1;
-  totalPages: number = 12;
+  totalPages: number = 1;
+  totalCount: number = 0;
+  itemsPerPage: number = 10;
+  hasNextPage: boolean = false;
+  hasPreviousPage: boolean = false;
+
+  isLoading: boolean = false;
+  searchTerm: string = '';
+
+
+  // Search functionality
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private auditFindingsService: AuditFindingsService
   ) { }
 
   ngOnInit(): void {
-    // Mock data for saved findings
-    this.findings = [
-      {
-        id: '97174',
-        closureDate: new Date('2021-12-22'),
-        priority: 'Major',
-        title: 'Sharply Africa, Sharply',
-        category: 'Operational',
-        description: 'it is a long established fact that a reader will be distracted by the read ...',
-        recommendation: 'it is a long established fact that a reader will be distracted by the read ...',
-        status: 'Open',
-        issueOwner: 'John Doe',
-        managementActionPlan: 'Implement new security protocols and conduct quarterly reviews',
-        typeOfClosure: 'Full Remediation',
-        dateRemediated: new Date('2022-01-15'),
-        rationalForClosingIssue: 'All security measures have been implemented and verified',
-        bookmarked: true
-      },
-      {
-        id: '39635',
-        closureDate: new Date('2022-03-25'),
-        priority: 'Major',
-        title: 'Sharply Nigeria,Sharply Africa',
-        category: 'Strategic',
-        description: 'it is a long established fact that a reader will be distracted by the read ...',
-        recommendation: 'it is a long established fact that a reader will be distracted by the read ...',
-        status: 'Closed',
-        issueOwner: 'Jane Smith',
-        managementActionPlan: 'Update strategic planning framework and conduct staff training',
-        typeOfClosure: 'Partial Remediation',
-        dateRemediated: new Date('2022-04-10'),
-        rationalForClosingIssue: 'Significant improvements made, risk reduced to acceptable level',
-        bookmarked: true
-      },
-      {
-        id: '43178',
-        closureDate: new Date('2022-03-18'),
-        priority: 'Minor',
-        title: 'Sharply, Sharply Africa',
-        category: 'Information Technology',
-        description: 'it is a long established fact that a reader will be distracted by the read ...',
-        recommendation: 'it is a long established fact that a reader will be distracted by the read ...',
-        status: 'Closed',
-        issueOwner: 'Mike Johnson',
-        managementActionPlan: 'Upgrade IT infrastructure and implement monitoring systems',
-        typeOfClosure: 'Full Remediation',
-        dateRemediated: new Date('2022-04-20'),
-        rationalForClosingIssue: 'All IT systems upgraded and functioning properly',
-        bookmarked: true
-      }
-    ];
+    // Setup search debounce
+    this.setupSearchDebounce();
+
+    // Load saved findings
+    this.loadSavedFindings();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupSearchDebounce(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(searchTerm => {
+        this.currentPage = 1;
+        this.loadSavedFindings();
+      });
+  }
+
+  private loadSavedFindings(): void {
+    this.isLoading = true;
+    const orgId = localStorage.getItem('organizationId') as string;
+    const params = {
+      organizationId: orgId,
+      pageNumber: this.currentPage,
+      pageSize: this.itemsPerPage,
+      searchQuery: this.searchTerm || undefined
+    };
+
+    this.auditFindingsService.GetSavedFindings(params)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.isSuccess && response.data) {
+            this.findings = this.mapSavedFindingsToFindings(response.data);
+            this.totalCount = response.totalCount || 0;
+            this.totalPages = response.totalPages || 1;
+            this.hasNextPage = response.hasNextPage || false;
+            this.hasPreviousPage = response.hasPreviousPage || false;
+          } else {
+            console.error('Error loading saved findings:', response.errorMessage);
+            this.snackBar.open('Failed to load saved findings', 'Close', {
+              duration: 3000
+            });
+          }
+          this.isLoading = false;
+        },
+        error: (error) => {
+          console.error('Error loading saved findings:', error);
+          this.snackBar.open('Failed to load saved findings', 'Close', {
+            duration: 3000
+          });
+          this.isLoading = false;
+        }
+      });
+  }
+
+  private mapSavedFindingsToFindings(savedFindings: any[]): Finding[] {
+    return savedFindings.map((savedFinding: any) => ({
+      id: savedFinding.serialNumber || savedFinding.id,
+      closureDate: savedFinding.agreedClosureDate ? new Date(savedFinding.agreedClosureDate) : new Date(),
+      priority: savedFinding.priorityLevel || 'Medium',
+      title: savedFinding.findingTitle || '',
+      category: savedFinding.findingCategory || '',
+      description: savedFinding.auditObservation || '',
+      recommendation: savedFinding.recommendation || '',
+      status: savedFinding.status || 'Open',
+      issueOwner: savedFinding.issueOwner || '',
+      managementActionPlan: savedFinding.managementActionPlan || '',
+      typeOfClosure: savedFinding.closureType || '',
+      dateRemediated: savedFinding.dateRemediated ? new Date(savedFinding.dateRemediated) : undefined,
+      rationalForClosingIssue: savedFinding.closureComment || '',
+      bookmarked: true // Since these are saved findings
+    }));
   }
 
   editColumns() {
@@ -174,14 +219,16 @@ export class SavedFindingsComponent implements OnInit {
   }
 
   previousPage() {
-    if (this.currentPage > 1) {
+    if (this.currentPage > 1 && !this.isLoading) {
       this.currentPage--;
+      this.loadSavedFindings();
     }
   }
 
   nextPage() {
-    if (this.currentPage < this.totalPages) {
+    if (this.hasNextPage && !this.isLoading) {
       this.currentPage++;
+      this.loadSavedFindings();
     }
   }
 
@@ -231,22 +278,7 @@ export class SavedFindingsComponent implements OnInit {
   }
 
   onSearchChange(searchTerm: string) {
-    // In a real implementation, this would typically be debounced
-    // and would call a service method
-    console.log('Searching for:', searchTerm);
-    // Filter findings locally for now
-    if (!searchTerm.trim()) {
-      // Reset to original data
-      this.ngOnInit();
-      return;
-    }
-
-    const term = searchTerm.toLowerCase();
-    this.findings = this.findings.filter(finding =>
-      finding.title.toLowerCase().includes(term) ||
-      finding.category.toLowerCase().includes(term) ||
-      finding.description.toLowerCase().includes(term) ||
-      finding.recommendation.toLowerCase().includes(term)
-    );
+    this.searchTerm = searchTerm;
+    this.searchSubject.next(searchTerm);
   }
 }

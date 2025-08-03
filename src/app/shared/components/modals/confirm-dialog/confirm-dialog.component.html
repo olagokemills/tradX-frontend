@@ -1,0 +1,23 @@
+<div class="confirm-dialog">
+  <div class="dialog-header d-flex justify-content-between align-items-start mb-3">
+    <div>
+      <h5 class="fw-bold mb-1">{{ data.title }}</h5>
+      <p class="text-muted m-0">{{ data.message }}</p>
+    </div>
+  </div>
+  
+  <div class="dialog-actions d-flex justify-content-end gap-2 mt-4">
+    <button 
+      type="button" 
+      class="btn btn-outline-secondary" 
+      (click)="onCancel()">
+      {{ data.cancelText }}
+    </button>
+    <button 
+      type="button" 
+      class="btn btn-danger" 
+      (click)="onConfirm()">
+      {{ data.confirmText }}
+    </button>
+  </div>
+</div>
