@@ -73,6 +73,7 @@ export interface CreateAuditFindingPayload {
   findingImpact?: string;
   reminder?: string;
   reminderUser?: string;
+
 }
 
 export interface ModifyAuditFindingPayload {

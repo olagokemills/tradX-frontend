@@ -11,6 +11,7 @@ import { ViewFindingDialogComponent } from 'src/app/shared/components/modals/vie
 import { Finding, AuditFinding, AuditFindingResponse } from 'src/app/shared/models/finding.model';
 import { AuditFindingsService } from 'src/app/core/services/audit/audit-findings.service';
 import { GenericService } from 'src/app/core/utils/generic-service.service';
+import { ReferenceService } from 'src/app/core/services/reference/reference.service';
 
 
 @Component({
@@ -34,7 +35,7 @@ export class AuditFindingsComponent implements OnInit, OnDestroy {
 
   // Route parameters
   auditReportId: string | null = null;
-  organizationId: string = 'e2ab379709e74897b6f218115c50be98'; // This should come from auth service
+  organizationId: string = '';
 
   // Selected audit report data
   selectedAuditReport: any = null;
@@ -51,6 +52,7 @@ export class AuditFindingsComponent implements OnInit, OnDestroy {
   // Close finding side modal
   showCloseFindingModal = false;
   findingToClose: any | null = null;
+  closureTypes: string[] = [];
   closeFindingForm = {
     closureType: '',
     dateRemediated: null as Date | null,
@@ -78,10 +80,14 @@ export class AuditFindingsComponent implements OnInit, OnDestroy {
     private router: Router,
     private auditFindingsService: AuditFindingsService,
     private dialog: MatDialog,
-    private utils: GenericService
+    private utils: GenericService,
+    private referenceService: ReferenceService
   ) { }
 
   ngOnInit(): void {
+    // Get organization ID from localStorage
+    this.organizationId = localStorage.getItem('organizationId') as string;
+
     // Get route parameter if present
     this.auditReportId = this.route.snapshot.paramMap.get('auditReportId');
 
@@ -96,6 +102,9 @@ export class AuditFindingsComponent implements OnInit, OnDestroy {
     // Setup search debounce
     this.setupSearchDebounce();
 
+    // Load closure types
+    this.loadClosureTypes();
+
     // Load findings based on route
     this.loadFindings();
   }
@@ -103,6 +112,21 @@ export class AuditFindingsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private loadClosureTypes(): void {
+    this.referenceService.getClosureTypes()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          if (response.isSuccess && response.data) {
+            this.closureTypes = response.data;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading closure types:', error);
+        }
+      });
   }
 
   private setupSearchDebounce(): void {
@@ -212,11 +236,16 @@ export class AuditFindingsComponent implements OnInit, OnDestroy {
   }
 
   onAddFinding(finding: any): void {
-    // TODO: Implement API call to create finding
-    // For now, just close the modal and reload data
-    this.showAddFindingModal = false;
-    this.loadFindings();
-    this.utils.toastr.success('Finding added successfully');
+    // Close the modal first
+
+    // The finding parameter should contain the response from the successful API call
+    // Only show success message and reload if we actually have a finding
+    if (finding) {
+      this.showAddFindingModal = false;
+
+      this.loadFindings();
+      this.utils.toastr.success('Finding added successfully');
+    }
   }
 
   editColumns() {

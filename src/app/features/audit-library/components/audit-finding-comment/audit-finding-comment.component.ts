@@ -49,7 +49,7 @@ export class AuditFindingCommentComponent implements OnInit, OnChanges {
     this.loading = true;
 
     // Get organizationId from the finding or use default
-    const organizationId = this.finding.organizationId || 'e2ab379709e74897b6f218115c50be98';
+    const organizationId = this.finding.organizationId || localStorage.getItem('organizationId') as string;
 
     // Get reportId if it exists on the finding
     const reportId = this.finding.auditReportId || '';
@@ -57,7 +57,7 @@ export class AuditFindingCommentComponent implements OnInit, OnChanges {
     // Call API to get comments - we don't need auditFindingId for loading comments
     this.auditFindingsService.GetAuditFindingComments({
       organizationId: organizationId,
-      reportId: reportId,
+      reportId: this.finding.auditFindingId,
       pageNumber: 1,
       pageSize: 50  // Get a reasonable number of comments
     }).subscribe({

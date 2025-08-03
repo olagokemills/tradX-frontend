@@ -2,8 +2,8 @@
   <label class="form-label mb-1">{{ label }}</label>
   <select class="form-select w-100" [value]="value" (change)="onSelectChange($event)" [disabled]="disabled">
     <option value="" disabled>{{ placeholder }}</option>
-    <option *ngFor="let option of options" [value]="option">
-      {{ option }}
+    <option *ngFor="let option of options" [value]="isObjectOption(option) ? option.value : option">
+      {{ isObjectOption(option) ? option.label : option }}
     </option>
   </select>
 </div>

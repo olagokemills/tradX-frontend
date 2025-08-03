@@ -1,21 +1,58 @@
-import { Component, Input } from '@angular/core';
-import { AbstractControl, FormGroup } from '@angular/forms';
+import { Component, Input, forwardRef } from '@angular/core';
+import { AbstractControl, FormGroup, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-text-input',
   templateUrl: './text-input.component.html',
   styleUrls: ['./text-input.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => TextInputComponent),
+      multi: true,
+    },
+  ],
 })
-export class TextInputComponent {
+export class TextInputComponent implements ControlValueAccessor {
   @Input() controlName!: string;
   @Input() placeholder!: string;
   @Input() type: string = 'text';
   @Input() formGroup!: FormGroup;
   @Input() iconSrc: string = '';
   @Input() disabled: boolean = false;
+
+  value: any = '';
   isPasswordVisible: boolean = false;
-  constructor() {}
-  ngOnInit(): void {}
+
+  onChange: any = () => { };
+  onTouched: any = () => { };
+
+  constructor() { }
+  ngOnInit(): void { }
+
+  // ControlValueAccessor methods
+  writeValue(value: any): void {
+    this.value = value;
+  }
+
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  onInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.value = target.value;
+    this.onChange(this.value);
+    this.onTouched();
+  }
 
   shouldDisplayError(): boolean {
     const control: AbstractControl | null = this.formGroup.get(
