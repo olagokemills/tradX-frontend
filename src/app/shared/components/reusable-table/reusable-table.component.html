@@ -16,7 +16,10 @@
 
 
       <!-- Data rows -->
-      <tr *ngFor="let tableRow of tableData" [style.display]="isLoading ? 'none' : 'table-row'">
+      <tr *ngFor="let tableRow of tableData" 
+          [style.display]="isLoading ? 'none' : 'table-row'"
+          (click)="onRowClick(tableRow)"
+          style="cursor: pointer;">
         <ng-container
           *ngTemplateOutlet="
             rows || defaultRowTemplate;

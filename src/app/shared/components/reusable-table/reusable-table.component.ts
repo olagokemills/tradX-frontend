@@ -28,6 +28,7 @@ export class ReusableTableComponent {
   // Pagination outputs
   @Output() nextPage = new EventEmitter<void>();
   @Output() previousPage = new EventEmitter<void>();
+  @Output() rowClick = new EventEmitter<any>();
 
   @ContentChild('headers') headers!: TemplateRef<any>;
   @ContentChild('rows') rows!: TemplateRef<any>;
@@ -54,5 +55,9 @@ export class ReusableTableComponent {
     if (this.hasPreviousPage) {
       this.previousPage.emit();
     }
+  }
+
+  onRowClick(item: any): void {
+    this.rowClick.emit(item);
   }
 }

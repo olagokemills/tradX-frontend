@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { AuditLibraryService } from 'src/app/core/services/audit/audit-library.service';
 import { AuditReport, AuditReportResponse } from 'src/app/shared/models/audit-report.model';
 import { ConfirmDialogComponent } from 'src/app/shared/components/modals/confirm-dialog/confirm-dialog.component';
@@ -43,6 +44,7 @@ export class AuditReportLibraryComponent implements OnInit, OnDestroy {
   constructor(
     private auditLibraryService: AuditLibraryService,
     private dialog: MatDialog,
+    private router: Router,
     private utils: GenericService
   ) { }
 
@@ -104,6 +106,14 @@ export class AuditReportLibraryComponent implements OnInit, OnDestroy {
   onClearSearch(): void {
     this.searchTerm = '';
     this.searchSubject.next('');
+  }
+
+  onReportRowClick(report: AuditReport): void {
+    // Store the selected report data for the findings component to access
+    sessionStorage.setItem('selectedAuditReport', JSON.stringify(report));
+
+    // Navigate to findings page with the report ID
+    this.router.navigate(['/audit-library/findings', report.auditReportId]);
   }
 
   onPageSizeChange(newSize: number): void {

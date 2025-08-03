@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
   { path: 'findings', component: AuditFindingsComponent },
+  { path: 'findings/:auditReportId', component: AuditFindingsComponent },
   { path: 'reports', component: AuditReportLibraryComponent },
   { path: 'saved-findings', component: SavedFindingsComponent },
 ];
@@ -21,6 +22,7 @@ const routes: Routes = [
 import { AddReportFormComponent } from './components/add-report-form/add-report-form.component';
 import { AddFindingFormComponent } from './components/add-finding-form/add-finding-form.component';
 import { AuditLibraryCommentComponent } from './components/audit-library-comment/audit-library-comment.component';
+import { AuditFindingCommentComponent } from './components/audit-finding-comment/audit-finding-comment.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { AuditLibraryCommentComponent } from './components/audit-library-comment
     SavedFindingsComponent,
     AddReportFormComponent,
     AddFindingFormComponent,
-    AuditLibraryCommentComponent
+    AuditLibraryCommentComponent,
+    AuditFindingCommentComponent
   ],
   imports: [
     CommonModule,

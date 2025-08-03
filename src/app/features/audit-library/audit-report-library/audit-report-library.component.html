@@ -55,8 +55,8 @@
 
   <!-- Table Section -->
   <div class="table-section">
-    <app-reusable-table 
-      [tableData]="getCurrentPageReports()" 
+    <app-reusable-table
+      [tableData]="getCurrentPageReports()"
       [isLoading]="isLoadingReports"
       [currentPage]="currentPage"
       [totalPages]="totalPages"
@@ -91,28 +91,28 @@
       </ng-template>
 
       <ng-template #rows let-report>
-        <td>
+        <td (click)="onReportRowClick(report)" class="clickable-cell">
           <div class="report-info">
             <div class="report-id">{{ report.reportNumber }}</div>
             <div class="report-date">{{ report.reportDate | dateFormat }}</div>
           </div>
         </td>
-        <td>
+        <td (click)="onReportRowClick(report)" class="clickable-cell">
           {{ report.entity || "--" }}
         </td>
-        <td>
+        <td (click)="onReportRowClick(report)" class="clickable-cell">
           <span class="rating-badge" [style.color]="getRatingColor(report.overallRating)">
             <span class="rating-dot">●</span>
             {{ getRatingType(report.overallRating) }}
           </span>
         </td>
-        <td>
+        <td (click)="onReportRowClick(report)" class="clickable-cell">
           {{ report.otherUniqueIdentifier || "--" }}
         </td>
-        <td>
+        <td (click)="onReportRowClick(report)" class="clickable-cell">
           {{ report.quarter || "--" }}
         </td>
-        <td>
+        <td (click)="onReportRowClick(report)" class="clickable-cell">
           {{ report.auditName || "--" }}
         </td>
         <td>

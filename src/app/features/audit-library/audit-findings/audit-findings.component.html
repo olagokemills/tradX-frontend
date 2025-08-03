@@ -1,12 +1,61 @@
-<div class="main px-2 px-md-5">
+<div class="main ">
   <!-- Header Section -->
   <div class="d-flex justify-content-between align-items-center w-100">
-    <h5 class="mb-0">Audit Findings</h5>
-    <button class="btn btn-add-report" (click)="showAddFindingModal = true">
+    <div class="d-flex align-items-center">
+      <button *ngIf="auditReportId" class="btn btn-link p-0 me-3" (click)="goBack()">
+        <i class="bi bi-arrow-left fs-5"></i>
+      </button>
+      <h5 class="mb-0">Findings</h5>
+    </div>
+    <button *ngIf="auditReportId" class="btn btn-add-report" (click)="showAddFindingModal = true">
       <i class="bi bi-plus add-icon"></i>
       Add Findings
     </button>
   </div>
+
+  <!-- Selected Audit Report Info Section -->
+  <div *ngIf="selectedAuditReport" class="audit-report-info-section mt-3 mb-4">
+    <div class="card border-0 bg-light">
+      <div class="card-body p-3">
+                <h6 class="mb-2 fw-semibold">Report Details:</h6>
+        <div class="row align-items-center">
+          <div class="col-md-2">
+            <div class="report-info">
+              <div class="report-id">{{ selectedAuditReport.reportNumber || 'N/A' }}</div>
+              <div class="report-date">{{ (selectedAuditReport.reportDate | dateFormat) || 'N/A' }}</div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="report-cell">
+              {{ selectedAuditReport.entity || 'N/A' }}
+            </div>
+          </div>
+          <div class="col-md-2">
+            <span class="rating-badge" [style.color]="getRatingColor(selectedAuditReport.overallRating)">
+              <span class="rating-dot">●</span>
+              {{ getRatingType(selectedAuditReport.overallRating) || 'N/A' }}
+            </span>
+          </div>
+          <div class="col-md-2">
+            <div class="report-cell">
+              {{ selectedAuditReport.otherUniqueIdentifier || 'N/A' }}
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="report-cell">
+              {{ selectedAuditReport.quarter || 'N/A' }}
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="report-cell">
+              {{ selectedAuditReport.auditName || 'N/A' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Add Finding Modal -->
   <app-side-modal
     [isOpen]="showAddFindingModal"
@@ -39,7 +88,18 @@
   </div>
 
   <!-- Table Section -->
-  <app-reusable-table [tableData]="findings" [isLoading]="isLoadingFindings">
+  <app-reusable-table
+    [tableData]="findings"
+    [isLoading]="isLoadingFindings"
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    [totalCount]="totalCount"
+    [hasNextPage]="hasNextPage"
+    [hasPreviousPage]="hasPreviousPage"
+    [showPagination]="true"
+    (nextPage)="onNextPage()"
+    (previousPage)="onPreviousPage()"
+    (rowClick)="onRowClick($event)">
     <ng-template #headers>
       <th>
         <div class="form-check">
@@ -64,7 +124,7 @@
 
     <ng-template #rows let-finding>
       <td>
-        <div class="form-check">
+        <div class="form-check" (click)="$event.stopPropagation()">
           <input class="form-check-input" type="checkbox" [checked]="finding.selected">
         </div>
       </td>
@@ -79,38 +139,45 @@
       <td>{{ finding.category }}</td>
       <td class="description">{{ finding.description }}</td>
       <td class="recommendation">{{ finding.recommendation }}</td>
-      <td>{{ finding.issueOwner || '--' }}</td>
-      <td class="management-action">{{ finding.managementActionPlan || '--' }}</td>
-      <td>{{ finding.typeOfClosure || '--' }}</td>
-      <td>{{ finding.dateRemediated ? (finding.dateRemediated | date:'dd MMMM yyyy') : '--' }}</td>
-      <td class="rational">{{ finding.rationalForClosingIssue || '--' }}</td>
+      <td>{{ finding.issueOwner || 'N/A' }}</td>
+      <td class="management-action">{{ finding.managementActionPlan || 'N/A' }}</td>
+      <td>{{ finding.typeOfClosure || 'N/A' }}</td>
+      <td>{{ finding.dateRemediated ? (finding.dateRemediated | date:'dd MMMM yyyy') : 'N/A' }}</td>
+      <td class="rational">{{ finding.rationalForClosingIssue || 'N/A' }}</td>
       <td>
         <div class="d-flex align-items-center gap-2">
           <span [class]="'status-badge ' + finding.status.toLowerCase()">
             <i class="bi bi-circle-fill"></i>
             {{ finding.status }}
           </span>
+          <span *ngIf="finding.frozen" class="badge bg-warning text-dark ms-2">
+            <i class="bi bi-snow"></i> Frozen
+          </span>
         </div>
       </td>
       <td>
         <div class="d-flex align-items-center gap-2">
-          <button class="btn btn-link p-0" (click)="toggleBookmark(finding)">
+          <button class="btn btn-link p-0" (click)="toggleBookmark(finding); $event.stopPropagation()">
             <i class="bi" [class.bi-bookmark-fill]="finding.bookmarked" [class.bi-bookmark]="!finding.bookmarked"></i>
           </button>
-          <div class="dropdown">
-            <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <div [class]="'dropdown ' + (findings.length <= 2 ? 'dropup' : '')" (click)="$event.stopPropagation()">
+            <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="true">
               <i class="bi bi-three-dots-vertical"></i>
             </a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu dropdown-menu-end">
               <li>
-                <a class="dropdown-item" href="javascript:void(0)" (click)="viewDetails(finding)">
+                <a class="dropdown-item" href="javascript:void(0)" (click)="viewFindingDetails(finding)">
                   <small>View Details</small>
                 </a>
+              </li>
+              <li>
                 <a class="dropdown-item" href="javascript:void(0)" (click)="editFinding(finding)">
                   <small>Edit Finding</small>
                 </a>
-                <a class="dropdown-item text-danger" href="javascript:void(0)" (click)="deleteFinding(finding)">
-                  <small>Delete Finding</small>
+              </li>
+              <li>
+                <a class="dropdown-item text-warning" href="javascript:void(0)" (click)="freezeFinding(finding)">
+                  <small>{{ finding.frozen ? 'Unfreeze Finding' : 'Freeze Finding' }}</small>
                 </a>
               </li>
             </ul>
@@ -120,25 +187,228 @@
     </ng-template>
   </app-reusable-table>
 
-  <!-- Pagination Section -->
-  <div class="d-flex justify-content-between align-items-center mt-4">
-
-    <!-- <div class="pagination-controls"> -->
-      <button
-        class="btn btn-outline-secondary me-2"
-        [disabled]="currentPage === 1"
-        (click)="previousPage()">
-        Previous
-      </button>
-          <div class="pagination-info">
-      <span class="text-muted">Page {{ currentPage }} of {{ totalPages }}</span>
-    </div>
-      <button
-        class="btn btn-outline-secondary"
-        [disabled]="currentPage === totalPages"
-        (click)="nextPage()">
-        Next
-      </button>
-    <!-- </div> -->
-  </div>
 </div>
+
+<!-- Finding Details Side Modal -->
+<app-side-modal
+  [isOpen]="showFindingDetailsModal"
+  [title]="'Finding Details'"
+  (close)="closeFindingDetailsModal()">
+
+  <div *ngIf="isLoadingFindingDetails" class="d-flex justify-content-center align-items-center mt-4" style="height: 300px;">
+    <div class="text-center">
+      <img
+        src="https://cdn.pixabay.com/animation/2022/07/29/03/42/03-42-11-849_512.gif"
+        alt="Loading..."
+        style="width: 50px; height: 50px;"
+      >
+      <p class="mt-2">Loading finding details...</p>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoadingFindingDetails && selectedFinding" class="finding-details-content">
+    <!-- SN -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">SN</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 600;">#{{ selectedFinding.serialNumber || 'N/A' }}</p>
+    </div>
+
+    <!-- Agreed Closure Date -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Agreed Closure Date</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400;">{{ selectedFinding.agreedClosureDate ? (selectedFinding.agreedClosureDate | date:'dd MMMM yyyy') : 'N/A' }}</p>
+    </div>
+
+    <!-- Priority Level -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Priority Level</h6>
+      <div class="d-flex align-items-center">
+        <span class="text-danger me-2" style="font-size: 10px;">●</span>
+        <span class="text-danger" style="font-size: 14px; font-weight: 600;">{{ selectedFinding.priorityLevel === '4' ? 'Major' : 'Minor' }}</span>
+      </div>
+    </div>
+
+    <!-- Finding Title -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Finding Title</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400;">{{ selectedFinding.findingTitle || 'N/A' }}</p>
+    </div>
+
+    <!-- Finding Category -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Finding Category</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400;">{{ selectedFinding.findingCategory || 'N/A' }}</p>
+    </div>
+
+    <!-- Description Of Audit Observation -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Description Of Audit Observation</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400; line-height: 1.5;">{{ selectedFinding.auditObservation || 'N/A' }}</p>
+    </div>
+
+    <!-- Recommendation -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Recommendation</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400; line-height: 1.5;">{{ selectedFinding.recommendation || 'N/A' }}</p>
+    </div>
+
+    <!-- Issue Owner -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Issue Owner</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400;">{{ selectedFinding.issueOwner || 'N/A' }}</p>
+    </div>
+
+    <!-- Management Action Plan -->
+    <div class="mb-3">
+      <h6 class="text-secondary mb-1" style="font-size: 12px; font-weight: 400;">Management Action Plan</h6>
+      <p class="mb-0 text-dark" style="font-size: 14px; font-weight: 400; line-height: 1.5;">{{ selectedFinding.managementActionPlan || 'N/A' }}</p>
+    </div>
+  </div>
+
+  <!-- Custom Action Buttons in Header -->
+  <div slot="actions" class="d-flex align-items-center gap-2">
+    <!-- Comment/Message Icon -->
+    <div class="" title="Comment" >
+<svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.99968 16.2068C7.53968 16.2068 7.10634 15.9735 6.79967 15.5668L5.79967 14.2335C5.77968 14.2068 5.69968 14.1668 5.65968 14.1668H5.33301C2.55301 14.1668 0.833008 13.4135 0.833008 9.66683V6.3335C0.833008 3.38683 2.38634 1.8335 5.33301 1.8335H9.33301C9.60634 1.8335 9.83301 2.06016 9.83301 2.3335C9.83301 2.60683 9.60634 2.8335 9.33301 2.8335H5.33301C2.94634 2.8335 1.83301 3.94683 1.83301 6.3335V9.66683C1.83301 12.6802 2.86634 13.1668 5.33301 13.1668H5.66634C6.00634 13.1668 6.39301 13.3602 6.59967 13.6335L7.59968 14.9668C7.83301 15.2735 8.16634 15.2735 8.39968 14.9668L9.39968 13.6335C9.61968 13.3402 9.96634 13.1668 10.333 13.1668H10.6663C13.053 13.1668 14.1663 12.0535 14.1663 9.66683V7.66683C14.1663 7.3935 14.393 7.16683 14.6663 7.16683C14.9397 7.16683 15.1663 7.3935 15.1663 7.66683V9.66683C15.1663 12.6135 13.613 14.1668 10.6663 14.1668H10.333C10.2797 14.1668 10.233 14.1935 10.1997 14.2335L9.19968 15.5668C8.89301 15.9735 8.45968 16.2068 7.99968 16.2068Z" fill="#181818"/>
+<path d="M7.99967 8.99984C7.62634 8.99984 7.33301 8.69984 7.33301 8.33317C7.33301 7.9665 7.63301 7.6665 7.99967 7.6665C8.36634 7.6665 8.66634 7.9665 8.66634 8.33317C8.66634 8.69984 8.37301 8.99984 7.99967 8.99984Z" fill="#181818"/>
+<path d="M10.6667 8.99984C10.2933 8.99984 10 8.69984 10 8.33317C10 7.9665 10.3 7.6665 10.6667 7.6665C11.0333 7.6665 11.3333 7.9665 11.3333 8.33317C11.3333 8.69984 11.04 8.99984 10.6667 8.99984Z" fill="#181818"/>
+<path d="M5.33366 8.99984C4.96033 8.99984 4.66699 8.69984 4.66699 8.33317C4.66699 7.9665 4.96699 7.6665 5.33366 7.6665C5.70033 7.6665 6.00033 7.9665 6.00033 8.33317C6.00033 8.69984 5.70699 8.99984 5.33366 8.99984Z" fill="#181818"/>
+<path d="M13 1.3335C14.4693 1.33367 15.666 2.53112 15.666 4.00049C15.6658 5.46971 14.4692 6.66633 13 6.6665C11.5306 6.6665 10.3332 5.46982 10.333 4.00049C10.333 2.53101 11.5305 1.3335 13 1.3335ZM13 3.3335C12.6361 3.3335 12.333 3.63663 12.333 4.00049C12.3332 4.3642 12.6363 4.6665 13 4.6665C13.3636 4.66632 13.6658 4.36409 13.666 4.00049C13.666 3.63674 13.3637 3.33368 13 3.3335Z" fill="#EA4335" stroke="#EA4335"/>
+</svg>
+
+    </div>
+
+    <!-- Status Badge -->
+    <!-- <span class="badge bg-success text-white px-2 py-1" style="font-size: 0.75rem;">
+      <i class="bi bi-circle-fill me-1" style="font-size: 0.6rem;"></i>
+      Open
+    </span> -->
+
+    <!-- Bookmark Icon -->
+    <button class="btn btn-link p-1" title="Bookmark" (click)="toggleBookmarkDetails()" style="font-size: 0.875rem;">
+      <i class="bi" [class.bi-bookmark-fill]="selectedFinding?.bookmarked" [class.bi-bookmark]="!selectedFinding?.bookmarked"></i>
+    </button>
+
+    <!-- More Actions Dropdown -->
+    <div class="dropdown">
+      <button class="btn btn-link p-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="More actions" style="font-size: 0.875rem;">
+        <i class="bi bi-three-dots-vertical"></i>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="editFinding(selectedFinding)" style="font-size: 0.875rem; padding: 0.25rem 0.75rem;">
+            <i class="bi bi-pencil-square me-2"></i>Edit Findings
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="closeFinding(selectedFinding)" style="font-size: 0.875rem; padding: 0.25rem 0.75rem;">
+            <i class="bi bi-file-earmark-x me-2"></i>Close Finding
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="addComment(selectedFinding)" style="font-size: 0.875rem; padding: 0.25rem 0.75rem;">
+            <i class="bi bi-chat-square-text me-2"></i>Comment
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="triggerReminder(selectedFinding)" style="font-size: 0.875rem; padding: 0.25rem 0.75rem;">
+            <i class="bi bi-bell me-2"></i>Trigger Reminder
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="viewUpdates(selectedFinding)" style="font-size: 0.875rem; padding: 0.25rem 0.75rem;">
+            <i class="bi bi-lightning me-2"></i>View Updates
+          </a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="javascript:void(0)" (click)="uploadDocument(selectedFinding)" style="font-size: 0.875rem; padding: 0.25rem 0.75rem;">
+            <i class="bi bi-file-earmark-arrow-up me-2"></i>Upload Document
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</app-side-modal>
+
+<!-- Close Finding Side Modal -->
+<app-side-modal
+  [isOpen]="showCloseFindingModal"
+  [title]="'Close Findings'"
+  (close)="closeCloseFindingModal()">
+
+  <div class="close-finding-content">
+    <p class="mb-4">Fill details below to close finding</p>
+
+    <!-- Type of closure -->
+    <div class="mb-3">
+      <label for="closureType" class="form-label">Type of closure</label>
+      <select
+        class="form-select"
+        id="closureType"
+        [(ngModel)]="closeFindingForm.closureType">
+        <option value="" disabled selected>Select Option</option>
+        <option value="Resolved">Resolved</option>
+        <option value="Not Applicable">Not Applicable</option>
+        <option value="Risk Accepted">Risk Accepted</option>
+        <option value="Duplicate">Duplicate</option>
+      </select>
+    </div>
+
+    <!-- Date Remediated -->
+    <div class="mb-3">
+      <label for="dateRemediated" class="form-label">Date Remediated</label>
+      <div class="input-group">
+        <input
+          type="date"
+          class="form-control"
+          id="dateRemediated"
+          placeholder="DD/MM/YYYY"
+          [(ngModel)]="closeFindingForm.dateRemediated">
+        <span class="input-group-text">
+          <i class="bi bi-calendar"></i>
+        </span>
+      </div>
+    </div>
+
+    <!-- Rational For Closing Issue -->
+    <div class="mb-3">
+      <label for="closureComment" class="form-label">Rational For Closing Issue</label>
+      <textarea
+        class="form-control"
+        id="closureComment"
+        rows="5"
+        placeholder="Enter details"
+        [(ngModel)]="closeFindingForm.closureComment"></textarea>
+    </div>
+
+    <!-- Upload Document -->
+    <div class="mb-4">
+      <button class="btn btn-outline-secondary d-flex align-items-center gap-2" (click)="fileInput.click()">
+        <i class="bi bi-file-earmark-arrow-up"></i>
+        Upload Document
+      </button>
+      <input #fileInput type="file" class="d-none" (change)="handleFileUpload($event)">
+      <small *ngIf="closeFindingForm.fileName" class="text-muted mt-1 d-block">
+        Selected: {{ closeFindingForm.fileName }}
+      </small>
+    </div>
+
+    <!-- Close Finding button -->
+    <button class="btn btn-primary w-100" (click)="submitCloseFinding()">
+      Close Finding
+    </button>
+  </div>
+
+</app-side-modal>
+
+<!-- Comment Modal -->
+<app-side-modal
+  [isOpen]="showCommentModal"
+  [title]="'Comments'"
+  (close)="closeCommentModal()">
+  <app-audit-finding-comment
+    [finding]="findingForComment"
+    (close)="closeCommentModal()">
+  </app-audit-finding-comment>
+</app-side-modal>

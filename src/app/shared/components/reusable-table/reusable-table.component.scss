@@ -1,5 +1,7 @@
 .table-responsive {
   min-height: 200px;
+  overflow: visible; // Ensure dropdowns aren't clipped
+  padding-bottom: 80px; // Extra space for dropdowns
 }
 
 .empty-tables {
